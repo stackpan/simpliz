@@ -47,6 +47,18 @@
             @endif
         </div>
 
+        <div>
+            <x-input-label for="gender" :value="__('Gender')" />
+            <x-select-input id="gender" :values="App\Enums\Gender::cases()" class="block mt-1 w-full" name="gender" required autocomplete="gender"/>
+            <x-input-error :messages="$errors->get('gender')" class="mt-2" />
+        </div>
+
+        <div>
+            <x-input-label for="role" :value="__('Role')" />
+            <x-select-input id="role" :values="App\Enums\Role::cases()" class="block mt-1 w-full" name="role" required />
+            <x-input-error :messages="$errors->get('role')" class="mt-2" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
