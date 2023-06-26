@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use App\Models\Quiz;
+use App\Models\Result;
 
 class User extends Authenticatable
 {
@@ -55,5 +56,15 @@ class User extends Authenticatable
     public function quizzes(): BelongsToMany
     {
         return $this->belongsToMany(Quiz::class);
+    }
+
+    /**
+     * Get all of the Result for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function results(): HasMany
+    {
+        return $this->hasMany(Result::class);
     }
 }

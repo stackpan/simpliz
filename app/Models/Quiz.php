@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use App\Models\Question;
 use App\Models\User;
+use App\Models\Result;
 
 class Quiz extends Model
 {
@@ -35,5 +36,15 @@ class Quiz extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
+    }
+
+    /**
+     * Get all of the Result for the Quiz
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function results(): HasMany
+    {
+        return $this->hasMany(Result::class);
     }
 }
