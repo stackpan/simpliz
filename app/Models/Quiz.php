@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use App\Models\Question;
+use App\Models\User;
 
 class Quiz extends Model
 {
@@ -26,4 +27,13 @@ class Quiz extends Model
         return $this->hasMany(Question::class);
     }
 
+    /**
+     * The User that belong to the Quiz
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
+    }
 }
