@@ -17,5 +17,14 @@ class UserSeeder extends Seeder
         User::factory()
             ->count(5)
             ->create();
+        
+        User::factory()
+            ->count(2)
+            ->admin()
+            ->create();
+        
+        User::factory()
+            ->superAdmin()
+            ->create();
     }
 }

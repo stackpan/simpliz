@@ -8,7 +8,7 @@ enum Role: int
 {
     use CanGenerateRandom;
 
-    case Examinee = 0;
+    case SuperAdmin = 0;
     case Admin = 1;
-    case SuperAdmin = 2;
+    case Examinee = 2;
 }
