@@ -22,11 +22,6 @@ class DashboardController extends Controller
         return view('dashboard.home.index');
     }
 
-    public function admin()
-    {
-        return view('dashboard.admin.index');
-    }
-
     public function user()
     {
         return view('dashboard.user.index');

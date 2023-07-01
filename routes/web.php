@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Dashboard\DashboardController;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Dashboard\AdminController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/home', [DashboardController::class, 'home'])->name('dashboard.home');
-    Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('dashboard.admin');
+    Route::get('/dashboard/admin', [AdminController::class, 'index'])->name('dashboard.admin');
     Route::get('/dashboard/user', [DashboardController::class, 'user'])->name('dashboard.user');
     Route::get('/dashboard/quiz', [DashboardController::class, 'quiz'])->name('dashboard.quiz');
     Route::get('/dashboard/result', [DashboardController::class, 'result'])->name('dashboard.result');
@@ -36,7 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::resource('admins', AdminController::class)
-        ->only('create', 'store', 'edit', 'destroy');
+        ->only('create', 'store', 'edit', 'update', 'destroy');
 });
 
 require __DIR__.'/auth.php';

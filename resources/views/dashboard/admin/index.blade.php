@@ -1,11 +1,4 @@
 <x-dashboard-layout>
-    @php
-    $users = App\Models\User::select('id', 'name', 'email')
-        ->where('role', App\Enums\Role::Admin->value)
-        ->get()
-        ->toArray();
-    @endphp
-
     <x-slot name="breadcrumb">
         <ol>
             <li>{{ __('Admin Management') }}</li>
