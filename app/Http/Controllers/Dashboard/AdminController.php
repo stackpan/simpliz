@@ -82,7 +82,10 @@ class AdminController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::find($id);
+        $user->delete();
+
+        return redirect()->route('dashboard.admin');
     }
 
     private function getUserById(string $id)
