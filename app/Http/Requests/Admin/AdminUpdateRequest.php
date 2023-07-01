@@ -27,9 +27,8 @@ class AdminUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = explode('/', $this->path())[1];
-        $user = User::where('id', $id)->first();
-
+        $user = User::find($this->id);
+        
         return [
             'name' => ['string', 'max:255'],
             'email' => ['email', 'max:255', Rule::unique(User::class)->ignore($user)],

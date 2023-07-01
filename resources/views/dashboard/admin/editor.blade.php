@@ -8,7 +8,7 @@
 
     <form 
         @isset($user)
-        action="{{ route('admins.update', $user->id) }}"
+        action="{{ route('admins.update', $user) }}"
         @else
         action="{{ route('admins.store') }}" 
         @endisset
@@ -16,6 +16,7 @@
     @csrf
     @isset($user)
         @method('PUT')
+        <input type="hidden" name="id" value="{{ $user->id }}" />
     @endisset
 
         <div class="flex flex-col gap-4">

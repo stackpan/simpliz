@@ -51,7 +51,9 @@ class AdminController extends Controller
      */
     public function edit(string $id)
     {
-        $user = $this->getUserById($id);
+        $user = User::select('id', 'name', 'email', 'gender')
+            ->where('id', $id)
+            ->first();
 
         return view('dashboard.admin.editor')
             ->with('user', $user); 
@@ -60,12 +62,12 @@ class AdminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(AdminUpdateRequest $request, string $id)
+    public function update(AdminUpdateRequest $request)
     {
-        $user = $this->getUserById($id);
-
         $validated = $request->validated();
 
+        $user = User::find($request->id);
+        
         $user->fill($validated);
 
         if ($user->isDirty('email')) {
@@ -82,16 +84,8 @@ class AdminController extends Controller
      */
     public function destroy(string $id)
     {
-        $user = User::find($id);
-        $user->delete();
+        User::find($id)->delete();
 
         return redirect()->route('dashboard.admin');
-    }
-
-    private function getUserById(string $id)
-    {
-        return User::select('id', 'name', 'email', 'gender')
-            ->where('id', $id)
-            ->first();
     }
 }
