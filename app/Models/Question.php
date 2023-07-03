@@ -48,4 +48,5 @@ class Question extends Model
     {
         return $this->hasOne(Answer::class);
     }
+
 }

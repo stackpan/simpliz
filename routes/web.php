@@ -1,6 +1,10 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\{
+    ProfileController,
+    QuizController,
+    QuizSessionController,
+};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,5 +31,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::resource('quizzes', QuizController::class)
+    ->only('index', 'show');
+
+Route::post('/quiz-session/{id}', [QuizSessionController::class, 'start'])->name('quiz_session.start');
+Route::get('/quiz-session/{id}', [QuizSessionController::class, 'showQuestions'])->name('quiz_session.show_questions');
 
 require __DIR__.'/auth.php';

@@ -19,6 +19,7 @@ class QuizFactory extends Factory
         return [
             'name' => fake()->sentence(rand(1, 5)),
             'description' => fake()->paragraph(),
+            'duration' => fake()->numberBetween(5, 60),
         ];
     }
 }

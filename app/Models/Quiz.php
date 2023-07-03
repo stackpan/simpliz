@@ -14,6 +14,7 @@ class Quiz extends Model
     protected $fillable = [
         'name',
         'description',
+        'duration',
     ];
 
     /**
@@ -45,4 +46,5 @@ class Quiz extends Model
     {
         return $this->hasMany(Result::class);
     }
+
 }

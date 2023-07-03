@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name', 255);
             $table->text('description');
+            $table->integer('duration');
             $table->timestamps();
         });
     }
