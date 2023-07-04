@@ -27,12 +27,20 @@
                 </form>
             </section>
             <div>
+                @if(!$questions->onFirstPage())
                 <a href="{{ $questions->previousPageUrl() }}">
-                    <button type="button">{{ __('Prev') }}</button>
+                    <button type="button">{{ __('Previous') }}</button>
                 </a>
+                @endif
+                @if($questions->onLastPage())
+                <a href="">
+                    <button type="button">{{ __('Finish') }}</button>
+                </a>
+                @else
                 <a href="{{ $questions->nextPageUrl() }}">
                     <button type="button">{{ __('Next') }}</button>
                 </a>
+                @endif
             </div>
         </div>
     </div>

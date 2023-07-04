@@ -23,9 +23,11 @@ class UserOptionRepository
         return $userOption->id;
     }
 
-    public function getByResultIdAndOptionId(string $resultId, string $optionId): UserOption | null
+    public function getByResultIdAndOptionId(string $resultId, string $optionId): ?UserOption
     {
-        return $this->userOption->where('result_id', $resultId)->where('option_id', $optionId)->first();
+        return $this->userOption->where('result_id', $resultId)
+            ->where('option_id', $optionId)
+            ->first();
     }
 
     public function updateById(string $id, string $optionId): string

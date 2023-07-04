@@ -14,9 +14,6 @@ class Result extends Model
     public $timestamps = false;
     
     protected $fillable = [
-        'user_id',
-        'quiz_id',
-        'created_at',
         'finished_at',
     ];
 

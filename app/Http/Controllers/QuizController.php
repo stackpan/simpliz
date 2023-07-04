@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\QuizService;
+use App\Services\ResultService;
 
 class QuizController extends Controller
 {
 
     public function __construct(
         private QuizService $quizService,
+        private ResultService $resultService,
     ) {
     }
 
@@ -42,7 +44,16 @@ class QuizController extends Controller
      */
     public function show(string $id)
     {
-        return view('quiz.show')->with(['quiz' => $this->quizService->getById($id)]);
+        $results = $this->resultService->getUserResultsByQuizId(auth()->user()->id, $id);
+        $unfinishedResult = $results->collect()->first(function ($value, $key) {
+            return $value->finished_at === null;
+        });
+
+        return view('quiz.show')->with([
+            'quiz' => $this->quizService->getById($id),
+            'results' => $results,
+            'unfinishedResult' => $unfinishedResult,
+        ]);
     }
 
     /**

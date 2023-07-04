@@ -36,8 +36,8 @@ Route::middleware('auth')->group(function () {
 Route::resource('quizzes', QuizController::class)
     ->only('index', 'show');
 
-Route::post('/quiz-session/{id}', [QuizSessionController::class, 'start'])->name('quiz_session.start');
-Route::get('/quiz-session/{id}', [QuizSessionController::class, 'showQuestions'])->name('quiz_session.show_questions');
+Route::post('/quiz-session', [QuizSessionController::class, 'start'])->name('quiz_session.start');
+Route::get('/quiz-session/{resultId}', [QuizSessionController::class, 'showQuestions'])->name('quiz_session.show_questions');
 
 Route::post('/results/{id}/options', [ResultController::class, 'storeUserOption'])->name('results.store_user_option');
 

@@ -16,18 +16,18 @@ class QuizSessionController extends Controller
     ) {
     }
 
-    public function start(Request $request, string $quizId): RedirectResponse
+    public function start(Request $request): RedirectResponse
     {
         $userId = auth()->user()->id;
 
-        $resultId = $this->resultService->store($userId, $quizId);
+        $resultId = $this->resultService->store($userId, $request->quizId);
 
-        return redirect()->route('quiz_session.show_questions', ['id' => $resultId]);
+        return redirect()->route('quiz_session.show_questions', ['resultId' => $resultId]);
     }
     
-    public function showQuestions(string $id): View
+    public function showQuestions(string $resultId): View
     {
-        $result = $this->resultService->getById($id);
+        $result = $this->resultService->getById($resultId);
 
         return view('question.show')
             ->with([
