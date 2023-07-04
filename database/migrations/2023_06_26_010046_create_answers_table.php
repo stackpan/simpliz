@@ -13,9 +13,7 @@ return new class extends Migration
     {
         Schema::create('answers', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('question_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignUuid('option_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->unique('question_id');
             $table->unique('option_id');
         });
     }

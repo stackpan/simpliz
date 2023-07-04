@@ -33,7 +33,6 @@ class QuizSeeder extends Seeder
                     ->create();
 
                 Answer::factory()
-                    ->for($question)
                     ->for($options[rand(0, count($options) - 1)])
                     ->create();
             }

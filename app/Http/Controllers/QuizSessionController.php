@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use App\Services\{QuestionService, ResultService};
 
 class QuizSessionController extends Controller
@@ -14,7 +16,8 @@ class QuizSessionController extends Controller
     ) {
     }
 
-    public function start(Request $request, string $quizId) {
+    public function start(Request $request, string $quizId): RedirectResponse
+    {
         $userId = auth()->user()->id;
 
         $resultId = $this->resultService->store($userId, $quizId);
@@ -22,12 +25,14 @@ class QuizSessionController extends Controller
         return redirect()->route('quiz_session.show_questions', ['id' => $resultId]);
     }
     
-    public function showQuestions(string $id)
+    public function showQuestions(string $id): View
     {
-        $quizId = $this->resultService->getById($id)->quiz->id;
+        $result = $this->resultService->getById($id);
 
-        return view('question.show')->with(
-            ['questions' => $this->questionService->getPaginatedByQuizId($quizId)]
-        );
+        return view('question.show')
+            ->with([
+                'questions' => $this->questionService->getPaginatedByQuizId($result->quiz->id),
+                'resultId' => $result->id,
+            ]);
     }
 }

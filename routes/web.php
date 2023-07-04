@@ -4,6 +4,7 @@ use App\Http\Controllers\{
     ProfileController,
     QuizController,
     QuizSessionController,
+    ResultController,
 };
 use Illuminate\Support\Facades\Route;
 
@@ -37,5 +38,7 @@ Route::resource('quizzes', QuizController::class)
 
 Route::post('/quiz-session/{id}', [QuizSessionController::class, 'start'])->name('quiz_session.start');
 Route::get('/quiz-session/{id}', [QuizSessionController::class, 'showQuestions'])->name('quiz_session.show_questions');
+
+Route::post('/results/{id}/options', [ResultController::class, 'storeUserOption'])->name('results.store_user_option');
 
 require __DIR__.'/auth.php';

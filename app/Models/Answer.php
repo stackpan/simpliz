@@ -14,17 +14,7 @@ class Answer extends Model
     public $timestamps = false;
 
     /**
-     * Get the Question that owns the Answer
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function question(): BelongsTo
-    {
-        return $this->belongsTo(Question::class);
-    }
-
-    /**
-     * Get the Option that owns the Answer
+     * Get the option that owns the Answer
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

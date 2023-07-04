@@ -9,4 +9,6 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 class UserOption extends Model
 {
     use HasFactory, HasUuids;
+
+    public $timestamps = false;
 }
