@@ -39,13 +39,21 @@ class ResultService
         return $this->userOptionRepository->store($resultId, $optionId);
     }
 
+    /**
+     * Get UserOption by resultId and optionId
+     */
+    public function getUserOption(string $resultId, string $optionId): UserOption | null
+    {
+        return $this->userOptionRepository->getByResultIdAndOptionId($resultId, $optionId);
+    }
+
     private function getPreviousUserOption(string $resultId, string $optionId): UserOption | null
     {
         $question = $this->optionRepository->getById($optionId)->question;
         $otherOptions = $question->options;
         
         foreach ($otherOptions as $option) {
-            $userOption = $this->userOptionRepository->getByResultIdAndOptionId($resultId, $option->id);
+            $userOption = $this->getUserOption($resultId, $option->id);
             
             if (isset($userOption)) {
                 return $userOption;

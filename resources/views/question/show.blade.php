@@ -1,3 +1,5 @@
+@inject('resultService', 'App\Services\ResultService')
+
 <x-app-layout>
     <div>
         <div>{{ $questions->currentPage() }}</div>
@@ -13,7 +15,11 @@
                     @csrf
                 
                     @foreach($questions[0]->options as $option)
-                    <input type="radio" name="optionId" id="{{ 'option-'.$option->id }}" value="{{ $option->id }}">
+                    <input type="radio" name="optionId" id="{{ 'option-'.$option->id }}" value="{{ $option->id }}"
+                        @if($resultService->getUserOption($resultId, $option->id) !== null)
+                        checked
+                        @endif   
+                        >
                     <label for="{{ 'option-'.$option->id }}">{{ $option->body }}</label>
                     @endforeach
 
@@ -30,6 +36,7 @@
             </div>
         </div>
     </div>
+
 </x-app-layout>
 
 <script>
