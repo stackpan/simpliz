@@ -39,4 +39,13 @@ class ResultRepository
         return $result->id;
     }
 
+    public function setFinishedById(string $id)
+    {
+        $result = $this->result->find($id);
+
+        $result->finished_at = $this->result->freshTimestamp();
+
+        $result->save();
+    }
+
 }

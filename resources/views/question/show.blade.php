@@ -33,9 +33,11 @@
                 </a>
                 @endif
                 @if($questions->onLastPage())
-                <a href="">
-                    <button type="button">{{ __('Finish') }}</button>
-                </a>
+                <form action="{{ route('quizzes.sessions.finish', $resultId) }}" method="post">
+                    @csrf
+                    @method('patch')
+                    <button type="submit">{{ __('Finish') }}</button>
+                </form>
                 @else
                 <a href="{{ $questions->nextPageUrl() }}">
                     <button type="button">{{ __('Next') }}</button>

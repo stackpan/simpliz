@@ -53,10 +53,41 @@ class ResultService
         return $this->userOptionRepository->getByResultIdAndOptionId($resultId, $optionId);
     }
 
+    public function finishResult(string $resultId)
+    {
+        $userOptions = $this->getById($resultId)->userOptions;
+
+        $userOptions->collect()
+            ->each(function (UserOption $userOption, int $key) {
+                $isCorrect = $this->checkIsOptionCorrect($userOption->option_id);
+
+                $this->userOptionRepository->patchIsCorrectById($userOption->id, $isCorrect);
+            });
+
+        $this->resultRepository->setFinishedById($resultId);
+    }
+
+    public function countResultScore(string $resultId): float
+    {
+        $result = $this->getById($resultId);
+        $questionCollections = $result->quiz->questions->collect();
+        $userOptionCollection = $result->userOptions->collect();
+
+        $questionsCount = $questionCollections->count();
+        $correctOptionCount = $userOptionCollection->filter(function (UserOption $userOption, int $key) {
+            return $userOption->is_correct;
+        })->count();
+
+        return round(($correctOptionCount / $questionsCount) * 100, 1);
+    }
+
+    // private sections
+
     private function getPreviousUserOption(string $resultId, string $optionId): ?UserOption
     {
-        $question = $this->optionRepository->getById($optionId)->question;
-        $otherOptions = $question->options;
+        $otherOptions = $this->getOptionById($optionId)
+            ->question
+            ->options;
         
         foreach ($otherOptions as $option) {
             $userOption = $this->getUserOption($resultId, $option->id);
@@ -65,8 +96,13 @@ class ResultService
                 return $userOption;
             }
         }
-        
+                    
         return null;
+    }
+
+    private function getOptionById(string $optionId): ?Option
+    {
+        return $this->optionRepository->getById($optionId);
     }
 
     private function checkIsOptionCorrect(string $optionId): bool

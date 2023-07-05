@@ -22,7 +22,7 @@ class QuizSessionController extends Controller
 
         $resultId = $this->resultService->store($userId, $request->quizId);
 
-        return redirect()->route('quiz_session.show_questions', ['resultId' => $resultId]);
+        return redirect()->route('quizzes.sessions.show_questions', ['resultId' => $resultId]);
     }
     
     public function showQuestions(string $resultId): View
@@ -34,5 +34,12 @@ class QuizSessionController extends Controller
                 'questions' => $this->questionService->getPaginatedByQuizId($result->quiz->id),
                 'resultId' => $result->id,
             ]);
+    }
+
+    public function finish(string $resultId): RedirectResponse
+    {
+        $this->resultService->finishResult($resultId);
+
+        return redirect()->route('quizzes.index');
     }
 }

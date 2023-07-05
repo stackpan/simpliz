@@ -32,12 +32,26 @@ class UserOptionRepository
 
     public function updateById(string $id, string $optionId): string
     {
-        $userOption = $this->userOption->find($id);
-
+        $userOption = $this->getById($id);
+        
         $userOption->option_id = $optionId;
 
         $userOption->save();
 
         return $userOption->id;
+    }
+
+    public function patchIsCorrectById(string $id, bool $flag)
+    {
+        $userOption = $this->getById($id);
+
+        $userOption->is_correct = $flag;
+
+        $userOption->save();
+    }
+
+    private function getById(string $id): ?UserOption
+    {
+        return $this->userOption->find($id);
     }
 }

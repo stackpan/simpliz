@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Result;
 use Illuminate\Http\Request;
 use App\Services\QuizService;
 use App\Services\ResultService;
@@ -45,9 +46,10 @@ class QuizController extends Controller
     public function show(string $id)
     {
         $results = $this->resultService->getUserResultsByQuizId(auth()->user()->id, $id);
-        $unfinishedResult = $results->collect()->first(function ($value, $key) {
-            return $value->finished_at === null;
-        });
+        $unfinishedResult = $results->collect()
+            ->first(function (Result $result, int $key) {
+                return $result->finished_at === null;
+            });
 
         return view('quiz.show')->with([
             'quiz' => $this->quizService->getById($id),
