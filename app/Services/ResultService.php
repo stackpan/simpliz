@@ -29,11 +29,6 @@ class ResultService
         return $this->resultRepository->getByUserIdAndQuizId($userId, $quizId);
     }
 
-    public function store(string $userId, string $quizId)
-    {
-        return $this->resultRepository->store($userId, $quizId);
-    }
-
     public function saveUserOption(string $resultId, string $optionId)
     {
         $previousUserOption = $this->getPreviousUserOption($resultId, $optionId);

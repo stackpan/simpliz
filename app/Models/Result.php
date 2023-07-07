@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +18,7 @@ class Result extends Model
     /**
      * Get all of the UserOption for the Result
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function userOptions(): HasMany
     {
@@ -27,7 +28,7 @@ class Result extends Model
     /**
      * Get the user that owns the Result
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function user(): BelongsTo
     {
@@ -37,11 +38,21 @@ class Result extends Model
     /**
      * Get the quiz that owns the Result
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function quiz(): BelongsTo
     {
         return $this->belongsTo(Quiz::class);
+    }
+
+    /**
+     * Get the quizSession associated with the Result
+     *
+     * @return HasOne
+     */
+    public function quizSession(): HasOne
+    {
+        return $this->hasOne(QuizSession::class);
     }
 
 }

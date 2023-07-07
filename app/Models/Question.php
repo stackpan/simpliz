@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\ResultQuestion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Question extends Model
 {
@@ -22,7 +23,7 @@ class Question extends Model
     /**
      * Get the Quiz that owns the Question
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function quiz(): BelongsTo
     {
@@ -32,7 +33,7 @@ class Question extends Model
     /**
      * Get all of the Option for the Question
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function options(): HasMany
     {
@@ -40,13 +41,13 @@ class Question extends Model
     }
 
     /**
-     * Get the Answer associated with the Question
+     * Get all of the resultQuestions for the Question
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasMany
      */
-    public function answer(): HasOne
+    public function resultQuestions(): HasMany
     {
-        return $this->hasOne(Answer::class);
+        return $this->hasMany(ResultQuestion::class);
     }
 
 }

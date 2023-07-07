@@ -11,8 +11,7 @@ class QuizController extends Controller
 {
 
     public function __construct(
-        private QuizService $quizService,
-        private ResultService $resultService,
+        private QuizService $service,
     ) {
     }
 
@@ -21,7 +20,7 @@ class QuizController extends Controller
      */
     public function index()
     {
-        return view('quiz.index')->with(['quizzes' => $this->quizService->getAll()]);
+        return view('quiz.index')->with(['quizzes' => $this->service->getAll()]);
     }
 
     /**
@@ -45,16 +44,12 @@ class QuizController extends Controller
      */
     public function show(string $id)
     {
-        $results = $this->resultService->getUserResultsByQuizId(auth()->user()->id, $id);
-        $unfinishedResult = $results->collect()
-            ->first(function (Result $result, int $key) {
-                return $result->finished_at === null;
-            });
+        $data = $this->service->getDetail($id);
 
         return view('quiz.show')->with([
-            'quiz' => $this->quizService->getById($id),
-            'results' => $results,
-            'unfinishedResult' => $unfinishedResult,
+            'quiz' => $data->get('quiz'),
+            'userResults' => $data->get('userResults'),
+            'lastQuizSession' => $data->get('lastQuizSession'),
         ]);
     }
 
@@ -85,7 +80,7 @@ class QuizController extends Controller
     public function questions(string $id)
     {
         return redirect()->action([
-            [QuestionController::class, 'indexPaginate'], ['quiz' => $this->quizService->getById($id)]
+            [QuestionController::class, 'indexPaginate'], ['quiz' => $this->service->getById($id)]
         ]);
     }
 }

@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Result;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Quiz extends Model
 {
@@ -20,11 +21,22 @@ class Quiz extends Model
     /**
      * Get all of the Question for the Quiz
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function questions(): HasMany
     {
         return $this->hasMany(Question::class);
+    }
+
+    /**
+     * 
+     */
+    public function questionsWithResultData(Result $result)
+    {
+        return $this->questions()
+            ->with(['resultQuestions' => function (HasMany $query) use ($result) {
+                $query->where('result_id', $result->id);
+            }]);
     }
 
     /**

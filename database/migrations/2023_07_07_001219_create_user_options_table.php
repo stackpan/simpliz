@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('user_options', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('result_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignUuid('option_id')->nullable()->constrained()->cascadeOnUpdate()->nullOnDelete();
+            $table->foreignUuid('result_question_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignUuid('option_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->boolean('is_correct')->nullable();
+            $table->unique('result_question_id');
         });
     }
 

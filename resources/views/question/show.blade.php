@@ -1,5 +1,3 @@
-@inject('resultService', 'App\Services\ResultService')
-
 <x-app-layout>
     <div>
         <div>{{ $questions->currentPage() }}</div>
@@ -11,16 +9,18 @@
                 <p>{{ $questions[0]->body }}</p>
             </section>
             <section>
-                <form action="{{ route('results.store_user_option', $resultId) }}" method="post">
+                <form action="{{ route('quiz_sessions.answer', $quizSession->id) }}" method="post">
                     @csrf
-                
+
                     @foreach($questions[0]->options as $option)
-                    <input type="radio" name="optionId" id="{{ 'option-'.$option->id }}" value="{{ $option->id }}"
-                        @if($resultService->getUserOption($resultId, $option->id) !== null)
-                        checked
-                        @endif   
-                        >
-                    <label for="{{ 'option-'.$option->id }}">{{ $option->body }}</label>
+                    <div>
+                        <input type="radio" name="optionId" id="{{ 'option-' . $option->id }}" value="{{ $option->id }}"
+                            @if($questions[0]->resultQuestions[0]->userOption->option_id === $option->id)
+                            checked
+                            @endif
+                            >
+                        <label for="{{ 'option-' . $option->id }}">{{ $option->body }}</label>  
+                    </div>
                     @endforeach
 
                     <button type="submit" class="hidden" id="submitBtn"></button>
@@ -33,10 +33,10 @@
                 </a>
                 @endif
                 @if($questions->onLastPage())
-                <form action="{{ route('quizzes.sessions.finish', $resultId) }}" method="post">
+                <form action="{{ route('quiz_sessions.complete', $quizSession->id) }}" method="post">
                     @csrf
                     @method('patch')
-                    <button type="submit">{{ __('Finish') }}</button>
+                    <button type="submit">{{ __('Complete') }}</button>
                 </form>
                 @else
                 <a href="{{ $questions->nextPageUrl() }}">
@@ -46,7 +46,6 @@
             </div>
         </div>
     </div>
-
 </x-app-layout>
 
 <script>

@@ -5,24 +5,42 @@ namespace App\Http\Controllers;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use App\Services\{QuestionService, ResultService};
+use App\Services\QuizSessionService;
 
 class QuizSessionController extends Controller
 {
     
     public function __construct(
-        private QuestionService $questionService,
-        private ResultService $resultService,
+        private QuizSessionService $service,
     ) {
     }
 
     public function start(Request $request): RedirectResponse
     {
-        $userId = auth()->user()->id;
+        $quizSessionId = $this->service->handleStart($request->quizId);
 
-        $resultId = $this->resultService->store($userId, $request->quizId);
+        return redirect()->route('quiz_sessions.continue', $quizSessionId);
+    }
 
-        return redirect()->route('quizzes.sessions.show_questions', ['resultId' => $resultId]);
+    public function continue(string $id): View
+    {
+        $data = $this->service->getQuestionData($id);
+
+        return view('question.show')
+            ->with([
+                'questions' => $data->get('questions'),
+                'quizSession' => $data->get('quizSession'),
+            ]);
+    }
+
+    public function answer(Request $request, string $id)
+    {
+        
+    }
+
+    public function complete(Request $request, string $id)
+    {
+
     }
     
     public function showQuestions(string $resultId): View

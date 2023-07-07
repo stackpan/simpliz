@@ -16,15 +16,13 @@ class QuizRepository
 
     public function getAll()
     {
-        return $this->quiz->select('id', 'name', 'duration')
-            ->withCount('questions')
+        return $this->quiz->withCount('questions')
             ->get();
     }
 
     public function getById(string $id)
     {
-        return $this->quiz->select('id', 'name', 'duration', 'description')
-            ->withCount('questions')
+        return $this->quiz->withCount('questions')
             ->find($id);
     }
 
