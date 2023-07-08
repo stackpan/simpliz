@@ -12,10 +12,12 @@
                 <form action="{{ route('quiz_sessions.answer', $quizSession->id) }}" method="post">
                     @csrf
 
+                    <input type="hidden" name="userOptionId" value="{{ $questions[0]->pivot->id }}">
+
                     @foreach($questions[0]->options as $option)
                     <div>
                         <input type="radio" name="optionId" id="{{ 'option-' . $option->id }}" value="{{ $option->id }}"
-                            @if($questions[0]->resultQuestions[0]->userOption->option_id === $option->id)
+                            @if($questions[0]->pivot->option_id === $option->id)
                             checked
                             @endif
                             >

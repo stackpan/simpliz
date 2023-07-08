@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\ResultQuestion;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,16 +39,6 @@ class Question extends Model
     public function options(): HasMany
     {
         return $this->hasMany(Option::class);
-    }
-
-    /**
-     * Get all of the resultQuestions for the Question
-     *
-     * @return HasMany
-     */
-    public function resultQuestions(): HasMany
-    {
-        return $this->hasMany(ResultQuestion::class);
     }
 
 }

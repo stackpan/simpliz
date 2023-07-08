@@ -17,47 +17,36 @@ class QuizSessionController extends Controller
 
     public function start(Request $request): RedirectResponse
     {
-        $quizSessionId = $this->service->handleStart($request->quizId);
+        $quizSessionId = $this->service
+            ->handleStart($request->quizId);
 
-        return redirect()->route('quiz_sessions.continue', $quizSessionId);
+        return redirect()
+            ->route('quiz_sessions.continue', $quizSessionId);
     }
 
     public function continue(string $id): View
     {
-        $data = $this->service->getQuestionData($id);
+        $quizSession = $this->service->getById($id);
 
         return view('question.show')
             ->with([
-                'questions' => $data->get('questions'),
-                'quizSession' => $data->get('quizSession'),
+                'quizSession' => $quizSession,
+                'questions' => $this->service->getPaginatedQuestionWithDetails($quizSession)
             ]);
     }
 
-    public function answer(Request $request, string $id)
+    public function answer(Request $request): RedirectResponse
     {
-        
+        $this->service->handleAnswer($request->userOptionId, $request->optionId);
+
+        return redirect()->back();
     }
 
-    public function complete(Request $request, string $id)
+    public function complete(string $id)
     {
+        $quizSession = $this->service->getById($id);
 
+        $this->service->handleComplete($quizSession);
     }
     
-    public function showQuestions(string $resultId): View
-    {
-        $result = $this->resultService->getById($resultId);
-
-        return view('question.show')
-            ->with([
-                'questions' => $this->questionService->getPaginatedByQuizId($result->quiz->id),
-                'resultId' => $result->id,
-            ]);
-    }
-
-    public function finish(string $resultId): RedirectResponse
-    {
-        $this->resultService->finishResult($resultId);
-
-        return redirect()->route('quizzes.index');
-    }
 }

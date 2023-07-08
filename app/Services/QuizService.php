@@ -2,37 +2,34 @@
 
 namespace App\Services;
 
+use App\Models\Quiz;
 use App\Models\Result;
-use App\Repositories\QuizRepository;
-use App\Repositories\ResultRepository;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class QuizService
 {
     
     public function __construct(
-        private QuizRepository $quizRepository,
-        private ResultRepository $resultRepository,
+        private Quiz $quiz,
     ) {
         //
     }
 
     public function getAll()
     {
-        return $this->quizRepository->getAll();
+        return $this->quiz
+            ->select('id', 'name', 'duration')
+            ->withQuestionsCount()
+            ->get();
     }
 
     public function getDetail(string $quizId)
     {
-        $userResults = $this->resultRepository->getByQuizAndUser($quizId, auth()->user()->id);
-
-        // get last quiz session from incompleted user result if available
-        $lastQuizSession = optional($userResults->first(fn(Result $result, int $key) => $result->completed_at === null))->quiz_session;
-
-        return collect([
-            'quiz' => $this->quizRepository->getById($quizId),
-            'userResults' => $userResults,
-            'lastQuizSession' => $lastQuizSession,
-        ]);
+        return $this->quiz
+            ->select('id', 'name', 'description', 'duration')
+            ->withQuestionsCount()
+            ->withUserResults(auth()->user())
+            ->find($quizId);
     }
 
 }

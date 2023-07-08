@@ -2,65 +2,94 @@
 
 namespace App\Services;
 
+use App\Models\Quiz;
 use App\Models\Question;
+use App\Models\UserOption;
 use App\Models\QuizSession;
-use App\Models\ResultQuestion;
 use Illuminate\Support\Facades\DB;
-use App\Repositories\ResultRepository;
-use App\Repositories\QuizSessionRepository;
-use App\Repositories\ResultQuestionRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class QuizSessionService
 {
 
     public function __construct(
-        private QuizSessionRepository $quizSessionRepository,
-        private ResultRepository $resultRepository,
-        private ResultQuestionRepository $resultQuestionRepository,
         private QuizSession $quizSession,
     ) {
         //
+    }
+
+    public function getById(string $id): ?QuizSession
+    {
+        return $this->quizSession->find($id);
     }
 
     public function handleStart(string $quizId): string
     {
         DB::beginTransaction();
 
-        $result = $this->resultRepository->create(
-            userId: auth()->user()->id,
-            quizId: $quizId,
-        );
+        $quiz = Quiz::find($quizId);
 
-        $quizSession = $result->quizSession()->create();
-        
-        $result->quiz->questions->each(function (Question $question, int $key) use ($result) {
+        $result = $quiz
+            ->results()
+            ->create(['user_id' => auth()->user()->id]);
 
-                $resultQuestion = $this->resultQuestionRepository->create(
-                    resultId: $result->id,
-                    questionId: $question->id
-                );
-
-                $resultQuestion->userOption()->create();
-
-            });
+        $result
+            ->questions()
+            ->attach($quiz->questions);
 
         DB::commit();
 
-        return $quizSession->id;
+        return $result
+            ->quizSession()
+            ->create()
+                ->id;
     }
 
-    public function getQuestionData(string $id)
+    public function getPaginatedQuestionWithDetails(QuizSession $quizSession): LengthAwarePaginator
     {
-        $quizSession = $this->quizSession->find($id);
-        $result = $quizSession->result;
-
-        return collect([
-            'quizSession' => $quizSession,
-            'questions' => $result->quiz
-                ->questionsWithResultData($result)
-                ->paginate(1),
-        ]);
+        return $quizSession->result->questions()
+            ->with('options')
+            ->withPivot('id', 'option_id')
+            ->paginate(1);
     }
 
+    public function handleAnswer(string $userOptionId, string $optionId): void
+    {
+        DB::transaction(function () use ($userOptionId, $optionId) {
+            $userOption = UserOption::find($userOptionId);
+            $userOption->option_id = $optionId;
+    
+            $userOption->save();
+        });
+    }
+
+    public function handleComplete(QuizSession $quizSession): string
+    {
+        DB::beginTransaction();
+
+        $questionsToMany = $quizSession->result->questions();
+
+        $questionsToMany
+            ->withPivot('id', 'option_id')
+            ->get()
+            // process of correcting answers
+            ->each(function (Question $question, int $key) use ($questionsToMany) {
+                $userOption = $question->pivot->option;
+
+                $isHaveAnswered = $userOption !== null;
+                $isAnswerCorrect = optional($userOption)->answer !== null;
+
+                $questionsToMany->updateExistingPivot($question->id, [
+                    'is_correct' => $isHaveAnswered && $isAnswerCorrect,
+                ]);
+            });
+
+        $quizSession->result->setCompleted();
+        $quizSession->delete();
+
+        DB::commit();
+
+        return $quizSession->result->id;
+    }
 }

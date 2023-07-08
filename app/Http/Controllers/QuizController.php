@@ -20,7 +20,10 @@ class QuizController extends Controller
      */
     public function index()
     {
-        return view('quiz.index')->with(['quizzes' => $this->service->getAll()]);
+        return view('quiz.index')
+            ->with([
+                'quizzes' => $this->service->getAll()
+            ]);
     }
 
     /**
@@ -44,13 +47,10 @@ class QuizController extends Controller
      */
     public function show(string $id)
     {
-        $data = $this->service->getDetail($id);
-
-        return view('quiz.show')->with([
-            'quiz' => $data->get('quiz'),
-            'userResults' => $data->get('userResults'),
-            'lastQuizSession' => $data->get('lastQuizSession'),
-        ]);
+        return view('quiz.show')
+            ->with([
+                'quiz' => $this->service->getDetail($id),
+            ]);
     }
 
     /**
@@ -79,8 +79,15 @@ class QuizController extends Controller
 
     public function questions(string $id)
     {
-        return redirect()->action([
-            [QuestionController::class, 'indexPaginate'], ['quiz' => $this->service->getById($id)]
-        ]);
+        return redirect()
+            ->action([
+                [
+                    QuestionController::class, 'indexPaginate'
+                ],
+                [
+                    'quiz' => $this->service
+                        ->getById($id),
+                ],
+            ]);
     }
 }
