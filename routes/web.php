@@ -41,4 +41,6 @@ Route::get('/quiz-sessions/{quiz_session}', [QuizSessionController::class, 'cont
 Route::post('/quiz-sessions/{quiz_session}/answer', [QuizSessionController::class, 'answer'])->name('quiz_sessions.answer');
 Route::patch('/quiz-sessions/{quiz_session}/complete',  [QuizSessionController::class, 'complete'])->name('quiz_sessions.complete');
 
+Route::get('/results/{result}', [ResultController::class, 'show'])->name('results.show');
+
 require __DIR__.'/auth.php';

@@ -91,4 +91,14 @@ class Result extends Model
         $this->save();
     }
 
+    public function scopeWithDetails(Builder $query)
+    {
+        return $query
+            ->with([
+                'quiz' => fn($query) => $query
+                    ->withCount('questions')
+            ])
+            ->with('user');
+    }
+    
 }

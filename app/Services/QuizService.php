@@ -10,14 +10,14 @@ class QuizService
 {
     
     public function __construct(
-        private Quiz $quiz,
+        private Quiz $model,
     ) {
         //
     }
 
     public function getAll()
     {
-        return $this->quiz
+        return $this->model
             ->select('id', 'name', 'duration')
             ->withQuestionsCount()
             ->get();
@@ -25,7 +25,7 @@ class QuizService
 
     public function getDetail(string $quizId)
     {
-        return $this->quiz
+        return $this->model
             ->select('id', 'name', 'description', 'duration')
             ->withQuestionsCount()
             ->withUserResults(auth()->user())

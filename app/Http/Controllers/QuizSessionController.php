@@ -26,27 +26,35 @@ class QuizSessionController extends Controller
 
     public function continue(string $id): View
     {
-        $quizSession = $this->service->getById($id);
+        $quizSession = $this->service
+            ->getById($id);
 
         return view('question.show')
             ->with([
                 'quizSession' => $quizSession,
-                'questions' => $this->service->getPaginatedQuestions($quizSession)
+                'questions' => $this->service
+                    ->getPaginatedQuestions($quizSession)
             ]);
     }
 
     public function answer(Request $request): RedirectResponse
     {
-        $this->service->handleAnswer($request->userOptionId, $request->optionId);
+        $this->service
+            ->handleAnswer($request->userOptionId, $request->optionId);
 
         return redirect()->back();
     }
 
-    public function complete(string $id)
+    public function complete(string $id): RedirectResponse
     {
-        $quizSession = $this->service->getById($id);
+        $quizSession = $this->service
+            ->getById($id);
 
-        $this->service->handleComplete($quizSession);
+        $resultId = $this->service
+            ->handleComplete($quizSession);
+
+        return redirect()
+            ->route('results.show', $resultId);
     }
     
 }

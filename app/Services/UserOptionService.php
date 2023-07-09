@@ -9,7 +9,7 @@ use App\Models\UserOption;
 class UserOptionService
 {
     public function __construct(
-        private UserOption $userOption,
+        private UserOption $model,
     ) {
         //
     }
@@ -17,9 +17,9 @@ class UserOptionService
     /**
      * Find UserOption by Result id and Question id
      */
-    public function getByForeigns(Result $result, Question $question): ?UserOption
+    public function getByForeigns(string $resultId, string $questionId): ?UserOption
     {
-        return $this->userOption->findByResultAndQuestion($result->id, $question->id);
+        return $this->model->findByResultAndQuestion($resultId, $questionId);
     }
 
 }

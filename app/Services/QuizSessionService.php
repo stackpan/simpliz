@@ -14,14 +14,14 @@ class QuizSessionService
 {
 
     public function __construct(
-        private QuizSession $quizSession,
+        private QuizSession $model,
     ) {
         //
     }
 
     public function getById(string $id): ?QuizSession
     {
-        return $this->quizSession->find($id);
+        return $this->model->find($id);
     }
 
     public function handleStart(string $quizId): string

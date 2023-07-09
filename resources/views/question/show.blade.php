@@ -15,7 +15,7 @@
                     @csrf
 
                     @php
-                    $userOption = $userOptionService->getByForeigns($quizSession->result, $questions[0]);
+                    $userOption = $userOptionService->getByForeigns($quizSession->result->id, $questions[0]->id);
                     @endphp
 
                     <input type="hidden" name="userOptionId" value="{{ $userOption->id }}">
