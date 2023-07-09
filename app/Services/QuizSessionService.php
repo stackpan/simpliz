@@ -46,11 +46,11 @@ class QuizSessionService
                 ->id;
     }
 
-    public function getPaginatedQuestionWithDetails(QuizSession $quizSession): LengthAwarePaginator
+    public function getPaginatedQuestions(QuizSession $quizSession): LengthAwarePaginator
     {
-        return $quizSession->result->questions()
-            ->with('options')
-            ->withPivot('id', 'option_id')
+        return $quizSession->result
+            ->quiz
+            ->questions()
             ->paginate(1);
     }
 

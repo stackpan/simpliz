@@ -20,4 +20,12 @@ class UserOption extends Pivot
         return $this->belongsTo(Option::class);
     }
 
+    public function findByResultAndQuestion(string $resultId, string $questionId): ?UserOption
+    {
+        return $this
+            ->where('result_id', $resultId)
+            ->where('question_id', $questionId)
+            ->first();
+    }
+
 }

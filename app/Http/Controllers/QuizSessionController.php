@@ -31,7 +31,7 @@ class QuizSessionController extends Controller
         return view('question.show')
             ->with([
                 'quizSession' => $quizSession,
-                'questions' => $this->service->getPaginatedQuestionWithDetails($quizSession)
+                'questions' => $this->service->getPaginatedQuestions($quizSession)
             ]);
     }
 

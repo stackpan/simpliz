@@ -1,3 +1,5 @@
+@inject('userOptionService', 'App\Services\UserOptionService')
+
 <x-app-layout>
     <div>
         <div>{{ $questions->currentPage() }}</div>
@@ -12,12 +14,16 @@
                 <form action="{{ route('quiz_sessions.answer', $quizSession->id) }}" method="post">
                     @csrf
 
-                    <input type="hidden" name="userOptionId" value="{{ $questions[0]->pivot->id }}">
+                    @php
+                    $userOption = $userOptionService->getByForeigns($quizSession->result, $questions[0]);
+                    @endphp
+
+                    <input type="hidden" name="userOptionId" value="{{ $userOption->id }}">
 
                     @foreach($questions[0]->options as $option)
                     <div>
                         <input type="radio" name="optionId" id="{{ 'option-' . $option->id }}" value="{{ $option->id }}"
-                            @if($questions[0]->pivot->option_id === $option->id)
+                            @if($userOption->option_id === $option->id)
                             checked
                             @endif
                             >
