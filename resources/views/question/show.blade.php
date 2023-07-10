@@ -13,6 +13,7 @@
             <section>
                 <form action="{{ route('quiz_sessions.answer', $quizSession->id) }}" method="post">
                     @csrf
+                    @method('patch')
 
                     @php
                     $userOption = $userOptionService->getByForeigns($quizSession->result->id, $questions[0]->id);

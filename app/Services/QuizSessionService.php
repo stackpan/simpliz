@@ -24,8 +24,10 @@ class QuizSessionService
         return $this->model->find($id);
     }
 
-    public function handleStart(string $quizId): string
+    public function handleStart(array $validated): string
     {
+        extract($validated);
+
         DB::beginTransaction();
 
         $quiz = Quiz::find($quizId);
@@ -54,8 +56,10 @@ class QuizSessionService
             ->paginate(1);
     }
 
-    public function handleAnswer(string $userOptionId, string $optionId): void
+    public function handleAnswer(array $validated): void
     {
+        extract($validated);
+
         DB::transaction(function () use ($userOptionId, $optionId) {
             $userOption = UserOption::find($userOptionId);
             $userOption->option_id = $optionId;

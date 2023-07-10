@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 use App\Services\QuizSessionService;
+use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\QuizSession\StartQuizSessionRequest;
+use App\Http\Requests\QuizSession\AnswerQuizSessionRequest;
 
 class QuizSessionController extends Controller
 {
@@ -15,10 +17,12 @@ class QuizSessionController extends Controller
     ) {
     }
 
-    public function start(Request $request): RedirectResponse
+    public function start(StartQuizSessionRequest $request): RedirectResponse
     {
+        $validated = $request->validated();
+
         $quizSessionId = $this->service
-            ->handleStart($request->quizId);
+            ->handleStart($validated);
 
         return redirect()
             ->route('quiz_sessions.continue', $quizSessionId);
@@ -37,10 +41,12 @@ class QuizSessionController extends Controller
             ]);
     }
 
-    public function answer(Request $request): RedirectResponse
+    public function answer(AnswerQuizSessionRequest $request): RedirectResponse
     {
+        $validated = $request->validated();
+
         $this->service
-            ->handleAnswer($request->userOptionId, $request->optionId);
+            ->handleAnswer($validated);
 
         return redirect()->back();
     }

@@ -10,9 +10,11 @@
         <h2>Your Results</h2>
         <ul>
             @foreach($quiz->results as $result)
-            <li><span></span><span>{{ date('d F Y H:i', strtotime($result->created_at)) }}</span> <a href="{{ route('results.show', $result->id) }}">{{ __('details') }}</a></li>
                 @if($result->quizSession !== null)
-                    @php $lastQuizSession = $result->quizSession @endphp
+                @php $lastQuizSession = $result->quizSession @endphp
+                <li><span></span><span>{{ __('In progress') }}</span> <a href="{{ route('quiz_sessions.continue', $lastQuizSession->id) }}">{{ __('continue') }}</a></li>
+                @else
+                <li><span></span><span>{{ date('d F Y H:i', strtotime($result->created_at)) }}</span> <a href="{{ route('results.show', $result->id) }}">{{ __('details') }}</a></li>
                 @endif
             @endforeach
         </ul>
