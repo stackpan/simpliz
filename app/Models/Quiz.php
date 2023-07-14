@@ -45,6 +45,7 @@ class Quiz extends Model
         return $query->with([
             'results' => fn($query) => $query
                     ->where('user_id', $user->id)
+                    ->latest()
                     ->with('quizSession'),
         ]);
     }

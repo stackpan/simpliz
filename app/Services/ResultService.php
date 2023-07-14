@@ -19,7 +19,7 @@ class ResultService
         $result = $this->model;
 
         if ($withDetail) {
-            $result->withDetails();
+            $result = $result->withDetails();
         }
 
         return $result->find($id);

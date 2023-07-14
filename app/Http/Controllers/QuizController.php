@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Result;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Services\QuizService;
 use App\Services\ResultService;
@@ -18,12 +19,9 @@ class QuizController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View
     {
-        return view('quiz.index')
-            ->with([
-                'quizzes' => $this->service->getAll()
-            ]);
+        //
     }
 
     /**
@@ -45,7 +43,7 @@ class QuizController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): View
     {
         return view('quiz.show')
             ->with([
@@ -76,18 +74,5 @@ class QuizController extends Controller
     {
         //
     }
-
-    public function questions(string $id)
-    {
-        return redirect()
-            ->action([
-                [
-                    QuestionController::class, 'indexPaginate'
-                ],
-                [
-                    'quiz' => $this->service
-                        ->getById($id),
-                ],
-            ]);
-    }
+    
 }

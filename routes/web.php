@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\{
+    HomeController,
     ProfileController,
     QuizController,
     QuizSessionController,
@@ -18,29 +19,26 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
+    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+    
+    Route::resource('quizzes', QuizController::class)->only('show');
 
-Route::resource('quizzes', QuizController::class)
-    ->only('index', 'show');
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::post('/quiz-sessions', [QuizSessionController::class, 'start'])->name('quiz_sessions.start');
-Route::get('/quiz-sessions/{quiz_session}', [QuizSessionController::class, 'continue'])->name('quiz_sessions.continue');
-Route::patch('/quiz-sessions/{quiz_session}/answer', [QuizSessionController::class, 'answer'])->name('quiz_sessions.answer');
-Route::patch('/quiz-sessions/{quiz_session}/complete',  [QuizSessionController::class, 'complete'])->name('quiz_sessions.complete');
+    Route::post('/quiz-sessions', [QuizSessionController::class, 'start'])->name('quiz_sessions.start');
+    Route::get('/quiz-sessions/{quiz_session}', [QuizSessionController::class, 'continue'])->name('quiz_sessions.continue');
+    Route::patch('/quiz-sessions/{quiz_session}/answer', [QuizSessionController::class, 'answer'])->name('quiz_sessions.answer');
+    Route::patch('/quiz-sessions/{quiz_session}/complete',  [QuizSessionController::class, 'complete'])->name('quiz_sessions.complete');
 
-Route::get('/results/{result}', [ResultController::class, 'show'])->name('results.show');
+    Route::get('/results/{result}', [ResultController::class, 'show'])->name('results.show');
+    });
 
 require __DIR__.'/auth.php';

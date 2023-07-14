@@ -1,0 +1,1 @@
+<a class="py-2 text-lg sm:text-xl decoration-solid text-gray-600" {{ $attributes->merge(['href']) }} ><x-icon.arrow-sm-left class="inline-block mr-2 align-text-top w-6 h-6" /><span>{{ __('Back') }}</span></a>

@@ -17,7 +17,7 @@
                         
                         <div class="flex justify-between">
                             <p class="text-gray-600">{{ $quiz->duration }} {{ __('minutes') }}</p>
-                            <div><span class="mr-2">{{ __('Open') }}</span><x-icon.arrow-sm-right class="inline-block w-6 h-6" /></div>
+                            <div><span class="mr-2" aria-hidden="true">{{ __('Open') }}</span><x-icon.arrow-sm-right class="before:content-['Open'] inline-block align-text-top w-5 h-5" /></div>
                         </div>
                     </div>
                 </a>
@@ -26,6 +26,6 @@
         </div>
     </div>
     @else
-    <div class="py-6 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">{{ __("You don't have any quiz") }}</div>
+    <div class="py-6 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-gray-600">{{ __("You didn't have any quiz") }}</div>
     @endif  
 </x-app-layout>

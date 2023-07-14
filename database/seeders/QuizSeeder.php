@@ -17,12 +17,12 @@ class QuizSeeder extends Seeder
     public function run(): void
     {
         $quizzes = Quiz::factory()
-            ->count(4)
+            ->count(1)
             ->create();
 
         foreach ($quizzes as $quiz) {
             $questions = Question::factory()
-                ->count(8)
+                ->count(12)
                 ->for($quiz)
                 ->create();
 
