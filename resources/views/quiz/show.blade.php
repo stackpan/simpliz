@@ -29,7 +29,7 @@
             @endif
         </div>
         <div class="mt-12 sm:mt-0 sm:mb-8 flex flex-row justify-between">
-            <x-button.page-back href="{{ route('home') }}" />
+            <x-button.link href="{{ route('home') }}"><x-icon.arrow-sm-left class="inline-block mr-2 align-text-top w-6 h-6" /><span>{{ __('Back') }}</span></x-button.link>
             @isset($lastQuizSession)
             <a href="{{ route('quiz_sessions.continue', $lastQuizSession->id) }}"><x-button.secondary type="button">{{ __('Continue') }}</x-button.secondary></a>
             @else

@@ -8,25 +8,33 @@
             <ul>
                 @php $number = $questions->firstItem() @endphp
                 @foreach($questions as $question)
-                <li>
-                    <h3>{{ $number }}</h3>
-                    <div class="mb-12">
-                        <p class="mb-3">{{ $question->context }}</p>
-                        <p>{{ $question->body }}</p>
-                    
-                        @foreach($question->options as $option)
-                        <div>
-                            @php $checked = false @endphp
-                            <input type="radio"
-                                @if($question->pivot->option_id === $option->id)
-                                @php $checked = true @endphp
-                                checked
-                                @endif
-                                disabled
-                                >
-                            <label for="{{ 'option-' . $option->id }}">{{ $option->body }} <span>@if($option->answer !== null)✓@elseif($checked)✗@endif</span></label>  
+                <li class="my-12 flex flex-col sm:flex-row sm:gap-4">
+                    <div>
+                        <h2 class="inline-block px-4 py-1 font-bold text-2xl sm:text-3xl bg-gray-200 text-gray-600 text-center">{{ $number }}</h2>
+                    </div>
+                    <div>
+                        <div class="mb-4 mt-4 sm:mt-0 leading-snug sm:leading-tight sm:text-lg">
+                            @isset($question->context)
+                            <p class="mb-4">{{ $questions[0]->context }}</p>
+                            @endisset
+                            <p>{{ $question->body }}</p>
                         </div>
+                        <div class="my-4 leading-snug sm:leading-tight sm:text-lg">
+                        @foreach($question->options as $option)
+                        <div class="flex my-2 gap-2">
+                                @php $checked = false @endphp
+                                <input type="radio"
+                                    @if($question->pivot->option_id === $option->id)
+                                    @php $checked = true @endphp
+                                    checked
+                                    @endif
+                                    class="mt-1"
+                                    disabled
+                                    >
+                                <label for="{{ 'option-' . $option->id }}">{{ $option->body }} <span aria-hidden="true">@if($option->answer !== null)✓@elseif($checked)✗@endif</span></label>  
+                            </div>
                         @endforeach
+                        </div>
                     </div>
                     @php $number++ @endphp
                 </li>
@@ -35,10 +43,8 @@
             {{ $questions->links() }}
         </div>
 
-        <div>
-            <a href="{{ route('quizzes.show', $result->quiz->id) }}">
-                <button type="button">{{ __('Done') }}</button>
-            </a>
+        <div class="my-4 md:mt-8 flex justify-center sm:justify-start">
+            <x-button.link href="{{ route('quizzes.show', $result->quiz->id) }}"><x-icon.arrow-sm-left class="hidden sm:inline-block mr-2 align-text-top w-6 h-6" /><span class="align-middle">{{ __('Done') }}</span></x-button.link>
         </div>
     </div>
 </x-app-layout>
