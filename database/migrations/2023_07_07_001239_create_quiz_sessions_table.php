@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('result_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->unsignedSmallInteger('last_question_page')->default(1);
+            $table->timestamp('ends_at');
             $table->unique('result_id');
         });
     }

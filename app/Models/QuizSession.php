@@ -16,6 +16,7 @@ class QuizSession extends Model
 
     protected $fillable = [
         'question_id',
+        'ends_at',
     ];
 
     /**

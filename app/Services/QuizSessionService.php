@@ -40,12 +40,15 @@ class QuizSessionService
             ->questions()
             ->attach($quiz->questions);
 
+        $quizSession = $result
+            ->quizSession()
+            ->create([
+                'ends_at' => now()->addMinutes($result->quiz->duration),
+            ]);
+
         DB::commit();
 
-        return $result
-            ->quizSession()
-            ->create()
-                ->id;
+        return $quizSession->id;
     }
 
     public function getPaginatedQuestions(QuizSession $quizSession): LengthAwarePaginator

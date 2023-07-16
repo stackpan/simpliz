@@ -17,7 +17,7 @@ class QuizSeeder extends Seeder
     public function run(): void
     {
         $quizzes = Quiz::factory()
-            ->count(1)
+            ->count(5)
             ->create();
 
         foreach ($quizzes as $quiz) {
