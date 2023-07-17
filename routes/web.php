@@ -33,12 +33,13 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-    Route::post('/quiz-sessions', [QuizSessionController::class, 'start'])->name('quiz_sessions.start');
-    Route::get('/quiz-sessions/{quiz_session}', [QuizSessionController::class, 'continue'])->name('quiz_sessions.continue');
-    Route::patch('/quiz-sessions/{quiz_session}/answer', [QuizSessionController::class, 'answer'])->name('quiz_sessions.answer');
-    Route::patch('/quiz-sessions/{quiz_session}/complete',  [QuizSessionController::class, 'complete'])->name('quiz_sessions.complete');
+    Route::post('/quizzes/work', [QuizSessionController::class, 'start'])->name('quiz_sessions.start');
+    Route::get('/quizzes/work/{quiz_session}', [QuizSessionController::class, 'continue'])->name('quiz_sessions.continue');
+    Route::patch('/quizzes/work/{quiz_session}/answer', [QuizSessionController::class, 'answer'])->name('quiz_sessions.answer');
+    Route::patch('/quizzes/work/{quiz_session}/complete',  [QuizSessionController::class, 'complete'])->name('quiz_sessions.complete');
+    Route::get('/quizzes/work/timeout/{quiz_session}', [QuizSessionController::class, 'timeout'])->name('quiz_sessions.timeout');
 
     Route::get('/results/{result}', [ResultController::class, 'show'])->name('results.show');
-    });
+});
 
 require __DIR__.'/auth.php';

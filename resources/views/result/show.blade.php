@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="py-6 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="my-4">
-            <x-quiz-info :data="$result->quiz" :username="$result->user->name" :score="$result->score" />
+            <x-quiz-info :data="$result->quiz" :username="$result->user->name" :score="$result->score" :completedAt="date('d F Y H:i', strtotime($result->completed_at->setTimezone('Asia/Jakarta')))" />
         </div>
 
         <div class="my-4">

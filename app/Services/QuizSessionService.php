@@ -61,12 +61,11 @@ class QuizSessionService
 
     public function handleAnswer(array $validated): void
     {
-        extract($validated);
+        DB::transaction(function () use ($validated) {
+            extract($validated);
 
-        DB::transaction(function () use ($userOptionId, $optionId) {
             $userOption = UserOption::find($userOptionId);
             $userOption->option_id = $optionId;
-    
             $userOption->save();
         });
     }
@@ -98,5 +97,10 @@ class QuizSessionService
         DB::commit();
 
         return $quizSession->result->id;
+    }
+
+    public function setLastPage(QuizSession $quizSession, int $page) {
+        $quizSession->last_question_page = $page;
+        $quizSession->save();
     }
 }

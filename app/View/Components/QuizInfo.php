@@ -16,6 +16,7 @@ class QuizInfo extends Component
         public Quiz $data,
         public ?string $username = null,
         public ?string $score = null,
+        public ?string $completedAt = null,
     )
     {
         //
@@ -31,6 +32,7 @@ class QuizInfo extends Component
                 'quiz' => $this->data,
                 'username' => $this->username,
                 'score' => $this->score,
+                'completedAt' => $this->completedAt,
             ]);
     }
 }

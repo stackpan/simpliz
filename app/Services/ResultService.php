@@ -30,7 +30,7 @@ class ResultService
         return $result
             ->questions()
             ->withPivot('id', 'option_id', 'is_correct')
-            ->paginate(5);
+            ->paginate(10);
     }
 
 }

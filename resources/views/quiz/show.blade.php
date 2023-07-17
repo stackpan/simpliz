@@ -15,10 +15,10 @@
                                 @php $lastQuizSession = $result->quizSession @endphp
                             <td class="font-bold text-gray-500">{{ __('In progress') }}</td>
                             <td></td>
-                            <td class="text-gray-500 text-end"><a href="{{ route('quiz_sessions.continue', $lastQuizSession->id) }}"><span>{{ __('continue') }}</span><x-icon.arrow-sm-right class="inline-block ml-2" /></a></td>
+                            <td class="text-gray-500 text-end"><a href="{{ route('quiz_sessions.continue', $lastQuizSession->id) . '?page=' . $lastQuizSession->last_question_page }}"><span>{{ __('continue') }}</span><x-icon.arrow-sm-right class="inline-block ml-2" /></a></td>
                             @else
                             <td class="font-bold">{{ $result->score }}%</td>
-                            <td>{{ date('d F Y H:i', strtotime($result->created_at)) }}</td>
+                            <td>{{ date('d F Y H:i', strtotime($result->created_at->setTimezone('Asia/Jakarta'))) }}</td>
                             <td class="text-gray-500 text-end"><a href="{{ route('results.show', $result->id) }}"><span>{{ __('details') }}</span><x-icon.arrow-sm-right class="inline-block ml-2" /></a></td>
                             @endif
                         </tr>
@@ -31,7 +31,7 @@
         <div class="mt-12 sm:mt-0 sm:mb-8 flex flex-row justify-between">
             <x-button.link href="{{ route('home') }}"><x-icon.arrow-sm-left class="inline-block mr-2 align-text-top w-6 h-6" /><span>{{ __('Back') }}</span></x-button.link>
             @isset($lastQuizSession)
-            <a href="{{ route('quiz_sessions.continue', $lastQuizSession->id) }}"><x-button.secondary type="button">{{ __('Continue') }}</x-button.secondary></a>
+            <a href="{{ route('quiz_sessions.continue', $lastQuizSession->id) . '?page=' . $lastQuizSession->last_question_page }}"><x-button.secondary type="button">{{ __('Continue') }}</x-button.secondary></a>
             @else
             <form action="{{ route('quiz_sessions.start') }}" method="post">
                 @csrf

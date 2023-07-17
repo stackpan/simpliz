@@ -25,6 +25,15 @@ class Result extends Model
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'completed_at' => 'datetime:Y-m-d',
+    ];
+
+    /**
      * Get all of the UserOption for the Result
      *
      * @return HasMany

@@ -25,6 +25,7 @@ class AnswerQuizSessionRequest extends FormRequest
         return [
             'userOptionId' => 'required|UUID|exists:user_options,id',
             'optionId' => 'required|UUID|exists:options,id',
+            'questionPage' => 'required|numeric',
         ];
     }
 }

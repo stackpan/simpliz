@@ -4,7 +4,7 @@
     <div class="py-6 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="lg:absolute flex lg:flex-col justify-between items-start">
             <h2 class="inline-block px-4 py-1 font-bold text-2xl sm:text-3xl bg-gray-200 text-gray-600 text-center">{{ $questions->currentPage() }}</h2>
-            <p class="lg:mt-8 font-bold"><x-icon.clock class="inline-block lg:block md:w-6 lg:w-10 md:h-6 lg:h-10 text-gray-300"/><span id="countdownTimer" class="text-gray-600">#countdownTimer<span></p>
+            <p class="lg:mt-8 font-bold"><x-icon.clock class="inline-block lg:block md:w-6 lg:w-10 md:h-6 lg:h-10 text-gray-300"/><span id="countdownTimer" class="text-gray-600 align-middle">00:00<span></p>
         </div>
         <div class="sm:max-w-xl lg:max-w-3xl mx-auto lg:px-8">
             <section class="my-4 lg:mt-0 leading-snug sm:leading-tight sm:text-lg">
@@ -22,7 +22,8 @@
                     $userOption = $userOptionService->getByForeigns($quizSession->result->id, $questions[0]->id);
                     @endphp
 
-                    <input type="hidden" name="userOptionId" value="{{ $userOption->id }}">
+                    <input type="hidden" name="userOptionId" value="{{ $userOption->id }}" />
+                    <input type="hidden" name="questionPage" value="{{ $questions->currentPage() }}" />
 
                     @foreach($questions[0]->options as $option)
                     <div class="flex my-2 gap-2">
@@ -59,6 +60,9 @@
             </div>
         </div>
     </div>
+    
+    <a href="{{ route('quiz_sessions.timeout', $quizSession->id) }}" id="goToTimeout" class="hidden"></a>
+
 </x-app-layout>
 
 <script>
@@ -72,14 +76,16 @@
     });
 
     const countdownTimer = document.querySelector("#countdownTimer");
+    const goToTimeout = document.querySelector("#goToTimeout");
+
     countdownTimer.innerHTML = "00:00";
     
-    const countdown = setInterval(() => {
+    const countdown = (callback) => {
         const diff = +new Date("{!! $quizSession->ends_at !!} UTC") - +new Date();
 
         let remaining = "";
 
-        if (diff < 0) clearInterval(countdown);
+        if (diff < 0) callback();
 
         const parts = {
             mins: Math.floor((diff / 1000 / 60) % 60),
@@ -91,6 +97,17 @@
             .join(":");
 
         countdownTimer.innerHTML = remaining;
+    };
+
+    countdown(() => {
+        goToTimeout.click();
+    });
+    
+    const x = setInterval(() => {
+        countdown(() => {
+            clearInterval(x);
+            goToTimeout.click();
+        });
     }, 1000);
 
 </script>
