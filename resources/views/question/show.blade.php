@@ -41,11 +41,23 @@
             </section>
             <div class="mt-12 flex flex-col sm:flex-row-reverse sm:justify-between gap-4">
                 @if($questions->onLastPage())
-                <form action="{{ route('quiz_sessions.complete', $quizSession->id) }}" method="post">
-                    @csrf
-                    @method('patch')
-                    <x-button.primary class="w-full">{{ __('Complete') }}</x-button.primary>
-                </form>
+                <div>
+                    <x-button.primary type="button" class="w-full" id="complete">{{ __('Complete') }}</x-button.primary>
+                </div>
+
+                <div class="absolute hidden max-w-sm sm:mx-auto bg-gray-100 p-6 border-t-4 border-gray-400 left-0 right-0 mx-4" id="confirmDialog">
+                    <p class="text-center text-lg mb-4 text-gray-800">{{ __('Are you sure to finish the quiz?') }}</p>
+                    <form action="{{ route('quiz_sessions.complete', $quizSession->id) }}" method="post">
+                        @csrf
+                        @method('patch')
+                        <div class="flex flex-row-reverse gap-6">
+                            <x-button.secondary class="w-full" id="confirmYes">{{ __('Yes') }}</x-button.secondary>
+                            <x-button.secondary type="button" class="w-full" id="confirmNo">{{ __('No') }}</x-button.secondary>
+                        </div>
+                    </form>
+                </div>
+
+                @vite(['resources/js/completeQuizConfirmDialog'])
                 @else
                 <a href="{{ $questions->nextPageUrl() }}">
                     <x-button.primary type="button" class="w-full">{{ __('Next') }}</x-button.primary>
@@ -63,23 +75,14 @@
     
     <a href="{{ route('quiz_sessions.timeout', $quizSession->id) }}" id="goToTimeout" class="hidden"></a>
 
-</x-app-layout>
-
-<script>
-    const answerRadios = document.querySelectorAll('input[type="radio"][name="optionId"]');
-    const submitBtn = document.querySelector('#submitBtn');
-
-    answerRadios.forEach(function(radio) {
-        radio.addEventListener('click', function() {
-            submitBtn.click();
-        });
-    });
+    @vite(['resources/js/optionSubmit.js'])
+    <script>
 
     const countdownTimer = document.querySelector("#countdownTimer");
     const goToTimeout = document.querySelector("#goToTimeout");
 
     countdownTimer.innerHTML = "00:00";
-    
+
     const countdown = (callback) => {
         const diff = +new Date("{!! $quizSession->ends_at !!} UTC") - +new Date();
 
@@ -102,7 +105,7 @@
     countdown(() => {
         goToTimeout.click();
     });
-    
+
     const x = setInterval(() => {
         countdown(() => {
             clearInterval(x);
@@ -110,4 +113,5 @@
         });
     }, 1000);
 
-</script>
+    </script>
+</x-app-layout>
