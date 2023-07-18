@@ -19,19 +19,16 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Route::middleware('auth')->group(function () {
+
+    Route::get('/', [HomeController::class, 'index'])->name('home');
     
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
     Route::resource('quizzes', QuizController::class)->only('show');
-
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
 
     Route::post('/quizzes/work', [QuizSessionController::class, 'start'])->name('quiz_sessions.start');
     Route::get('/quizzes/work/{quiz_session}', [QuizSessionController::class, 'continue'])->name('quiz_sessions.continue');

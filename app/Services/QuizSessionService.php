@@ -24,7 +24,7 @@ class QuizSessionService
         return $this->model->find($id);
     }
 
-    public function handleStart(array $validated): string
+    public function handleStart(array $validated): QuizSession
     {
         extract($validated);
 
@@ -48,7 +48,7 @@ class QuizSessionService
 
         DB::commit();
 
-        return $quizSession->id;
+        return $quizSession;
     }
 
     public function getPaginatedQuestions(QuizSession $quizSession): LengthAwarePaginator

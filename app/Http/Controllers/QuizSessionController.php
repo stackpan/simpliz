@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\View\View;
+use App\Events\QuizStarted;
 use Illuminate\Http\Request;
+use App\Events\QuizCompleted;
+use App\Events\QuestionAnswered;
 use App\Services\QuizSessionService;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\QuizSession\StartQuizSessionRequest;
@@ -21,11 +24,13 @@ class QuizSessionController extends Controller
     {
         $validated = $request->validated();
 
-        $quizSessionId = $this->service
+        $quizSession = $this->service
             ->handleStart($validated);
 
+        QuizStarted::dispatch($request->user(), $quizSession->result->quiz);
+
         return redirect()
-            ->route('quiz_sessions.continue', $quizSessionId);
+            ->route('quiz_sessions.continue', $quizSession->id);
     }
 
     public function continue(Request $request, string $id): View | RedirectResponse
@@ -65,16 +70,20 @@ class QuizSessionController extends Controller
         $this->service
             ->handleAnswer($validated);
 
+        QuestionAnswered::dispatch($request->user(), $quizSession->result->quiz);
+
         return redirect()->back();
     }
 
-    public function complete(string $id): RedirectResponse
+    public function complete(Request $request, string $id): RedirectResponse
     {
         $quizSession = $this->service
             ->getById($id);
 
         $resultId = $this->service
             ->handleComplete($quizSession);
+
+        QuizCompleted::dispatch($request->user(), $quizSession->result->quiz);
 
         return redirect()
             ->route('results.show', $resultId);
