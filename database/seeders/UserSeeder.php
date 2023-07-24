@@ -18,16 +18,5 @@ class UserSeeder extends Seeder
             ->count(5)
             ->unverified()
             ->create();
-        
-        User::factory()
-            ->count(2)
-            ->admin()
-            ->unverified()
-            ->create();
-        
-        User::factory()
-            ->superAdmin()
-            ->unverified()
-            ->create();
     }
 }
