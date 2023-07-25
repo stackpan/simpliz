@@ -9,13 +9,10 @@ class Activity extends Model
 {
     use HasFactory, HasUuids;
 
-    /**
-     * Get the User that owns the Activity
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+    const UPDATED_AT = null;
+
+    protected $fillable = [
+        'user_id',
+        'body',
+    ];
 }

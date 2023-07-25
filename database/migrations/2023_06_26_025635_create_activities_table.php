@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('activities', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->enum('action', ['Start', 'Finished', 'Checked', 'Unchecked']);
             $table->text('body');
             $table->timestamp('created_at');
         });

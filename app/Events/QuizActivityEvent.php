@@ -4,6 +4,7 @@ namespace App\Events;
 
 use App\Models\Quiz;
 use App\Models\User;
+use App\Models\Activity;
 use App\Enums\QuizAction;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
@@ -13,7 +14,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class QuizActivity implements ShouldBroadcast
+class QuizActivityEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -21,9 +22,7 @@ class QuizActivity implements ShouldBroadcast
      * Create a new event instance.
      */
     public function __construct(
-        private QuizAction $action,
-        private User $user,
-        private Quiz $quiz,
+        private Activity $activity,
     )
     {
         //
@@ -49,9 +48,7 @@ class QuizActivity implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'action' => $this->action->name,
-            'userId' => $this->user->id,
-            'quizName' => $this->quiz->name,
+            'id' => $this->activity->id,
         ];
     }
 }

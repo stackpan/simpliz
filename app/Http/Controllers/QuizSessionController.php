@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Enums\QuizAction;
 use Illuminate\View\View;
-use App\Events\QuizStarted;
-use App\Events\QuizActivity;
+use App\Events\QuizActivityEvent;
 use Illuminate\Http\Request;
-use App\Events\QuizCompleted;
-use App\Events\QuestionAnswered;
+use App\Services\ActivityService;
 use App\Services\QuizSessionService;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\QuizSession\StartQuizSessionRequest;
@@ -19,6 +17,7 @@ class QuizSessionController extends Controller
     
     public function __construct(
         private QuizSessionService $service,
+        private ActivityService $activityService,
     ) {
     }
 
@@ -29,7 +28,14 @@ class QuizSessionController extends Controller
         $quizSession = $this->service
             ->handleStart($validated);
 
-        QuizActivity::dispatch(QuizAction::Start, $request->user(), $quizSession->result->quiz);
+        $activity = $this->activityService
+            ->storeQuizActivity(
+                QuizAction::Start,
+                $request->user(),
+                $quizSession->result->quiz
+            );
+
+        QuizActivityEvent::dispatch($activity);
 
         return redirect()
             ->route('quiz_sessions.continue', $quizSession->id);
@@ -72,8 +78,15 @@ class QuizSessionController extends Controller
         $this->service
             ->handleAnswer($validated);
 
-        QuizActivity::dispatch(QuizAction::Answer, $request->user(), $quizSession->result->quiz);
-        
+        $activity = $this->activityService
+            ->storeQuizActivity(
+                QuizAction::Answer,
+                $request->user(),
+                $quizSession->result->quiz
+            );
+
+        QuizActivityEvent::dispatch($activity);
+
         return redirect()->back();
     }
 
@@ -85,7 +98,14 @@ class QuizSessionController extends Controller
         $resultId = $this->service
             ->handleComplete($quizSession);
 
-        QuizActivity::dispatch(QuizAction::Complete, $request->user(), $quizSession->result->quiz);
+        $activity = $this->activityService
+            ->storeQuizActivity(
+                QuizAction::Complete,
+                $request->user(),
+                $quizSession->result->quiz
+            );
+
+        QuizActivityEvent::dispatch($activity);
 
         return redirect()
             ->route('results.show', $resultId);
