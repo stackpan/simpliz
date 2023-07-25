@@ -48,7 +48,9 @@ class QuizActivityEvent implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'id' => $this->activity->id,
+            'data' => [
+                'id' => $this->activity->id,
+            ],
         ];
     }
 }
