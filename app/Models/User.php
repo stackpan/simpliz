@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Activity;
 use Laravel\Sanctum\HasApiTokens;
 use App\Enums\{UserGender, UserRole};
 use Illuminate\Notifications\Notifiable;
@@ -49,4 +50,14 @@ class User extends Authenticatable
         'gender' => UserGender::class,
         'role' => UserRole::class,
     ];
+
+    /**
+     * Get all of the activities for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function activities(): HasMany
+    {
+        return $this->hasMany(Activity::class);
+    }
 }

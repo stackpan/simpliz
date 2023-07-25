@@ -24,8 +24,7 @@ class ActivityService
             QuizAction::Complete->name => "Finish a $quiz->name quiz",
         ];
 
-        return $this->model->create([
-            'user_id' => $user->id,
+        return $user->activities()->create([
             'body' => $body[$action->name],
         ]);
     }
