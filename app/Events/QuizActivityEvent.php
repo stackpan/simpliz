@@ -50,7 +50,12 @@ class QuizActivityEvent implements ShouldBroadcast
         return [
             'data' => [
                 'id' => $this->activity->id,
-            ],
+                'body' => $this->activity->body,
+                'created_at' => $this->activity->created_at,
+                'user' => [
+                    'name' => $this->activity->user->name,
+                ],
+            ]
         ];
     }
 }

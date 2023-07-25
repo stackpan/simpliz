@@ -41,4 +41,12 @@ class UserFactory extends Factory
         ]);
     }
 
+    public function testDummy(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'name' => 'Tester',
+            'email' => 'testdummy@example.com',
+        ]);
+    }
+
 }
