@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\QuizAction;
 use Illuminate\View\View;
 use App\Events\QuizStarted;
+use App\Events\QuizActivity;
 use Illuminate\Http\Request;
 use App\Events\QuizCompleted;
 use App\Events\QuestionAnswered;
@@ -27,7 +29,7 @@ class QuizSessionController extends Controller
         $quizSession = $this->service
             ->handleStart($validated);
 
-        QuizStarted::dispatch($request->user(), $quizSession->result->quiz);
+        QuizActivity::dispatch(QuizAction::Start, $request->user(), $quizSession->result->quiz);
 
         return redirect()
             ->route('quiz_sessions.continue', $quizSession->id);
@@ -70,8 +72,8 @@ class QuizSessionController extends Controller
         $this->service
             ->handleAnswer($validated);
 
-        QuestionAnswered::dispatch($request->user(), $quizSession->result->quiz);
-
+        QuizActivity::dispatch(QuizAction::Answer, $request->user(), $quizSession->result->quiz);
+        
         return redirect()->back();
     }
 
@@ -83,7 +85,7 @@ class QuizSessionController extends Controller
         $resultId = $this->service
             ->handleComplete($quizSession);
 
-        QuizCompleted::dispatch($request->user(), $quizSession->result->quiz);
+        QuizActivity::dispatch(QuizAction::Complete, $request->user(), $quizSession->result->quiz);
 
         return redirect()
             ->route('results.show', $resultId);
