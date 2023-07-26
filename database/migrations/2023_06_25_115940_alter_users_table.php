@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->smallInteger('gender');
-            $table->smallInteger('role')->default(0);
+            $table->smallInteger('role')->default(2);
         });
     }
 

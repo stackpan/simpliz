@@ -21,6 +21,7 @@ class UserSeeder extends Seeder
             ->create();
 
         User::factory()
+            ->unverified()
             ->testDummy()
             ->create();
     }
