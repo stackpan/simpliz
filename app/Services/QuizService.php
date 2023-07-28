@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Quiz;
+use App\Models\User;
 use App\Models\Result;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -15,8 +16,14 @@ class QuizService
         //
     }
 
-    public function getAll()
+    public function getAll(?User $user)
     {
+        if ($user) {
+            return $user->quizzes()
+                ->withQuestionsCount()
+                ->get('quizzes.id', 'name', 'duration');
+        }
+
         return $this->model
             ->select('id', 'name', 'duration')
             ->withQuestionsCount()

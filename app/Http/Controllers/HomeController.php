@@ -19,7 +19,7 @@ class HomeController extends Controller
     {
         return view('home')
             ->with([
-                'quizzes' => $this->quizService->getAll()
+                'quizzes' => $this->quizService->getAll(auth()->user()),
             ]);
     }
 }

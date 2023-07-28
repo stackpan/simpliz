@@ -3,14 +3,18 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Quiz;
 use App\Models\Activity;
+use App\Models\QuizUser;
 use Laravel\Sanctum\HasApiTokens;
 use App\Enums\{UserGender, UserRole};
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -60,4 +64,26 @@ class User extends Authenticatable
     {
         return $this->hasMany(Activity::class);
     }
+
+    /**
+     * The quizzes that belong to the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function quizzes(): BelongsToMany
+    {
+        return $this->belongsToMany(Quiz::class)
+            ->using(QuizUser::class);
+    }
+
+    public function isAssignedTo(string $quizId): bool
+    {
+        $result = $this
+            ->quizzes()
+            ->where('quizzes.id', $quizId)
+            ->first();
+
+        return null !== $result;
+    }
+
 }
