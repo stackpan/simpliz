@@ -46,6 +46,8 @@ class QuizSessionController extends Controller
         $quizSession = $this->service
             ->getById($id);
 
+        $this->authorize('ownership', $quizSession);
+
         if (now()->greaterThan($quizSession->ends_at)) {
             return redirect()->route('quiz_sessions.timeout', $id);
         }
@@ -68,6 +70,8 @@ class QuizSessionController extends Controller
     {
         $quizSession = $this->service
             ->getById($id);
+
+        $this->authorize('ownership', $quizSession);
 
         if (now()->greaterThan($quizSession->ends_at)) {
             return redirect()->route('quiz_sessions.timeout', $id);
@@ -94,6 +98,8 @@ class QuizSessionController extends Controller
     {
         $quizSession = $this->service
             ->getById($id);
+
+        $this->authorize('ownership', $quizSession);
 
         $resultId = $this->service
             ->handleComplete($quizSession);
