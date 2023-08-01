@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('question_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->text('body');
+            $table->boolean('is_answer')->default(false);
         });
     }
 

@@ -21,8 +21,8 @@ services:
         volumes:
             - '.:/var/www/html'
         networks:
-            - 'simpliz'
+            - simpliz
 networks:
     simpliz:
-        name: 'root_simpliz'
+        name: root_simpliz
         external: true

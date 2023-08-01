@@ -32,6 +32,10 @@ class QuizSeeder extends Seeder
                     ->for($question)
                     ->create();
 
+                $answer = $options[rand(0, count($options) - 1)];
+                $answer->is_answer = true;
+                $answer->save();
+                
                 Answer::factory()
                     ->for($options[rand(0, count($options) - 1)])
                     ->create();

@@ -20,6 +20,7 @@ class QuizService
     {
         if ($user) {
             return $user->quizzes()
+                ->has('questions')
                 ->withQuestionsCount()
                 ->get('quizzes.id', 'name', 'duration');
         }
