@@ -75,43 +75,44 @@
     
     <a href="{{ route('quiz_sessions.timeout', $quizSession->id) }}" id="goToTimeout" class="hidden"></a>
 
-    @vite(['resources/js/optionSubmit.js'])
     <script>
+        const countdownTimer = document.querySelector("#countdownTimer");
+        const goToTimeout = document.querySelector("#goToTimeout");
 
-    const countdownTimer = document.querySelector("#countdownTimer");
-    const goToTimeout = document.querySelector("#goToTimeout");
+        countdownTimer.innerHTML = "00:00";
 
-    countdownTimer.innerHTML = "00:00";
+        const countdown = (callback) => {
 
-    const countdown = (callback) => {
-        const diff = +new Date("{!! $quizSession->ends_at !!} UTC") - +new Date();
+            const diff = +new Date(`${!! $quizSession->ends_at !!} UTC`) - +new Date();
 
-        let remaining = "";
+            let remaining = "";
 
-        if (diff < 0) callback();
+            if (diff < 0) callback();
 
-        const parts = {
-            mins: Math.floor((diff / 1000 / 60) % 60),
-            secs: Math.floor((diff / 1000) % 60),
+            const parts = {
+                mins: Math.floor((diff / 1000 / 60) % 60),
+                secs: Math.floor((diff / 1000) % 60),
+            };
+
+            remaining = Object.keys(parts)
+                .map(part => `${parts[part]}`.padStart(2, "0"))
+                .join(":");
+
+            countdownTimer.innerHTML = remaining;
         };
 
-        remaining = Object.keys(parts)
-            .map(part => `${parts[part]}`.padStart(2, "0"))
-            .join(":");
-
-        countdownTimer.innerHTML = remaining;
-    };
-
-    countdown(() => {
-        goToTimeout.click();
-    });
-
-    const x = setInterval(() => {
         countdown(() => {
-            clearInterval(x);
             goToTimeout.click();
         });
-    }, 1000);
 
+        const x = setInterval(() => {
+            countdown(() => {
+                clearInterval(x);
+                goToTimeout.click();
+            });
+        }, 1000);
     </script>
+
+    @vite(['resources/js/optionSubmit'])
+
 </x-app-layout>

@@ -15,7 +15,7 @@
                     <div>
                         <div class="mb-4 mt-4 sm:mt-0 leading-snug sm:leading-tight sm:text-lg">
                             @isset($question->context)
-                            <p class="mb-4">{{ $questions[0]->context }}</p>
+                            <p class="mb-4">{{ $question->context }}</p>
                             @endisset
                             <p>{{ $question->body }}</p>
                         </div>
@@ -31,7 +31,7 @@
                                     class="mt-1"
                                     disabled
                                     >
-                                <label for="{{ 'option-' . $option->id }}">{{ $option->body }} <span aria-hidden="true">@if($option->answer !== null)✓@elseif($checked)✗@endif</span></label>  
+                                <label for="{{ 'option-' . $option->id }}">{{ $option->body }} <span aria-hidden="true">@if($option->is_answer)✓@elseif($checked)✗@endif</span></label>  
                             </div>
                         @endforeach
                         </div>

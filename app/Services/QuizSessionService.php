@@ -56,6 +56,7 @@ class QuizSessionService
         return $quizSession->result
             ->quiz
             ->questions()
+            ->with('options:id,question_id,body')
             ->paginate(1);
     }
 
@@ -84,7 +85,7 @@ class QuizSessionService
                 $userOption = $question->pivot->option;
 
                 $isHaveAnswered = $userOption !== null;
-                $isAnswerCorrect = optional($userOption)->answer !== null;
+                $isAnswerCorrect = optional($userOption)->is_answer;
 
                 $questionsToMany->updateExistingPivot($question->id, [
                     'is_correct' => $isHaveAnswered && $isAnswerCorrect,
