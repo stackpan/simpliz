@@ -7,7 +7,6 @@ use Illuminate\Database\Seeder;
 use App\Models\Quiz;
 use App\Models\Question;
 use App\Models\Option;
-use App\Models\Answer;
 
 class QuizSeeder extends Seeder
 {
@@ -35,10 +34,6 @@ class QuizSeeder extends Seeder
                 $answer = $options[rand(0, count($options) - 1)];
                 $answer->is_answer = true;
                 $answer->save();
-                
-                Answer::factory()
-                    ->for($options[rand(0, count($options) - 1)])
-                    ->create();
             }
         }
     }

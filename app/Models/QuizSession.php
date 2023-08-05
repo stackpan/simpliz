@@ -20,6 +20,15 @@ class QuizSession extends Model
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'ends_at' => 'datetime',
+    ];
+
+    /**
      * Get the result that owns the QuizSession
      *
      * @return BelongsTo

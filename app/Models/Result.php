@@ -22,6 +22,9 @@ class Result extends Model
 
     protected $fillable = [
         'user_id',
+        'completed_at',
+        'completed_in',
+        'score',
     ];
 
     /**
@@ -30,7 +33,7 @@ class Result extends Model
      * @var array
      */
     protected $casts = [
-        'completed_at' => 'datetime:Y-m-d',
+        'completed_at' => 'datetime',
     ];
 
     /**
@@ -92,12 +95,19 @@ class Result extends Model
             ->questions
             ->count();
 
+        $completed_at = $this->freshTimestamp();
+        $completed_in = $this->created_at->diff(
+            $completed_at->greaterThan($this->quizSession->ends_at) 
+            ? $this->quizSession->ends_at 
+            : $this->completed_at
+        )->format('%h:%i:%s');
         $score = round(($totalCorrectAnswers / $totalQuestions) * 100, 1);
 
-        $this->completed_at = $this->freshTimestamp();
-        $this->score = $score;
-
-        $this->save();
+        $this->fill([
+            'completed_at' => $completed_at,
+            'completed_in' => $completed_in,
+            'score' => $score,
+        ])->save();
     }
 
     public function scopeWithDetails(Builder $query)
