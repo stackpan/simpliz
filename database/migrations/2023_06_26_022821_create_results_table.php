@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignUuid('quiz_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamp('created_at');
             $table->timestamp('completed_at')->nullable();
-            $table->time('completed_in')->nullable();
+            $table->bigInteger('completed_duration')->nullable();
             $table->float('score')->nullable();
         });
     }

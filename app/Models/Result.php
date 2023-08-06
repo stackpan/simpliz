@@ -23,7 +23,7 @@ class Result extends Model
     protected $fillable = [
         'user_id',
         'completed_at',
-        'completed_in',
+        'completed_duration',
         'score',
     ];
 
@@ -76,6 +76,11 @@ class Result extends Model
         return $this->hasOne(QuizSession::class);
     }
 
+    /**
+     * The questions that belong to the Result
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function questions(): BelongsToMany
     {
         return $this
@@ -96,16 +101,16 @@ class Result extends Model
             ->count();
 
         $completed_at = $this->freshTimestamp();
-        $completed_in = $this->created_at->diff(
+        $completed_duration = $this->created_at->diffInMilliseconds(
             $completed_at->greaterThan($this->quizSession->ends_at) 
             ? $this->quizSession->ends_at 
             : $this->completed_at
-        )->format('%h:%i:%s');
+        );
         $score = round(($totalCorrectAnswers / $totalQuestions) * 100, 1);
 
         $this->fill([
             'completed_at' => $completed_at,
-            'completed_in' => $completed_in,
+            'completed_duration' => $completed_duration,
             'score' => $score,
         ])->save();
     }
