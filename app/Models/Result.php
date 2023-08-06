@@ -100,12 +100,12 @@ class Result extends Model
             ->questions
             ->count();
 
-        $completed_at = $this->freshTimestamp();
-        $completed_duration = $this->created_at->diffInMilliseconds(
-            $completed_at->greaterThan($this->quizSession->ends_at) 
-            ? $this->quizSession->ends_at 
-            : $this->completed_at
-        );
+        $freshTimestamp = $this->freshTimestamp();
+
+        $completed_at = $freshTimestamp->greaterThan($this->quizSession->ends_at)
+            ? $this->quizSession->ends_at
+            : $freshTimestamp;
+        $completed_duration = $this->created_at->diffInMilliseconds($completed_at);
         $score = round(($totalCorrectAnswers / $totalQuestions) * 100, 1);
 
         $this->fill([
