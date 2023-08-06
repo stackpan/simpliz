@@ -2,8 +2,14 @@
     <div class="py-6 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-col-reverse">
         <div>
             <div class="py-4 mb-6">
-                <x-quiz-info :data="$quiz" />
+                <h1 class="text-4xl font-bold mb-6">{{ $quiz->name }}</h1>
+                <p class="text-gray-600 mb-6">{{ $quiz->description }}</p>
+                <div class="flex flex-col justify-between">
+                    <p class="my-1 text-lg md:text-xl font-bold text-gray-600"><x-icon.clipboard-document-list class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6" /><span>{{ $quiz->questions_count }} {{ __('Questions') }}</span></p>
+                    <p class="my-1 text-lg md:text-xl font-bold text-gray-600"><x-icon.clock class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6" /><span>{{ $quiz->duration }} {{ __('Minutes') }}</span></p>
+                </div>
             </div>
+            
             @if(count($quiz->results))
             <div class="py-4">
                 <table class="w-full table-auto">
@@ -18,7 +24,7 @@
                             <td class="text-gray-500 text-end"><a href="{{ route('quiz_sessions.continue', $lastQuizSession->id) . '?page=' . $lastQuizSession->last_question_page }}"><span>{{ __('continue') }}</span><x-icon.arrow-sm-right class="inline-block ml-2" /></a></td>
                             @else
                             <td class="font-bold">{{ $result->score }}%</td>
-                            <td>{{ $result->created_at->timezone('Asia/Jakarta') }}</td>
+                            <td>{{ $result->completed_at->timezone('Asia/Jakarta') }}</td>
                             <td class="text-gray-500 text-end"><a href="{{ route('results.show', $result->id) }}"><span>{{ __('details') }}</span><x-icon.arrow-sm-right class="inline-block ml-2" /></a></td>
                             @endif
                         </tr>

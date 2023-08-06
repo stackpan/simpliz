@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Quiz;
 use App\Models\Result;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
@@ -19,11 +20,11 @@ class QuizController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id): View
+    public function show(Quiz $quiz): View
     {
-        $quiz = $this->service->getDetail($id);
-
         $this->authorize('view', $quiz);
+        
+        $quiz = $this->service->loadDetail($quiz);
 
         return view('quiz.show')
             ->with([
