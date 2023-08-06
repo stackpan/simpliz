@@ -5,7 +5,7 @@
             <p class="text-gray-600 mb-6">{{ $result->quiz->description }}</p>
             <div class="flex flex-row justify-between">
                 <div>
-                    <p class="my-1 text-lg md:text-xl font-bold text-gray-600"><x-icon.clock class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6" /><span>{{ Carbon\CarbonInterval::seconds($result->completed_duration/1000) }}</span></p>
+                    <p class="my-1 text-lg md:text-xl font-bold text-gray-600"><x-icon.clock class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6" /><span>{{ Carbon\CarbonInterval::seconds($result->completed_duration/1000)->cascade() }}</span></p>
                     <p class="my-1 text-lg md:text-xl font-bold text-gray-600"><x-icon.user class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6" /><span>{{ $result->user->name }}</span></p>
                     <p class="my-1 text-lg md:text-xl font-bold text-gray-600"><x-icon.calendar class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6" /><span>{{ $result->completed_at->timezone('Asia/Jakarta') }}</span></p>
                 </div>
