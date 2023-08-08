@@ -23,6 +23,8 @@ class QuizSessionController extends Controller
 
     public function start(StartQuizSessionRequest $request): RedirectResponse
     {
+        $request->ensureUserIsNotInAQuizSession();
+     
         $validated = $request->validated();
 
         $quizSession = $this->service

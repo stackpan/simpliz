@@ -3,6 +3,7 @@
 namespace App\Http\Requests\QuizSession;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Exceptions\UserAlreadyTakeQuizException;
 
 class StartQuizSessionRequest extends FormRequest
 {
@@ -24,5 +25,15 @@ class StartQuizSessionRequest extends FormRequest
         return [
             'quizId' => 'required|UUID|exists:quizzes,id',
         ];
+    }
+
+    public function ensureUserIsNotInAQuizSession()
+    {
+        $user = auth()->user();
+        $lastQuizSession = $user->getLastQuizSession();
+
+        if ($lastQuizSession) {
+            throw new UserAlreadyTakeQuizException($user, $lastQuizSession);
+        }
     }
 }

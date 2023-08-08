@@ -1,6 +1,17 @@
 <x-app-layout>
+    
     <div class="py-6 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-col-reverse">
+
         <div>
+
+            @if($errors->hasBag('user_already_take_quiz'))
+                @php $error = $errors->getBag('user_already_take_quiz'); @endphp
+                <div>
+                    <p class="text-red-500">{{ $error->first('body') }}</p>
+                    <a href="{{ $error->first('last_session_url') }}" class="text-purple-500 font-bold"><span>Go back to your work</span><x-icon.arrow-sm-right class="inline-block align-text-top" /></a>
+                </div>
+            @endif
+
             <div class="py-4 mb-6">
                 <h1 class="text-4xl font-bold mb-6">{{ $quiz->name }}</h1>
                 <p class="text-gray-600 mb-6">{{ $quiz->description }}</p>
