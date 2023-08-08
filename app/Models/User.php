@@ -4,8 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Quiz;
+use App\Models\Result;
 use App\Models\Activity;
 use App\Models\QuizUser;
+use App\Models\QuizSession;
 use Laravel\Sanctum\HasApiTokens;
 use App\Enums\{UserGender, UserRole};
 use Illuminate\Notifications\Notifiable;
@@ -76,6 +78,16 @@ class User extends Authenticatable
             ->using(QuizUser::class);
     }
 
+    /**
+     * Get all of the results for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function results(): HasMany
+    {
+        return $this->hasMany(Result::class);
+    }
+
     public function isAssignedTo(string $quizId): bool
     {
         $result = $this
@@ -84,6 +96,16 @@ class User extends Authenticatable
             ->first();
 
         return null !== $result;
+    }
+
+    public function getLastQuizSession(): ?QuizSession
+    {
+        return optional(
+            $this->results()
+                ->latest()
+                ->has('quizSession')
+                ->first())
+            ->quizSession;
     }
 
 }
