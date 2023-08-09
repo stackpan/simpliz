@@ -49,7 +49,7 @@
 
         <div>
             <x-input-label for="gender" :value="__('Gender')" />
-            <x-input-select name="gender" id="gender" class="block mt-1" :options="App\Enums\UserGender::cases()" :selected="$user->gender->value" required autofocus autocomplete="gender"/>
+            <x-input-select name="gender" id="gender" class="block mt-1" :options="App\Enums\UserGender::cases()" :selected="$user->gender->value" required autocomplete="gender"/>
             <x-input-error :messages="$errors->get('gender')" class="mt-2" />
         </div>
 
