@@ -37,7 +37,7 @@
                                     @php $checked = true @endphp
                                     checked
                                     @endif
-                                    class="mt-1"
+                                    class="mt-1 text-gray-600 focus:ring-gray-400"
                                     disabled
                                     >
                                 <label for="{{ 'option-' . $option->id }}">{{ $option->body }} <span aria-hidden="true">@if($option->is_answer)✓@elseif($checked)✗@endif</span></label>  

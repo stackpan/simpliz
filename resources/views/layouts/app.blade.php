@@ -20,7 +20,7 @@
 
             <!-- Page Heading -->
             @if (isset($header))
-                <header>
+                <header {!! $attributes->merge(['class' => '']) !!}>
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-2xl text-gray-800 leading-tight">
                         {{ $header }}
                     </div>
@@ -28,7 +28,7 @@
             @endif
 
             <!-- Page Content -->
-            <main class="grow">
+            <main {!! $attributes->merge(['class' => 'grow']) !!}>
                 {{ $slot }}
             </main>
         </div>
