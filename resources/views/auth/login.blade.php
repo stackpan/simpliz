@@ -44,4 +44,8 @@
             </x-primary-button>
         </div>
     </form>
+
+    <x-slot name="footer">
+        <a href="{{ route('register') }}" class="underline text-gray-600">Register</a>
+    </x-slot>
 </x-guest-layout>
