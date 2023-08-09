@@ -2,9 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\User;
+use App\Enums\UserGender;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProfileTest extends TestCase
 {
@@ -30,6 +31,7 @@ class ProfileTest extends TestCase
             ->patch('/profile', [
                 'name' => 'Test User',
                 'email' => 'test@example.com',
+                'gender' => '1',
             ]);
 
         $response
@@ -40,11 +42,14 @@ class ProfileTest extends TestCase
 
         $this->assertSame('Test User', $user->name);
         $this->assertSame('test@example.com', $user->email);
+        $this->assertSame(UserGender::Female, $user->gender);
         $this->assertNull($user->email_verified_at);
     }
 
     public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged(): void
     {
+        $this->markTestSkipped('There is no need email verification in this app');
+
         $user = User::factory()->create();
 
         $response = $this
@@ -63,6 +68,8 @@ class ProfileTest extends TestCase
 
     public function test_user_can_delete_their_account(): void
     {
+        $this->markTestSkipped("User shouldn't delete their account in this app");
+
         $user = User::factory()->create();
 
         $response = $this
@@ -81,6 +88,8 @@ class ProfileTest extends TestCase
 
     public function test_correct_password_must_be_provided_to_delete_account(): void
     {
+        $this->markTestSkipped("User shouldn't delete their account in this app");
+
         $user = User::factory()->create();
 
         $response = $this
