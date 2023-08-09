@@ -27,7 +27,7 @@
 
                     @foreach($questions[0]->options as $option)
                     <div class="flex my-2 gap-2">
-                        <input type="radio" name="optionId" id="{{ 'option-' . $option->id }}" value="{{ $option->id }}" class="mt-1"
+                        <input type="radio" name="optionId" id="{{ 'option-' . $option->id }}" value="{{ $option->id }}" class="mt-1 text-gray-600 focus:ring-gray-400"
                             @if($userOption->option_id === $option->id)
                             checked
                             @endif
