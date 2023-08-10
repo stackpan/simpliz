@@ -124,5 +124,13 @@ class Result extends Model
             ])
             ->with('user');
     }
+
+    public function loadRelations()
+    {
+        return $this->load([
+            'quiz' => fn ($query) => $query->withQuestionsCount(),
+            'user',
+        ]);
+    }
     
 }

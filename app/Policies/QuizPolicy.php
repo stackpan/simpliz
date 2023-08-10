@@ -11,9 +11,9 @@ class QuizPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Quiz $quiz): bool
+    public function view(User $user, Quiz $quiz): Response
     {
-        return $user->isAssignedTo($quiz->id);
+        return $user->isAssignedTo($quiz->id) ? Response::allow() : Response::denyAsNotFound();
     }
 
 }

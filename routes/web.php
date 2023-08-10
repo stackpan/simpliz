@@ -31,10 +31,16 @@ Route::middleware('auth')->group(function () {
     Route::resource('quizzes', QuizController::class)->only('show');
 
     Route::post('/quizzes/work', [QuizSessionController::class, 'start'])->name('quiz_sessions.start');
-    Route::get('/quizzes/work/{quiz_session}', [QuizSessionController::class, 'continue'])->name('quiz_sessions.continue');
-    Route::patch('/quizzes/work/{quiz_session}/answer', [QuizSessionController::class, 'answer'])->name('quiz_sessions.answer');
-    Route::patch('/quizzes/work/{quiz_session}/complete',  [QuizSessionController::class, 'complete'])->name('quiz_sessions.complete');
-    Route::get('/quizzes/work/timeout/{quiz_session}', [QuizSessionController::class, 'timeout'])->name('quiz_sessions.timeout');
+    Route::get('/quizzes/work/{quizSession}', [QuizSessionController::class, 'continue'])
+        ->name('quiz_sessions.continue')
+        ->can('view', 'quizSession');
+    Route::patch('/quizzes/work/{quizSession}/answer', [QuizSessionController::class, 'answer'])
+        ->name('quiz_sessions.answer')
+        ->can('update', 'quizSession');
+    Route::delete('/quizzes/work/{quizSession}/complete',  [QuizSessionController::class, 'complete'])
+        ->name('quiz_sessions.complete')
+        ->can('delete', 'quizSession');
+    Route::get('/quizzes/work/{quizSession}/timeout', [QuizSessionController::class, 'timeout'])->name('quiz_sessions.timeout');
 
     Route::get('/results/{result}', [ResultController::class, 'show'])->name('results.show');
 });

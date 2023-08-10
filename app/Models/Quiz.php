@@ -35,19 +35,26 @@ class Quiz extends Model
         return $this->hasMany(Result::class);
     }
 
+    /**
+     * @deprecated
+     */
     public function scopeWithQuestionsCount(Builder $query): Builder
     {
         return $query->withCount('questions');
     }
 
-    public function scopeWithUserResults(Builder $query, User $user): Builder
+    public function loadQuestionCount(): Quiz
     {
-        return $query->with([
-            'results' => fn($query) => $query
-                    ->where('user_id', $user->id)
-                    ->latest()
-                    ->with('quizSession'),
-        ]);
+        return $this->loadCount('questions');
     }
 
+    public function loadUserResults(User $user): Quiz
+    {
+        return $this->load([
+            'results' => fn ($query) => $query
+                ->select('id', 'quiz_id', 'user_id', 'score', 'completed_at')
+                ->whereBelongsTo($user)
+                ->with('quizSession'),
+        ]);
+    }
 }

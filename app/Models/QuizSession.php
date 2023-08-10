@@ -47,4 +47,14 @@ class QuizSession extends Model
                 ->paginate(1),
             ]);
     }
+
+    public function isOwnedBy(User $user): bool
+    {
+        return $this->result->user->is($user);
+    }
+
+    public function isTimeout(): bool
+    {
+        return now()->greaterThan($this->ends_at);
+    }
 }

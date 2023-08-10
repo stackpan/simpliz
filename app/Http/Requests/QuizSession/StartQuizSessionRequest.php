@@ -12,7 +12,7 @@ class StartQuizSessionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()->isAssignedTo($this->quizId);
+        return true;
     }
 
     /**
