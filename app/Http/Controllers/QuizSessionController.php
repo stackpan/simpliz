@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\QuizAction;
 use Illuminate\View\View;
-use App\Events\QuizActivityEvent;
+use App\Models\QuizSession;
 use Illuminate\Http\Request;
 use App\Services\ActivityService;
 use App\Services\QuizSessionService;
@@ -25,10 +25,10 @@ class QuizSessionController extends Controller
     {
         $request->ensureUserIsNotInAQuizSession();
      
-        $validated = $request->validated();
+        $this->authorize('create', [QuizSession::class, $request->quizId]);
 
         $quizSession = $this->service
-            ->handleStart($validated);
+            ->handleStart($request->validated());
 
         $activity = $this->activityService
             ->storeQuizActivity(
@@ -37,21 +37,14 @@ class QuizSessionController extends Controller
                 $quizSession->result->quiz
             );
 
-        QuizActivityEvent::dispatch($activity);
-
         return redirect()
             ->route('quiz_sessions.continue', $quizSession->id);
     }
 
-    public function continue(Request $request, string $id): View | RedirectResponse
+    public function continue(Request $request, QuizSession $quizSession): View | RedirectResponse
     {
-        $quizSession = $this->service
-            ->getById($id);
-
-        $this->authorize('ownership', $quizSession);
-
-        if (now()->greaterThan($quizSession->ends_at)) {
-            return redirect()->route('quiz_sessions.timeout', $id);
+        if ($quizSession->isTimeout()) {
+            return redirect()->route('quiz_sessions.timeout', $quizSession->id);
         }
 
         $pageNumber = $request->query('page');
@@ -68,21 +61,14 @@ class QuizSessionController extends Controller
             ]);
     }
 
-    public function answer(AnswerQuizSessionRequest $request, string $id): RedirectResponse
+    public function answer(AnswerQuizSessionRequest $request, QuizSession $quizSession): RedirectResponse
     {
-        $quizSession = $this->service
-            ->getById($id);
-
-        $this->authorize('ownership', $quizSession);
-
-        if (now()->greaterThan($quizSession->ends_at)) {
-            return redirect()->route('quiz_sessions.timeout', $id);
+        if ($quizSession->isTimeout()) {
+            return redirect()->route('quiz_sessions.timeout', $quizSession->id);
         }
 
-        $validated = $request->validated();
-
         $this->service
-            ->handleAnswer($validated);
+            ->handleAnswer($request->validated());
 
         $activity = $this->activityService
             ->storeQuizActivity(
@@ -91,18 +77,11 @@ class QuizSessionController extends Controller
                 $quizSession->result->quiz
             );
 
-        QuizActivityEvent::dispatch($activity);
-
         return redirect()->back();
     }
 
-    public function complete(Request $request, string $id): RedirectResponse
+    public function complete(Request $request, QuizSession $quizSession): RedirectResponse
     {
-        $quizSession = $this->service
-            ->getById($id);
-
-        $this->authorize('ownership', $quizSession);
-
         $resultId = $this->service
             ->handleComplete($quizSession);
 
@@ -112,8 +91,6 @@ class QuizSessionController extends Controller
                 $request->user(),
                 $quizSession->result->quiz
             );
-
-        QuizActivityEvent::dispatch($activity);
 
         return redirect()
             ->route('results.show', $resultId);

@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Models\Quiz;
 use App\Models\User;
 use App\Models\Result;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class QuizService
 {
@@ -17,43 +17,19 @@ class QuizService
         //
     }
 
-    public function getAll(?User $user)
+    public function getAll(User $user): Collection
     {
-        if ($user) {
-            return $user->quizzes()
+        return $user->quizzes()
                 ->has('questions')
                 ->withQuestionsCount()
                 ->get('quizzes.id', 'name', 'duration');
-        }
-
-        return $this->model
-            ->select('id', 'name', 'duration')
-            ->withQuestionsCount()
-            ->get();
     }
 
-    /**
-     * @deprecated
-     */
-    public function getDetail(string $quizId)
-    {
-        return $this->model
-            ->select('id', 'name', 'description', 'duration')
-            ->withQuestionsCount()
-            ->withUserResults(auth()->user())
-            ->find($quizId);
-    }
-
-    public function loadDetail(Quiz $quiz)
+    public function loadDetails(Quiz $quiz): Quiz
     {
         return $quiz
-            ->loadCount('questions')
-            ->load([
-                'results' => fn (Builder $query) => $query
-                    ->select('id', 'quiz_id', 'user_id', 'score', 'completed_at')
-                    ->whereBelongsTo(auth()->user())
-                    ->with('quizSession'),
-            ]);
+            ->loadQuestionCount()
+            ->loadUserResults(auth()->user());
     }
 
 }

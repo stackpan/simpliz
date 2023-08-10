@@ -5,7 +5,7 @@
         <div class="flex flex-col md:flex-row justify-center">
             <form action="{{ route('quiz_sessions.complete', $quizSessionId) }}" method="post">
                 @csrf
-                @method('patch')
+                @method('delete')
                 <x-button.primary class="w-full my-12">{{ __('Complete') }}</x-button.primary>
             </form>
         </div>

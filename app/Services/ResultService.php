@@ -14,23 +14,9 @@ class ResultService
         //
     }
 
-    public function getById(string $id, bool $withDetail): ?Result
+    public function loadDetails(Result $result): Result
     {
-        $result = $this->model;
-
-        if ($withDetail) {
-            $result = $result->withDetails();
-        }
-
-        return $result->find($id);
-    }
-
-    public function getPaginatedQuestionsResult(Result $result): LengthAwarePaginator
-    {
-        return $result
-            ->questions()
-            ->withPivot('id', 'option_id', 'is_correct')
-            ->paginate(10);
+        return $result->loadRelations();
     }
 
 }

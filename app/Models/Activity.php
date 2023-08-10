@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Events\QuizActivityEvent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,6 +17,15 @@ class Activity extends Model
 
     protected $fillable = [
         'body',
+    ];
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'created' => QuizActivityEvent::class
     ];
 
     /**

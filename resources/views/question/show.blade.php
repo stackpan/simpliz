@@ -49,7 +49,7 @@
                     <p class="text-center text-lg mb-4 text-gray-800">{{ __('Are you sure to finish the quiz?') }}</p>
                     <form action="{{ route('quiz_sessions.complete', $quizSession->id) }}" method="post">
                         @csrf
-                        @method('patch')
+                        @method('delete')
                         <div class="flex flex-row-reverse gap-6">
                             <x-button.secondary class="w-full" id="confirmYes">{{ __('Yes') }}</x-button.secondary>
                             <x-button.secondary type="button" class="w-full" id="confirmNo">{{ __('No') }}</x-button.secondary>
