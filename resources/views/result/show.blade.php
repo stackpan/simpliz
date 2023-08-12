@@ -7,7 +7,7 @@
                 <div>
                     <p class="my-1 text-lg md:text-xl font-bold text-gray-600"><x-icon.clock class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6" /><span>{{ Carbon\CarbonInterval::seconds($result->completed_duration/1000)->cascade() }}</span></p>
                     <p class="my-1 text-lg md:text-xl font-bold text-gray-600"><x-icon.user class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6" /><span>{{ $result->user->name }}</span></p>
-                    <p class="my-1 text-lg md:text-xl font-bold text-gray-600"><x-icon.calendar class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6" /><span>{{ $result->completed_at->timezone('Asia/Jakarta') }}</span></p>
+                    <p class="my-1 text-lg md:text-xl font-bold text-gray-600"><x-icon.calendar class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6" /><span>{{ $result->completed_at->timezone('Asia/Jakarta')->format('l\, j F o H:i:s \G\M\T P') }}</span></p>
                 </div>
                 <p class="my-1 text-2xl md:text-4xl font-bold text-gray-600 justify-self-end"><x-icon.check-circle class="inline-block -mb-1 align-text-top w-9 md:w-14 h-9 md:h-14" /><span class="align-middle">{{ $result->score }}%</span></p>
             </div>
