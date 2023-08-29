@@ -7,11 +7,11 @@ use App\Models\User;
 
 class Auth {
 
-    public static function userLogin(TestCase $testCase, User $user): void
+    public static function userLogin(TestCase $testCase, User $user, string $password = 'password'): void
     {
         $testCase->post('/login', [
             'email' => $user->email,
-            'password' => 'password',
+            'password' => $password,
         ]);
     }
 

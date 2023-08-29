@@ -14,16 +14,16 @@ class Seeder {
                 ->count(2)
                 ->for($quiz)
                 ->create();
-    
+
             foreach ($questions as $question) {
                 $options = Option::factory()
                     ->count(3)
                     ->for($question)
                     ->create();
-    
-                $answer = $options[0];
-                $answer->is_answer = true;
-                $answer->save();
+
+                $option = $options[0];
+                $option->is_answer = true;
+                $option->save();
             }
     }
 

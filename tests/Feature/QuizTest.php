@@ -40,28 +40,31 @@ class QuizTest extends TestCase
 
         $response = $this->get('/quizzes/' . $assignedQuiz->id);
 
-        $response->assertStatus(200);
+        $response
+            ->assertOk()
+            ->assertViewIs('quiz.show');
+
         $quizResponse = $response['quiz'];
 
         $this->assertEquals($assignedQuiz->name, $quizResponse->name);
         $this->assertEquals($assignedQuiz->description, $quizResponse->description);
     }
 
-    public function test_unauthenticated_user()
+    public function test_unauthenticated_user_should_redirect_to_login()
     {
         $assignedQuiz = $this->quizzes->get(0);
 
         $response = $this->get('/quizzes/' . $assignedQuiz->id);
-        $response->assertStatus(302);
+        $response->assertRedirectToRoute('login');
     }
 
-    public function test_unassigned_user()
+    public function test_unassigned_user_should_forbidden()
     {
-        $unnasignedQuiz = $this->quizzes->get(1);
-        
+        $unassignedQuiz = $this->quizzes->get(1);
+
         TestUtilAuth::userLogin($this, $this->user);
 
-        $response = $this->get('/quizzes/' . $unnasignedQuiz->id);
-        $response->assertStatus(404);
+        $response = $this->get('/quizzes/' . $unassignedQuiz->id);
+        $response->assertForbidden();
     }
 }

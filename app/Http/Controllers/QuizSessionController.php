@@ -14,7 +14,7 @@ use App\Http\Requests\QuizSession\AnswerQuizSessionRequest;
 
 class QuizSessionController extends Controller
 {
-    
+
     public function __construct(
         private QuizSessionService $service,
         private ActivityService $activityService,
@@ -24,7 +24,7 @@ class QuizSessionController extends Controller
     public function start(StartQuizSessionRequest $request): RedirectResponse
     {
         $request->ensureUserIsNotInAQuizSession();
-     
+
         $this->authorize('create', [QuizSession::class, $request->quizId]);
 
         $quizSession = $this->service

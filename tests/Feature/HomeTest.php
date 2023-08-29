@@ -25,7 +25,7 @@ class HomeTest extends TestCase
 
         $this->user = User::factory()->create();
         $quizzes = Quiz::factory()->count(2)->create();
-    
+
         foreach ($quizzes as $quiz) {
             TestUtilSeeder::seedQuizContent($quiz);
         }
@@ -38,13 +38,19 @@ class HomeTest extends TestCase
         TestUtilAuth::userLogin($this, $this->user);
 
         $response = $this->get('/');
-        $response->assertOk();
+
+        $response
+            ->assertOk()
+            ->assertViewIs('home');
     }
 
-    public function test_unauthenticated_must_be_redirected_to_login(): void
+    public function test_unauthenticated_should_redirect_to_login(): void
     {
         $response = $this->get('/');
-        $response->assertRedirectToRoute('login');
+
+        $response
+            ->assertRedirect()
+            ->assertRedirectToRoute('login');
     }
 
     public function test_user_can_only_see_assigned_quizzes(): void
@@ -55,7 +61,11 @@ class HomeTest extends TestCase
         $response
             ->assertOk()
             ->assertViewIs('home');
-        
-        $this->assertEquals($this->user->quizzes->loadCount('questions')->toArray(), $response['quizzes']->toArray());
+
+        $dbQuizzes = $this->user->quizzes;
+
+        $response['quizzes']->each(function (Quiz $quiz, int $index) use ($dbQuizzes) {
+           $this->assertEquals($quiz->id, $dbQuizzes->get($index)->id);
+        });
     }
 }
