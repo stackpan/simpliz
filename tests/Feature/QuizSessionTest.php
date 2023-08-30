@@ -95,6 +95,30 @@ class QuizSessionTest extends TestCase
             ->assertSeeText($this->quiz->questions()->first()->context);
     }
 
+    public function test_question_page_opened_by_unauthorized_should_forbidden()
+    {
+        $otherUser = User::factory()->create();
+
+        TestUtilAuth::userLogin($this, $this->user);
+        TestUtilAuth::userLogin($this, $otherUser);
+
+        $this
+            ->actingAs($this->user)
+            ->post('/quizzes/work', [
+                'quizId' => $this->quiz->id,
+            ]);
+
+        $result = Result::where('user_id', $this->user->id)->where('quiz_id', $this->quiz->id)->first();
+        $quizSession = $result->quizSession;
+
+        $response = $this
+            ->actingAs($otherUser)
+            ->get('/quizzes/work/' . $quizSession->id);
+
+        $response
+            ->assertForbidden();
+    }
+
     public function test_user_answering_question_success(): void
     {
         TestUtilAuth::userLogin($this, $this->user);

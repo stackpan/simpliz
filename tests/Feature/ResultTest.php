@@ -51,12 +51,12 @@ class ResultTest extends TestCase
             ->assertSeeText($this->quiz->context);
     }
 
-    public function test_user_see_unfinished_quiz_result_should_forbidden(): void
+    public function test_user_see_unfinished_quiz_result_should_not_found(): void
     {
         $response = $this->get('/results/' . $this->result->id);
 
         $response
-            ->assertForbidden();
+            ->assertNotFound();
     }
 
     public function test_result_only_viewed_by_authorized(): void

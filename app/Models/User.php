@@ -95,7 +95,7 @@ class User extends Authenticatable
             ->where('quizzes.id', $quizId)
             ->first();
 
-        return null !== $result;
+        return $result !== null;
     }
 
     public function getLastQuizSession(): ?QuizSession
