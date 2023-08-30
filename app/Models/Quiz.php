@@ -54,7 +54,6 @@ class Quiz extends Model
             'results' => fn ($query) => $query
                 ->select('id', 'quiz_id', 'user_id', 'score', 'completed_at')
                 ->whereBelongsTo($user)
-                ->latest()
                 ->with('quizSession'),
         ]);
     }
