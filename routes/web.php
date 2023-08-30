@@ -23,12 +23,14 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(function () {
 
     Route::get('/', [HomeController::class, 'index'])->name('home');
-    
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
-    Route::resource('quizzes', QuizController::class)->only('show');
+
+    Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])
+        ->name('quizzes.show')
+        ->can('view', 'quiz');
 
     Route::post('/quizzes/work', [QuizSessionController::class, 'start'])->name('quiz_sessions.start');
     Route::get('/quizzes/work/{quizSession}', [QuizSessionController::class, 'continue'])
@@ -40,9 +42,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/quizzes/work/{quizSession}/complete',  [QuizSessionController::class, 'complete'])
         ->name('quiz_sessions.complete')
         ->can('delete', 'quizSession');
-    Route::get('/quizzes/work/{quizSession}/timeout', [QuizSessionController::class, 'timeout'])->name('quiz_sessions.timeout');
+    Route::get('/quizzes/work/{quizSession}/timeout', [QuizSessionController::class, 'timeout'])
+        ->name('quiz_sessions.timeout')
+        ->can('view', 'quizSession');
 
-    Route::get('/results/{result}', [ResultController::class, 'show'])->name('results.show');
+    Route::get('/results/{result}', [ResultController::class, 'show'])
+        ->name('results.show')
+        ->can('view', 'result');
 });
 
 require __DIR__.'/auth.php';

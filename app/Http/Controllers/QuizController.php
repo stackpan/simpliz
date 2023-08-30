@@ -22,12 +22,10 @@ class QuizController extends Controller
      */
     public function show(Quiz $quiz): View
     {
-        $this->authorize('view', $quiz);
-        
         return view('quiz.show')
             ->with([
                 'quiz' => $this->service->loadDetails($quiz),
             ]);
     }
-    
+
 }
