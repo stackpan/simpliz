@@ -20,6 +20,8 @@ class ResultController extends Controller
 
     public function show(Result $result): View
     {
+        $this->authorize('view', $result);
+
         return view('result.show')
             ->with([
                 'result' => $this->service->loadDetails($result),
