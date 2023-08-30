@@ -35,7 +35,7 @@
                             <td class="text-gray-500 text-end"><a href="{{ route('quiz_sessions.continue', $lastQuizSession->id) . '?page=' . $lastQuizSession->last_question_page }}"><span>{{ __('continue') }}</span><x-icon.arrow-sm-right class="inline-block ml-2" /></a></td>
                             @else
                             <td class="font-bold">{{ $result->score }}%</td>
-                            <td>{{ $result->completed_at->timezone('Asia/Jakarta') }}</td>
+                            <td>{{ $result->completed_at->timezone('Asia/Jakarta')->diffForHumans() }}</td>
                             <td class="text-gray-500 text-end"><a href="{{ route('results.show', $result->id) }}"><span>{{ __('details') }}</span><x-icon.arrow-sm-right class="inline-block ml-2" /></a></td>
                             @endif
                         </tr>
