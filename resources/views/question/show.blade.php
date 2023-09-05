@@ -83,7 +83,7 @@
 
         const countdown = (callback) => {
 
-            const diff = +new Date(`{!! $quizSession->ends_at !!} UTC`) - +new Date();
+            const diff = +new Date(`{!! $quizSession->ends_at->toISOString() !!}`) - +new Date();
 
             let remaining = "";
 
