@@ -33,7 +33,7 @@ class ResultTest extends TestCase
 
         TestUtilAuth::userLogin($this, $this->user);
 
-        $this->post('/quizzes/work', [
+        $this->post(route('quiz_sessions.start'), [
             'quizId' => $this->quiz->id,
         ]);
 
@@ -42,7 +42,7 @@ class ResultTest extends TestCase
 
     public function test_user_see_result_success(): void
     {
-        $this->delete('/quizzes/work/' . $this->result->quizSession->id . '/complete');
+        $this->delete(route('quiz_sessions.complete'));
 
         $response = $this->get('/results/' . $this->result->id);
 
@@ -53,7 +53,7 @@ class ResultTest extends TestCase
 
     public function test_user_see_unfinished_quiz_result_should_not_found(): void
     {
-        $response = $this->get('/results/' . $this->result->id);
+        $response = $this->get(route('results.show', [$this->result->id]));
 
         $response
             ->assertNotFound();
@@ -67,11 +67,11 @@ class ResultTest extends TestCase
 
         $this
             ->actingAs($this->user)
-            ->delete('/quizzes/work/' . $this->result->quizSession->id . '/complete');
+            ->delete(route('quiz_sessions.complete'));
 
         $response = $this
             ->actingAs($otherUser)
-            ->get('/results/' . $this->result->id);
+            ->get(route('results.show', [$this->result->id]));
 
         $response->assertForbidden();
     }
