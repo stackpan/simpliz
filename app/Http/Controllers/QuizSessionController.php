@@ -30,7 +30,7 @@ class QuizSessionController extends Controller
         $quizSession = $this->service
             ->handleStart($request->validated());
 
-        $activity = $this->activityService
+        $this->activityService
             ->storeQuizActivity(
                 QuizAction::Start,
                 $request->user(),
@@ -38,14 +38,12 @@ class QuizSessionController extends Controller
             );
 
         return redirect()
-            ->route('quiz_sessions.continue', $quizSession->id);
+            ->route('quiz_sessions.continue');
     }
 
-    public function continue(Request $request, QuizSession $quizSession): View | RedirectResponse
+    public function continue(Request $request): View | RedirectResponse
     {
-        if ($quizSession->isTimeout()) {
-            return redirect()->route('quiz_sessions.timeout', $quizSession->id);
-        }
+        $quizSession = $request->quizSession;
 
         $pageNumber = $request->query('page');
 
@@ -61,16 +59,14 @@ class QuizSessionController extends Controller
             ]);
     }
 
-    public function answer(AnswerQuizSessionRequest $request, QuizSession $quizSession): RedirectResponse
+    public function answer(AnswerQuizSessionRequest $request): RedirectResponse
     {
-        if ($quizSession->isTimeout()) {
-            return redirect()->route('quiz_sessions.timeout', $quizSession->id);
-        }
+        $quizSession = $request->quizSession;
 
         $this->service
             ->handleAnswer($request->validated());
 
-        $activity = $this->activityService
+        $this->activityService
             ->storeQuizActivity(
                 QuizAction::Answer,
                 $request->user(),
@@ -80,12 +76,14 @@ class QuizSessionController extends Controller
         return redirect()->back();
     }
 
-    public function complete(Request $request, QuizSession $quizSession): RedirectResponse
+    public function complete(Request $request): RedirectResponse
     {
+        $quizSession = $request->quizSession;
+
         $resultId = $this->service
             ->handleComplete($quizSession);
 
-        $activity = $this->activityService
+        $this->activityService
             ->storeQuizActivity(
                 QuizAction::Complete,
                 $request->user(),
@@ -96,12 +94,9 @@ class QuizSessionController extends Controller
             ->route('results.show', $resultId);
     }
 
-    public function timeout(string $id): View
+    public function timeout(): View
     {
-        return view('question.timeout')
-            ->with([
-                'quizSessionId' => $id,
-            ]);
+        return view('question.timeout');
     }
 
 }

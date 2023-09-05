@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Question;
 use App\Models\UserOption;
 use App\Models\ResultQuestion;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -88,7 +89,7 @@ class Result extends Model
             ->using(UserOption::class);
     }
 
-    public function setCompleted()
+    public function setCompleted(Carbon $quizSessionEndsAt)
     {
         $totalCorrectAnswers = $this
             ->questions()
@@ -102,7 +103,7 @@ class Result extends Model
 
         $freshTimestamp = $this->freshTimestamp();
 
-        $completed_at = $freshTimestamp->greaterThan($this->quizSession->ends_at)
+        $completed_at = $freshTimestamp->greaterThan($quizSessionEndsAt)
             ? $this->quizSession->ends_at
             : $freshTimestamp;
         $completed_duration = $this->created_at->diffInMilliseconds($completed_at);
@@ -132,5 +133,5 @@ class Result extends Model
             'user',
         ]);
     }
-    
+
 }

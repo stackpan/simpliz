@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Exceptions\UserAlreadyTakeQuizException;
 use App\Models\Question;
 use App\Models\Quiz;
 use App\Models\QuizSession;
@@ -38,11 +39,11 @@ class QuizSessionTest extends TestCase
     {
         TestUtilAuth::userLogin($this, $this->user);
 
-        $response = $this->post('/quizzes/work', [
+        $response = $this->post(route('quiz_sessions.start'), [
             'quizId' => $this->quiz->id,
         ]);
 
-        $response->assertRedirectContains('/quizzes/work');
+        $response->assertRedirectContains(route('quiz_sessions.start'));
 
         $this->assertDatabaseHas('results', [
             'user_id' => $this->user->id,
@@ -66,36 +67,36 @@ class QuizSessionTest extends TestCase
 
         TestUtilAuth::userLogin($this, $this->user);
 
-        $firstQuizResponse = $this->post('/quizzes/work', [
+        $this->post(route('quiz_sessions.start'), [
             'quizId' => $this->quiz->id,
         ]);
 
-        $secondQuizResponse = $this->post('/quizzes/work', [
-            'quizId' => $otherQuiz->id,
-        ]);
-
-        $secondQuizResponse->assertRedirect();
+        $this->assertThrows(function () use ($otherQuiz) {
+            $this->withoutExceptionHandling()
+                ->post(route('quiz_sessions.start'), [
+                    'quizId' => $otherQuiz->id,
+                ]);
+        }, UserAlreadyTakeQuizException::class);
     }
 
     public function test_user_open_question_page()
     {
         TestUtilAuth::userLogin($this, $this->user);
 
-        $this->post('/quizzes/work', [
+        $this->post(route('quiz_sessions.start'), [
             'quizId' => $this->quiz->id,
         ]);
 
-        $result = Result::where('user_id', $this->user->id)->where('quiz_id', $this->quiz->id)->first();
-        $quizSession = $result->quizSession;
-
-        $response = $this->get('/quizzes/work/' . $quizSession->id);
+        $response = $this
+            ->actingAs($this->user)
+            ->get(route('quiz_sessions.continue'));
 
         $response
             ->assertOk()
             ->assertSeeText($this->quiz->questions()->first()->context);
     }
 
-    public function test_question_page_opened_by_unauthorized_should_forbidden()
+    public function test_question_page_opened_by_unauthorized_should_not_found()
     {
         $otherUser = User::factory()->create();
 
@@ -104,37 +105,33 @@ class QuizSessionTest extends TestCase
 
         $this
             ->actingAs($this->user)
-            ->post('/quizzes/work', [
+            ->post(route('quiz_sessions.start'), [
                 'quizId' => $this->quiz->id,
             ]);
 
-        $result = Result::where('user_id', $this->user->id)->where('quiz_id', $this->quiz->id)->first();
-        $quizSession = $result->quizSession;
-
         $response = $this
             ->actingAs($otherUser)
-            ->get('/quizzes/work/' . $quizSession->id);
+            ->get(route('quiz_sessions.continue'));
 
         $response
-            ->assertForbidden();
+            ->assertNotFound();
     }
 
     public function test_user_answering_question_success(): void
     {
         TestUtilAuth::userLogin($this, $this->user);
 
-        $this->post('/quizzes/work', [
+        $this->post(route('quiz_sessions.start'), [
             'quizId' => $this->quiz->id,
         ]);
 
         $result = Result::where('user_id', $this->user->id)->where('quiz_id', $this->quiz->id)->first();
-        $quizSession = $result->quizSession;
 
         $question = $this->quiz->questions()->first();
         $userOption = $result->userOptions()->where('question_id', $question->id)->first();
         $option = $question->options->first();
 
-        $response = $this->patch('/quizzes/work/' . $quizSession->id . '/answer', [
+        $response = $this->patch(route('quiz_sessions.answer'), [
             'userOptionId' => $userOption->id,
             'optionId' => $option->id,
         ]);
@@ -151,14 +148,11 @@ class QuizSessionTest extends TestCase
     {
         TestUtilAuth::userLogin($this, $this->user);
 
-        $this->post('/quizzes/work', [
+        $this->post(route('quiz_sessions.start'), [
             'quizId' => $this->quiz->id,
         ]);
 
-        $result = Result::where('user_id', $this->user->id)->where('quiz_id', $this->quiz->id)->first();
-        $quizSession = $result->quizSession;
-
-        $response = $this->delete('/quizzes/work/' . $quizSession->id . '/complete');
+        $response = $this->delete(route('quiz_sessions.complete'));
 
         $response->assertRedirectContains('/results');
     }
@@ -177,13 +171,12 @@ class QuizSessionTest extends TestCase
     {
         TestUtilAuth::userLogin($this, $this->user);
 
-        $this->post('/quizzes/work', [
+        $this->post(route('quiz_sessions.start'), [
             'quizId' => $this->quiz->id,
         ]);
 
         $result = Result::where('user_id', $this->user->id)->where('quiz_id', $this->quiz->id)->first();
         $userOptions = $result->userOptions;
-        $quizSession = $result->quizSession;
 
         $this->quiz->questions->each(function (Question $question, int $index) use ($userOptions, $selectedOptionIndex) {
             $options = $question->options;
@@ -193,7 +186,7 @@ class QuizSessionTest extends TestCase
             $userOption->save();
         });
 
-        $this->delete('/quizzes/work/' . $quizSession->id . '/complete');
+        $this->delete(route('quiz_sessions.complete'));
 
         $result->refresh();
 
@@ -204,17 +197,14 @@ class QuizSessionTest extends TestCase
     {
         TestUtilAuth::userLogin($this, $this->user);
 
-        $this->post('/quizzes/work', [
+        $this->post(route('quiz_sessions.start'), [
             'quizId' => $this->quiz->id,
         ]);
 
-        $result = Result::where('user_id', $this->user->id)->where('quiz_id', $this->quiz->id)->first();
-        $quizSession = $result->quizSession;
-
         $this->travel($this->quiz->duration + 1)->minutes();
 
-        $response = $this->get('/quizzes/work/' . $quizSession->id);
+        $response = $this->get(route('quiz_sessions.continue'));
 
-        $response->assertRedirectContains('/timeout');
+        $response->assertRedirectContains(route('quiz_sessions.timeout'));
     }
 }

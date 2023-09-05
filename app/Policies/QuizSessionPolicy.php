@@ -21,7 +21,7 @@ class QuizSessionPolicy
      */
     public function view(User $user, QuizSession $quizSession): bool
     {
-        return $quizSession->isOwnedBy($user);
+        //
     }
 
     /**
@@ -37,7 +37,7 @@ class QuizSessionPolicy
      */
     public function update(User $user, QuizSession $quizSession): bool
     {
-        return $quizSession->isOwnedBy($user);
+        //
     }
 
     /**
@@ -45,6 +45,6 @@ class QuizSessionPolicy
      */
     public function delete(User $user, QuizSession $quizSession): bool
     {
-        return $quizSession->isOwnedBy($user);
+        //
     }
 }

@@ -48,6 +48,8 @@ class QuizSessionService
 
         DB::commit();
 
+        cache()->put('quizSessions:' . auth()->user()->id, $quizSession, now()->addMinutes($quiz->duration));
+
         return $quizSession;
     }
 
@@ -92,8 +94,9 @@ class QuizSessionService
                 ]);
             });
 
-        $quizSession->result->setCompleted();
+        $quizSession->result->setCompleted($quizSession->ends_at);
         $quizSession->delete();
+        cache()->forget('quizSessions:' . auth()->user()->id);
 
         DB::commit();
 

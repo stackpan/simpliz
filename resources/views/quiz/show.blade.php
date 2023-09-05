@@ -1,5 +1,5 @@
 <x-app-layout>
-    
+
     <div class="py-6 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-col-reverse">
 
         <div>
@@ -20,7 +20,7 @@
                     <p class="my-1 text-lg md:text-xl font-bold text-gray-600"><x-icon.clock class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6" /><span>{{ $quiz->duration }} {{ __('Minutes') }}</span></p>
                 </div>
             </div>
-            
+
             @if(count($quiz->results))
             <div class="py-4">
                 <table class="w-full table-auto">
@@ -32,7 +32,7 @@
                                 @php $lastQuizSession = $result->quizSession @endphp
                             <td class="font-bold text-gray-500">{{ __('In progress') }}</td>
                             <td></td>
-                            <td class="text-gray-500 text-end"><a href="{{ route('quiz_sessions.continue', $lastQuizSession->id) . '?page=' . $lastQuizSession->last_question_page }}"><span>{{ __('continue') }}</span><x-icon.arrow-sm-right class="inline-block ml-2" /></a></td>
+                            <td class="text-gray-500 text-end"><a href="{{ route('quiz_sessions.continue') . '?page=' . $lastQuizSession->last_question_page }}"><span>{{ __('continue') }}</span><x-icon.arrow-sm-right class="inline-block ml-2" /></a></td>
                             @else
                             <td class="font-bold">{{ $result->score }}%</td>
                             <td>{{ $result->completed_at->timezone('Asia/Jakarta')->diffForHumans() }}</td>
@@ -48,7 +48,7 @@
         <div class="mt-12 sm:mt-0 sm:mb-8 flex flex-row justify-between">
             <x-button.link href="{{ route('home') }}"><x-icon.arrow-sm-left class="inline-block mr-2 align-text-top w-6 h-6" /><span>{{ __('Back') }}</span></x-button.link>
             @isset($lastQuizSession)
-            <a href="{{ route('quiz_sessions.continue', $lastQuizSession->id) . '?page=' . $lastQuizSession->last_question_page }}"><x-button.secondary type="button">{{ __('Continue') }}</x-button.secondary></a>
+            <a href="{{ route('quiz_sessions.continue') . '?page=' . $lastQuizSession->last_question_page }}"><x-button.secondary type="button">{{ __('Continue') }}</x-button.secondary></a>
             @else
             <form action="{{ route('quiz_sessions.start') }}" method="post">
                 @csrf

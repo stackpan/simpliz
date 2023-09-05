@@ -1,12 +1,5 @@
 <?php
 
-use App\Http\Controllers\{
-    HomeController,
-    ProfileController,
-    QuizController,
-    QuizSessionController,
-    ResultController,
-};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,31 +15,36 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])
+        ->name('home');
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])
+        ->name('profile.edit');
+    Route::patch('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])
+        ->name('profile.update');
+    Route::delete('/profile', [\App\Http\Controllers\ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
 
-    Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])
+    Route::get('/quizzes/{quiz}', [\App\Http\Controllers\QuizController::class, 'show'])
         ->name('quizzes.show')
         ->can('view', 'quiz');
 
-    Route::post('/quizzes/work', [QuizSessionController::class, 'start'])->name('quiz_sessions.start');
-    Route::get('/quizzes/work/{quizSession}', [QuizSessionController::class, 'continue'])
-        ->name('quiz_sessions.continue')
-        ->can('view', 'quizSession');
-    Route::patch('/quizzes/work/{quizSession}/answer', [QuizSessionController::class, 'answer'])
-        ->name('quiz_sessions.answer')
-        ->can('update', 'quizSession');
-    Route::delete('/quizzes/work/{quizSession}/complete',  [QuizSessionController::class, 'complete'])
-        ->name('quiz_sessions.complete')
-        ->can('delete', 'quizSession');
-    Route::get('/quizzes/work/{quizSession}/timeout', [QuizSessionController::class, 'timeout'])
-        ->name('quiz_sessions.timeout')
-        ->can('view', 'quizSession');
+    Route::post('/quiz/sessions', [\App\Http\Controllers\QuizSessionController::class, 'start'])
+        ->name('quiz_sessions.start');
+    Route::middleware(\App\Http\Middleware\QuizSessionMiddleware::class)->group(function () {
+        Route::middleware(\App\Http\Middleware\QuizSessionTimeout::class)->group(function () {
+            Route::get('/quiz/sessions', [\App\Http\Controllers\QuizSessionController::class, 'continue'])
+                ->name('quiz_sessions.continue');
+            Route::patch('/quiz/sessions/answer', [\App\Http\Controllers\QuizSessionController::class, 'answer'])
+                ->name('quiz_sessions.answer');
+        });
+        Route::delete('/quiz/sessions',  [\App\Http\Controllers\QuizSessionController::class, 'complete'])
+            ->name('quiz_sessions.complete');
+        Route::get('/quiz/sessions/timeout', [\App\Http\Controllers\QuizSessionController::class, 'timeout'])
+            ->name('quiz_sessions.timeout');
+    });
 
-    Route::get('/results/{result}', [ResultController::class, 'show'])
+    Route::get('/results/{result}', [\App\Http\Controllers\ResultController::class, 'show'])
         ->name('results.show')
         ->can('view', 'result');
 });
