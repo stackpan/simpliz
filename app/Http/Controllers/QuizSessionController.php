@@ -55,7 +55,7 @@ class QuizSessionController extends Controller
             ->with([
                 'quizSession' => $quizSession,
                 'questions' => $this->service
-                    ->getPaginatedQuestions($quizSession)
+                    ->getPaginatedQuestions($quizSession, $request->get('page', 1))
             ]);
     }
 

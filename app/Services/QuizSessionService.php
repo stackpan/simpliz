@@ -15,7 +15,8 @@ class QuizSessionService
 
     public function __construct(
         private QuizSession $model,
-    ) {
+    )
+    {
         //
     }
 
@@ -53,13 +54,17 @@ class QuizSessionService
         return $quizSession;
     }
 
-    public function getPaginatedQuestions(QuizSession $quizSession): LengthAwarePaginator
+    public function getPaginatedQuestions(QuizSession $quizSession, int $page): LengthAwarePaginator
     {
-        return $quizSession->result
-            ->quiz
-            ->questions()
-            ->with('options:id,question_id,body')
-            ->paginate(1);
+        return cache()->remember(
+            "questions:{$quizSession->result->quiz->id}:$page",
+            config('cache.expiration'),
+            fn() => $quizSession->result
+                ->quiz
+                ->questions()
+                ->with('options:id,question_id,body')
+                ->paginate(1)
+        );
     }
 
     public function handleAnswer(array $validated): void
@@ -103,7 +108,8 @@ class QuizSessionService
         return $quizSession->result->id;
     }
 
-    public function setLastPage(QuizSession $quizSession, int $page) {
+    public function setLastPage(QuizSession $quizSession, int $page)
+    {
         $quizSession->last_question_page = $page;
         $quizSession->save();
     }
