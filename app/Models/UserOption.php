@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Option;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,10 +21,9 @@ class UserOption extends Pivot
         return $this->belongsTo(Option::class);
     }
 
-    public function findByResultAndQuestion(string $resultId, string $questionId): ?UserOption
+    public function scopeGetByResultAndQuestion(Builder $query, string $resultId, string $questionId): \Illuminate\Database\Eloquent\Model
     {
-        return $this
-            ->where('result_id', $resultId)
+        return $query->where('result_id', $resultId)
             ->where('question_id', $questionId)
             ->first();
     }

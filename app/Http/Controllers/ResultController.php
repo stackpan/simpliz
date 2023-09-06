@@ -3,17 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Result;
+use App\Services\Impl\QuestionServiceImpl;
+use App\Services\Impl\ResultServiceImpl;
 use Illuminate\View\View;
-use Illuminate\Http\Request;
-use App\Services\ResultService;
-use App\Services\QuestionService;
 
 class ResultController extends Controller
 {
 
     public function __construct(
-        private ResultService $service,
-        private QuestionService $questionService,
+        private ResultServiceImpl   $service,
+        private QuestionServiceImpl $questionService,
     ) {
         //
     }

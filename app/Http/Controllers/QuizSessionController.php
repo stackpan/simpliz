@@ -3,21 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Enums\QuizAction;
-use Illuminate\View\View;
-use App\Models\QuizSession;
-use Illuminate\Http\Request;
-use App\Services\ActivityService;
-use App\Services\QuizSessionService;
-use Illuminate\Http\RedirectResponse;
-use App\Http\Requests\QuizSession\StartQuizSessionRequest;
 use App\Http\Requests\QuizSession\AnswerQuizSessionRequest;
+use App\Http\Requests\QuizSession\StartQuizSessionRequest;
+use App\Models\QuizSession;
+use App\Services\Impl\ActivityServiceImpl;
+use App\Services\Impl\QuizSessionServiceImpl;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class QuizSessionController extends Controller
 {
 
     public function __construct(
-        private QuizSessionService $service,
-        private ActivityService $activityService,
+        private QuizSessionServiceImpl $service,
+        private ActivityServiceImpl    $activityService,
     ) {
     }
 

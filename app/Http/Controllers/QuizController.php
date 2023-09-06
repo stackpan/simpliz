@@ -3,17 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Quiz;
-use App\Models\Result;
+use App\Services\Impl\QuizServiceImpl;
 use Illuminate\View\View;
-use Illuminate\Http\Request;
-use App\Services\QuizService;
-use App\Services\ResultService;
 
 class QuizController extends Controller
 {
 
     public function __construct(
-        private QuizService $service,
+        private QuizServiceImpl $service,
     ) {
     }
 

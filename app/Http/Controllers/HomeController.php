@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Impl\QuizServiceImpl;
 use Illuminate\View\View;
-use Illuminate\Http\Request;
-use App\Services\QuizService;
 
 class HomeController extends Controller
 {
 
     public function __construct(
-        private QuizService $quizService,
+        private QuizServiceImpl $quizService,
     ) {
         //
     }
