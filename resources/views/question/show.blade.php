@@ -1,5 +1,3 @@
-@inject('userOptionService', 'App\Services\UserOptionService')
-
 <x-app-layout>
     <div class="py-6 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="lg:absolute flex lg:flex-col justify-between items-start">
@@ -19,7 +17,7 @@
                     @method('patch')
 
                     @php
-                    $userOption = $userOptionService->getByForeigns($quizSession->result->id, $questions[0]->id);
+                    $userOption = \App\Services\Facades\UserOptionService::getByForeign($quizSession->result->id, $questions[0]->id);
                     @endphp
 
                     <input type="hidden" name="userOptionId" value="{{ $userOption->id }}" />

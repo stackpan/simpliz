@@ -22,6 +22,6 @@ interface QuizSessionService
 
     public function handleComplete(QuizSession $quizSession): string;
 
-    public function setLastPage(QuizSession $quizSession, int $page);
+    public function setLastPage(QuizSession $quizSession, int $page): void;
 
 }

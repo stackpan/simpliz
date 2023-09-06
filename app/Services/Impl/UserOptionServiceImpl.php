@@ -11,7 +11,7 @@ class UserOptionServiceImpl implements UserOptionService
     /**
      * Find UserOption by Result id and Question id
      */
-    public function getByForeigns(string $resultId, string $questionId): ?UserOption
+    public function getByForeign(string $resultId, string $questionId): ?UserOption
     {
         return UserOption::getByResultAndQuestion($resultId, $questionId);
     }

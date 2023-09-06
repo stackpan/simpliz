@@ -101,7 +101,7 @@ class QuizSessionServiceImpl implements QuizSessionService
         return $quizSession->result->id;
     }
 
-    public function setLastPage(QuizSession $quizSession, int $page)
+    public function setLastPage(QuizSession $quizSession, int $page): void
     {
         $quizSession->last_question_page = $page;
         $quizSession->save();

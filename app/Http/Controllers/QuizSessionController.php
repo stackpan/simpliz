@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\QuizAction;
+use App\Exceptions\UserAlreadyTakeQuizException;
 use App\Http\Requests\QuizSession\AnswerQuizSessionRequest;
 use App\Http\Requests\QuizSession\StartQuizSessionRequest;
 use App\Models\QuizSession;
 use App\Services\Facades\ActivityService;
 use App\Services\Facades\QuizSessionService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -15,6 +17,10 @@ use Illuminate\View\View;
 class QuizSessionController extends Controller
 {
 
+    /**
+     * @throws UserAlreadyTakeQuizException
+     * @throws AuthorizationException
+     */
     public function start(StartQuizSessionRequest $request): RedirectResponse
     {
         $request->ensureUserIsNotInAQuizSession();
