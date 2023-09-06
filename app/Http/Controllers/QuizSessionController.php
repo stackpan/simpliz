@@ -6,8 +6,8 @@ use App\Enums\QuizAction;
 use App\Http\Requests\QuizSession\AnswerQuizSessionRequest;
 use App\Http\Requests\QuizSession\StartQuizSessionRequest;
 use App\Models\QuizSession;
-use App\Services\Impl\ActivityServiceImpl;
-use App\Services\Impl\QuizSessionServiceImpl;
+use App\Services\Facades\ActivityService;
+use App\Services\Facades\QuizSessionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -15,23 +15,15 @@ use Illuminate\View\View;
 class QuizSessionController extends Controller
 {
 
-    public function __construct(
-        private QuizSessionServiceImpl $service,
-        private ActivityServiceImpl    $activityService,
-    ) {
-    }
-
     public function start(StartQuizSessionRequest $request): RedirectResponse
     {
         $request->ensureUserIsNotInAQuizSession();
 
         $this->authorize('create', [QuizSession::class, $request->quizId]);
 
-        $quizSession = $this->service
-            ->handleStart($request->validated());
+        $quizSession = QuizSessionService::handleStart($request->validated());
 
-        $this->activityService
-            ->storeQuizActivity(
+        ActivityService::storeQuizActivity(
                 QuizAction::Start,
                 $request->user(),
                 $quizSession->result->quiz
@@ -48,14 +40,13 @@ class QuizSessionController extends Controller
         $pageNumber = $request->query('page');
 
         if (isset($pageNumber)) {
-            $this->service->setLastPage($quizSession, $pageNumber);
+            QuizSessionService::setLastPage($quizSession, $pageNumber);
         }
 
         return view('question.show')
             ->with([
                 'quizSession' => $quizSession,
-                'questions' => $this->service
-                    ->getPaginatedQuestions($quizSession, $request->get('page', 1))
+                'questions' => QuizSessionService::getPaginatedQuestions($quizSession, $request->get('page', 1))
             ]);
     }
 
@@ -63,11 +54,9 @@ class QuizSessionController extends Controller
     {
         $quizSession = $request->quizSession;
 
-        $this->service
-            ->handleAnswer($request->validated());
+        QuizSessionService::handleAnswer($request->validated());
 
-        $this->activityService
-            ->storeQuizActivity(
+        ActivityService::storeQuizActivity(
                 QuizAction::Answer,
                 $request->user(),
                 $quizSession->result->quiz
@@ -80,11 +69,9 @@ class QuizSessionController extends Controller
     {
         $quizSession = $request->quizSession;
 
-        $resultId = $this->service
-            ->handleComplete($quizSession);
+        $resultId = QuizSessionService::handleComplete($quizSession);
 
-        $this->activityService
-            ->storeQuizActivity(
+        ActivityService::storeQuizActivity(
                 QuizAction::Complete,
                 $request->user(),
                 $quizSession->result->quiz

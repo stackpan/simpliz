@@ -3,16 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Quiz;
-use App\Services\Impl\QuizServiceImpl;
+use App\Services\Facades\QuizService;
 use Illuminate\View\View;
 
 class QuizController extends Controller
 {
-
-    public function __construct(
-        private QuizServiceImpl $service,
-    ) {
-    }
 
     /**
      * Display the specified resource.
@@ -21,7 +16,7 @@ class QuizController extends Controller
     {
         return view('quiz.show')
             ->with([
-                'quiz' => $this->service->loadDetails($quiz),
+                'quiz' => QuizService::loadDetails($quiz),
             ]);
     }
 
