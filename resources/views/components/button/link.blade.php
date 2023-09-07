@@ -1,3 +1,3 @@
-<a class="py-1 text-md sm:text-lg decoration-solid text-gray-600" {{ $attributes->merge(['href']) }} >
+<button class="btn btn-active btn-link" {{ $attributes->merge(['href']) }} >
     {{ $slot }}
-</a>
+</button>
