@@ -20,10 +20,10 @@
     <div class="drawer-content flex flex-col">
         <!-- Navbar -->
         <nav class="bg-base-300">
-            <div class="max-w-7xl mx-auto navbar">
-                <div class="flex-1 px-2 mx-2">
+            <div class="max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto navbar">
+                <div class="flex-1">
                     <a href="{{ route('home') }}">
-                        <x-application-logo class="block fill-current text-base-content" />
+                        <x-application-logo class="block fill-current text-base-content"/>
                     </a>
                 </div>
                 <div class="flex-none hidden lg:block">
