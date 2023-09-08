@@ -14,7 +14,6 @@
                             <h2 class="text-2xl font-bold line-clamp-2">{{ $quiz->name }}</h2>
                             <p class="text-gray-600">{{ $quiz->questions_count }} {{ __('questions') }}</p>
                         </div>
-                        
                         <div class="flex justify-between">
                             <p class="text-gray-600">{{ $quiz->duration }} {{ __('minutes') }}</p>
                             <div><span class="mr-2" aria-hidden="true">{{ __('Open') }}</span><x-icon.arrow-sm-right class="before:content-['Open'] inline-block align-text-top w-5 h-5" /></div>
@@ -27,5 +26,5 @@
     </div>
     @else
     <div class="py-6 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-gray-600">{{ __("You didn't have any quiz") }}</div>
-    @endif  
+    @endif
 </x-app-layout>
