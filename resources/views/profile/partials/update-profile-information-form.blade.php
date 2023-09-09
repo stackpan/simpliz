@@ -1,10 +1,10 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="text-lg font-medium text-primary-content/90">
             {{ __('Profile Information') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
+        <p class="mt-1 text-sm text-primary-content/80">
             {{ __("Update your account's profile information and email address.") }}
         </p>
     </header>
@@ -20,15 +20,15 @@
         @method('patch')
 
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+            <x-input.label for="name" :text="__('Name')" />
+            <x-input.text id="name" name="name" type="text" class="w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <x-input.error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
+            <x-input.label for="email" :text="__('Email')" />
+            <x-input.text id="email" name="email" type="email" class="w-full" :value="old('email', $user->email)" required autocomplete="username" />
+            <x-input.error class="mt-2" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div>
@@ -50,13 +50,13 @@
         </div>
 
         <div>
-            <x-input-label for="gender" :value="__('Gender')" />
-            <x-input-select name="gender" id="gender" class="block mt-1" :options="App\Enums\UserGender::cases()" :selected="$user->gender->value" required autocomplete="gender"/>
-            <x-input-error :messages="$errors->get('gender')" class="mt-2" />
+            <x-input.label for="gender" :text="__('Gender')" />
+            <x-input.select name="gender" id="gender" class="mt-1" :options="App\Enums\UserGender::cases()" :selected="$user->gender->value" required autocomplete="gender"/>
+            <x-input.error :messages="$errors->get('gender')" class="mt-2" />
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <x-button.primary type="submit">{{ __('Save') }}</x-button.primary>
 
             @if (session('status') === 'profile-updated')
                 <p

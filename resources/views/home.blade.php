@@ -1,6 +1,8 @@
 <x-app-layout>
   <x-slot name="header">
-    <h2>{{ __('Your Available Quiz') }}</h2>
+    <h2 class="font-semibold text-2xl text-primary-content/80 leading-tight">
+      {{ __('Your available quiz') }}
+    </h2>
   </x-slot>
 
   @if (count($quizzes) > 0)
@@ -9,7 +11,7 @@
         class="w-full flex flex-wrap justify-between lg:[&>*:nth-child(3n)]:pr-0 sm:[&>*:nth-child(-n+2)]:pt-0 lg:[&>*:nth-child(-n+3)]:pt-0">
         @foreach($quizzes as $quiz)
           <div class="basis-full sm:basis-1/2 lg:basis-1/3 sm:pr-4 pt-4 first:pt-0 sm:max-lg:even:pr-0">
-            <div class="card h-60 bg-neutral text-neutral-content">
+            <div class="card h-60 bg-neutral text-primary-content">
               <div class="card-body">
                 <h2 class="card-title">{{ $quiz->name }}</h2>
                 <p>{{ $quiz->questions_count }} {{ __('questions') }}</p>
