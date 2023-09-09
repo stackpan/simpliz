@@ -40,7 +40,7 @@ class UserAlreadyTakeQuizException extends Exception
     {
         return redirect()->back()->withErrors([
             'body' => $this->message,
-            'last_session_url' => route('quiz_sessions.continue', $this->lastQuizSession) . '?page=' . $this->lastQuizSession->last_question_page,
+            'last_session_url' => route('quiz_sessions.continue') . '?page=' . $this->lastQuizSession->last_question_page,
         ], 'user_already_take_quiz');
     }
 

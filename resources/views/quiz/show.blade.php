@@ -7,9 +7,9 @@
       @if($errors->hasBag('user_already_take_quiz'))
         @php $error = $errors->getBag('user_already_take_quiz'); @endphp
         <div>
-          <p class="text-red-500">{{ $error->first('body') }}</p>
+          <p class="text-error">{{ $error->first('body') }}</p>
           <a href="{{ $error->first('last_session_url') }}"
-             class="text-purple-500 font-bold"><span>Go back to your work</span>
+             class="text-info font-bold"><span>Go back to your work</span>
             <x-icon.arrow-sm-right class="inline-block align-text-top"/>
           </a>
         </div>
@@ -17,12 +17,12 @@
 
       <div class="py-4 mb-6">
         <h1 class="text-4xl font-bold mb-6">{{ $quiz->name }}</h1>
-        <p class="text-gray-600 mb-6">{{ $quiz->description }}</p>
+        <p class="text-base-content/80 mb-6">{{ $quiz->description }}</p>
         <div class="flex flex-col justify-between">
-          <p class="my-1 text-lg md:text-xl font-bold text-gray-600">
+          <p class="my-1 text-lg md:text-xl font-bold text-base-content/80">
             <x-icon.clipboard-document-list class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6"/>
             <span>{{ $quiz->questions_count }} {{ __('Questions') }}</span></p>
-          <p class="my-1 text-lg md:text-xl font-bold text-gray-600">
+          <p class="my-1 text-lg md:text-xl font-bold text-base-content/80">
             <x-icon.clock class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6"/>
             <span>{{ $quiz->duration }} {{ __('Minutes') }}</span></p>
         </div>
@@ -39,14 +39,14 @@
                   @php $lastQuizSession = $result->quizSession @endphp
                   <td class="font-bold text-gray-500">{{ __('In progress') }}</td>
                   <td></td>
-                  <td class="text-gray-500 text-end"><a
+                  <td class="text-base-content/70 text-end"><a
                       href="{{ route('quiz_sessions.continue') . '?page=' . $lastQuizSession->last_question_page }}"><span>{{ __('continue') }}</span>
                       <x-icon.arrow-sm-right class="inline-block ml-2"/>
                     </a></td>
                 @else
                   <td class="font-bold">{{ $result->score }}%</td>
                   <td>{{ $result->completed_at->timezone('Asia/Jakarta')->diffForHumans() }}</td>
-                  <td class="text-gray-500 text-end"><a
+                  <td class="text-base-content/70 text-end"><a
                       href="{{ route('results.show', $result->id) }}"><span>{{ __('details') }}</span>
                       <x-icon.arrow-sm-right class="inline-block ml-2"/>
                     </a></td>
@@ -60,7 +60,7 @@
     </div>
     <div class="mt-12 sm:mt-0 sm:mb-8 flex flex-row justify-between">
       <a href="{{ route('home') }}">
-        <x-button.link>
+        <x-button.link class="px-0">
           <x-icon.arrow-sm-left class="inline-block mr-2 align-text-top w-6 h-6"/>
           <span>{{ __('Back') }}</span></x-button.link>
       </a>

@@ -1,3 +1,3 @@
-<button class="btn btn-active btn-link" {{ $attributes->merge(['href']) }} >
+<button {{ $attributes->merge(['href', 'class' => "btn btn-active btn-link text-primary-content/80"]) }} >
     {{ $slot }}
 </button>
