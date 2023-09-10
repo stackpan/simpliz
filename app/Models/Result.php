@@ -15,6 +15,36 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * App\Models\Result
+ *
+ * @property string $id
+ * @property string $user_id
+ * @property string $quiz_id
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon|null $completed_at
+ * @property int|null $completed_duration
+ * @property float|null $score
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Question> $questions
+ * @property-read int|null $questions_count
+ * @property-read \App\Models\Quiz $quiz
+ * @property-read \App\Models\QuizSession|null $quizSession
+ * @property-read \App\Models\User $user
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, UserOption> $userOptions
+ * @property-read int|null $user_options_count
+ * @method static Builder|Result newModelQuery()
+ * @method static Builder|Result newQuery()
+ * @method static Builder|Result query()
+ * @method static Builder|Result whereCompletedAt($value)
+ * @method static Builder|Result whereCompletedDuration($value)
+ * @method static Builder|Result whereCreatedAt($value)
+ * @method static Builder|Result whereId($value)
+ * @method static Builder|Result whereQuizId($value)
+ * @method static Builder|Result whereScore($value)
+ * @method static Builder|Result whereUserId($value)
+ * @method static Builder|Result withDetails()
+ * @mixin \Eloquent
+ */
 class Result extends Model
 {
     use HasFactory, HasUuids;

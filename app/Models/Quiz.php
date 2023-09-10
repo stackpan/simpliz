@@ -10,6 +10,34 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * App\Models\Quiz
+ *
+ * @property string $id
+ * @property string $name
+ * @property string $description
+ * @property int $duration
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Question> $questions
+ * @property-read int|null $questions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Result> $results
+ * @property-read int|null $results_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @property-read int|null $users_count
+ * @method static \Database\Factories\QuizFactory factory($count = null, $state = [])
+ * @method static Builder|Quiz newModelQuery()
+ * @method static Builder|Quiz newQuery()
+ * @method static Builder|Quiz query()
+ * @method static Builder|Quiz whereCreatedAt($value)
+ * @method static Builder|Quiz whereDescription($value)
+ * @method static Builder|Quiz whereDuration($value)
+ * @method static Builder|Quiz whereId($value)
+ * @method static Builder|Quiz whereName($value)
+ * @method static Builder|Quiz whereUpdatedAt($value)
+ * @method static Builder|Quiz withQuestionsCount()
+ * @mixin \Eloquent
+ */
 class Quiz extends Model
 {
     use HasFactory, HasUuids;
