@@ -1,139 +1,128 @@
+@php use App\Services\Facades\UserOptionService; @endphp
 <x-app-layout>
-  <div class="py-6 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="lg:absolute flex lg:flex-col justify-between items-start">
-      <h2
-        class="inline-block px-4 py-1 font-bold text-2xl sm:text-3xl bg-primary/40 text-primary-content/80 text-center">{{ $questions->currentPage() }}</h2>
-      <p class="lg:mt-8 font-bold">
-        <x-icon.clock class="inline-block lg:block md:w-6 lg:w-10 md:h-6 lg:h-10 text-primary-content/20"/>
-        <span id="countdownTimer" class="text-primary-content/80 align-middle">00:00</span></p>
-    </div>
-    <div class="sm:max-w-xl lg:max-w-3xl mx-auto lg:px-8">
-      <section class="my-4 lg:mt-0 leading-snug sm:leading-tight sm:text-lg">
-        @isset($questions[0]->context)
-          <p class="mb-4">{{ $questions[0]->context }}</p>
-        @endisset
-        <p>{{ $questions[0]->body }}</p>
-      </section>
-      <section class="my-4 leading-snug sm:leading-tight sm:text-lg">
-        <form action="{{ route('quiz_sessions.answer', $quizSession->id) }}" method="post">
-          @csrf
-          @method('patch')
+    <div class="py-6 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="lg:absolute flex lg:flex-col justify-between items-start">
+            <h2
+                class="inline-block px-4 py-1 font-bold text-2xl sm:text-3xl bg-neutral text-primary-content/80 text-center rounded">{{ $questions->currentPage() }}</h2>
+            <p class="lg:mt-8 font-bold">
+                <x-icon.clock class="inline-block lg:block md:w-6 lg:w-10 md:h-6 lg:h-10 text-primary-content/20"/>
+                <span id="countdownTimer" class="text-primary-content/80 align-middle">00:00</span></p>
+        </div>
+        <div class="sm:max-w-xl lg:max-w-3xl mx-auto lg:px-8">
+            <section class="my-4 lg:mt-0 leading-snug sm:leading-tight sm:text-lg">
+                @isset($questions[0]->context)
+                    <p class="mb-4">{{ $questions[0]->context }}</p>
+                @endisset
+                <p>{{ $questions[0]->body }}</p>
+            </section>
+            <section class="my-4 leading-snug sm:leading-tight sm:text-lg">
+                <form action="{{ route('quiz_sessions.answer', $quizSession->id) }}" method="post">
+                    @csrf
+                    @method('patch')
 
-          @php
-            $userOption = \App\Services\Facades\UserOptionService::getByForeign($quizSession->result->id, $questions[0]->id);
-          @endphp
+                    @php
+                        $userOption = UserOptionService::getByForeign($quizSession->result->id, $questions[0]->id);
+                    @endphp
 
-          <input type="hidden" name="userOptionId" value="{{ $userOption->id }}"/>
-          <input type="hidden" name="questionPage" value="{{ $questions->currentPage() }}"/>
+                    <input type="hidden" name="userOptionId" value="{{ $userOption->id }}"/>
+                    <input type="hidden" name="questionPage" value="{{ $questions->currentPage() }}"/>
 
-          @foreach($questions[0]->options as $option)
-            <div class="flex my-2 gap-2">
-              <input type="radio" name="optionId" id="{{ 'option-' . $option->id }}" value="{{ $option->id }}"
-                     class="mt-1 text-gray-600 focus:ring-gray-400"
-                     @if($userOption->option_id === $option->id)
-                       checked
+                    @foreach($questions[0]->options as $option)
+                        <div class="flex my-2 gap-2">
+                            <input type="radio" name="optionId" id="{{ 'option-' . $option->id }}"
+                                   value="{{ $option->id }}"
+                                   class="mt-1 text-primary-content/70 focus:ring-primary-content/40"
+                                   @if($userOption->option_id === $option->id)
+                                       checked
+                                @endif
+                            >
+                            <label for="{{ 'option-' . $option->id }}">{{ $option->body }}</label>
+                        </div>
+                    @endforeach
+
+                    <button type="submit" class="hidden" id="submitBtn"></button>
+                </form>
+            </section>
+            <div class="mt-12 flex flex-col sm:flex-row-reverse sm:justify-between gap-4">
+                @if($questions->onLastPage())
+                    <div>
+                        <x-button.primary type="button" class="w-full" id="complete"
+                                          onclick="confirmModal.showModal()">{{ __('Complete') }}</x-button.primary>
+                    </div>
+                    <dialog id="confirmModal" class="modal modal-middle">
+                        <div class="modal-box">
+                            <h3 class="font-bold text-lg">{{ __('Confirmation') }}</h3>
+                            <p class="py-4">{{ __('Are you sure to finish the quiz?') }}</p>
+                            <div class="modal-action">
+                                <form action="{{ route('quiz_sessions.complete', $quizSession->id) }}" method="post">
+                                    @csrf
+                                    @method('delete')
+                                    <x-button.primary id="confirmYes">{{ __('Yes') }}</x-button.primary>
+                                </form>
+                                <form method="dialog">
+                                    <!-- if there is a button in form, it will close the modal -->
+                                    <x-button.primary class="btn">{{ __('No') }}</x-button.primary>
+                                </form>
+                            </div>
+                        </div>
+                    </dialog>
+
+                    @vite(['resources/js/completeQuizConfirmDialog'])
+                @else
+                    <a href="{{ $questions->nextPageUrl() }}">
+                        <x-button.primary type="button" class="btn-block">{{ __('Next') }}</x-button.primary>
+                    </a>
                 @endif
-              >
-              <label for="{{ 'option-' . $option->id }}">{{ $option->body }}</label>
+
+                @if(!$questions->onFirstPage())
+                    <a href="{{ $questions->previousPageUrl() }}">
+                        <x-button.secondary type="button" class="btn-block sm:btn-neutral">{{ __('Previous') }}</x-button.secondary>
+                    </a>
+                @endif
             </div>
-          @endforeach
-
-          <button type="submit" class="hidden" id="submitBtn"></button>
-        </form>
-      </section>
-      <div class="mt-12 flex flex-col sm:flex-row-reverse sm:justify-between gap-4">
-        @if($questions->onLastPage())
-          <div>
-            <x-button.primary type="button" class="w-full" id="complete"
-                              onclick="confirmModal.showModal()">{{ __('Complete') }}</x-button.primary>
-          </div>
-
-          {{--                <div class="absolute hidden max-w-sm sm:mx-auto bg-primary/10 p-6 border-t-4 border-primary left-0 right-0 mx-4" id="confirmDialog">--}}
-          {{--                    <p class="text-center text-lg mb-4 text-gray-800">{{ __('Are you sure to finish the quiz?') }}</p>--}}
-          {{--                    <form action="{{ route('quiz_sessions.complete', $quizSession->id) }}" method="post">--}}
-          {{--                        @csrf--}}
-          {{--                        @method('delete')--}}
-          {{--                        <div class="flex flex-row-reverse gap-6">--}}
-          {{--                            <x-button.primary class="w-full" id="confirmYes">{{ __('Yes') }}</x-button.primary>--}}
-          {{--                            <x-button.primary type="button" class="w-full" id="confirmNo">{{ __('No') }}</x-button.primary>--}}
-          {{--                        </div>--}}
-          {{--                    </form>--}}
-          {{--                </div>--}}
-
-          <dialog id="confirmModal" class="modal modal-middle">
-            <div class="modal-box">
-              <h3 class="font-bold text-lg">{{ __('Confirmation') }}</h3>
-              <p class="py-4">{{ __('Are you sure to finish the quiz?') }}</p>
-              <div class="modal-action">
-                <form action="{{ route('quiz_sessions.complete', $quizSession->id) }}" method="post">
-                  @csrf
-                  @method('delete')
-                  <x-button.primary id="confirmYes">{{ __('Yes') }}</x-button.primary>
-                </form>
-                <form method="dialog">
-                  <!-- if there is a button in form, it will close the modal -->
-                  <x-button.primary class="btn">{{ __('No') }}</x-button.primary>
-                </form>
-              </div>
-            </div>
-          </dialog>
-
-          @vite(['resources/js/completeQuizConfirmDialog'])
-        @else
-          <a href="{{ $questions->nextPageUrl() }}">
-            <x-button.primary type="button" class="w-full">{{ __('Next') }}</x-button.primary>
-          </a>
-        @endif
-
-        @if(!$questions->onFirstPage())
-          <a href="{{ $questions->previousPageUrl() }}">
-            <x-button.secondary type="button" class="w-full">{{ __('Previous') }}</x-button.secondary>
-          </a>
-        @endif
-      </div>
+        </div>
     </div>
-  </div>
 
-  <a href="{{ route('quiz_sessions.timeout') }}" id="goToTimeout" class="hidden"></a>
+    <a href="{{ route('quiz_sessions.timeout') }}" id="goToTimeout" class="hidden"></a>
 
-  <script>
-    const countdownTimer = document.querySelector("#countdownTimer");
-    const goToTimeout = document.querySelector("#goToTimeout");
+    <script>
+        const countdownTimer = document.querySelector("#countdownTimer");
+        const goToTimeout = document.querySelector("#goToTimeout");
 
-    countdownTimer.innerHTML = "00:00";
+        countdownTimer.innerHTML = "00:00";
 
-    const countdown = (callback) => {
+        const countdown = (callback) => {
 
-      const diff = +new Date(`{!! $quizSession->ends_at->toISOString() !!}`) - +new Date();
+            const diff = +new Date(`{!! $quizSession->ends_at->toISOString() !!}`) - +new Date();
 
-      let remaining = "";
+            let remaining = "";
 
-      if (diff < 0) callback();
+            if (diff < 0) callback();
 
-      const parts = {
-        mins: Math.floor((diff / 1000 / 60) % 60),
-        secs: Math.floor((diff / 1000) % 60),
-      };
+            const parts = {
+                mins: Math.floor((diff / 1000 / 60) % 60),
+                secs: Math.floor((diff / 1000) % 60),
+            };
 
-      remaining = Object.keys(parts)
-        .map(part => `${parts[part]}`.padStart(2, "0"))
-        .join(":");
+            remaining = Object.keys(parts)
+                .map(part => `${parts[part]}`.padStart(2, "0"))
+                .join(":");
 
-      countdownTimer.innerHTML = remaining;
-    };
+            countdownTimer.innerHTML = remaining;
+        };
 
-    countdown(() => {
-      goToTimeout.click();
-    });
+        countdown(() => {
+            goToTimeout.click();
+        });
 
-    const x = setInterval(() => {
-      countdown(() => {
-        clearInterval(x);
-        goToTimeout.click();
-      });
-    }, 1000);
-  </script>
+        const x = setInterval(() => {
+            countdown(() => {
+                clearInterval(x);
+                goToTimeout.click();
+            });
+        }, 1000);
+    </script>
 
-  @vite(['resources/js/optionSubmit'])
+    @vite(['resources/js/optionSubmit'])
 
 </x-app-layout>
