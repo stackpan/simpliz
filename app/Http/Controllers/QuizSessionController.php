@@ -41,7 +41,12 @@ class QuizSessionController extends Controller
 
     public function continue(Request $request): View | RedirectResponse
     {
-        $quizSession = $request->quizSession;
+        $quizSession = $request->quizSession
+            ->load([
+                'result:id,quiz_id' => [
+                    'quiz:id,name'
+                ]
+            ]);
 
         $pageNumber = $request->query('page');
 

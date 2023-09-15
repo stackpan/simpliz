@@ -1,4 +1,3 @@
-@php use App\Services\Facades\UserOptionService; @endphp
 <x-app-layout>
     <div class="py-6 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="lg:absolute flex lg:flex-col justify-between items-start">
@@ -16,32 +15,11 @@
                 <p>{{ $questions[0]->body }}</p>
             </section>
             <section class="my-4 leading-snug sm:leading-tight sm:text-lg">
-                <form action="{{ route('quiz_sessions.answer', $quizSession->id) }}" method="post">
-                    @csrf
-                    @method('patch')
-
-                    @php
-                        $userOption = UserOptionService::getByForeign($quizSession->result->id, $questions[0]->id);
-                    @endphp
-
-                    <input type="hidden" name="userOptionId" value="{{ $userOption->id }}"/>
-                    <input type="hidden" name="questionPage" value="{{ $questions->currentPage() }}"/>
-
-                    @foreach($questions[0]->options as $option)
-                        <div class="flex my-2 gap-2">
-                            <input type="radio" name="optionId" id="{{ 'option-' . $option->id }}"
-                                   value="{{ $option->id }}"
-                                   class="mt-1 text-primary-content/70 focus:ring-primary-content/40"
-                                   @if($userOption->option_id === $option->id)
-                                       checked
-                                @endif
-                            >
-                            <label for="{{ 'option-' . $option->id }}">{{ $option->body }}</label>
-                        </div>
-                    @endforeach
-
-                    <button type="submit" class="hidden" id="submitBtn"></button>
-                </form>
+                <livewire:question-options
+                    :options="$questions[0]->options->toArray()"
+                    :quizSession="$quizSession->toArray()"
+                    :questionId="$questions[0]->id"
+                />
             </section>
             <div class="mt-12 flex flex-col sm:flex-row-reverse sm:justify-between gap-4">
                 @if($questions->onLastPage())
@@ -122,7 +100,5 @@
             });
         }, 1000);
     </script>
-
-    @vite(['resources/js/optionSubmit'])
 
 </x-app-layout>

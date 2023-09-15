@@ -11,12 +11,12 @@ use App\Services\ActivityService;
 class ActivityServiceImpl implements ActivityService
 {
 
-    public function storeQuizActivity(QuizAction $action, User $user, Quiz $quiz): Activity
+    public function storeQuizActivity(QuizAction $action, User $user, Quiz|array $quiz): Activity
     {
         $body = [
-            QuizAction::Start->name => "Start a $quiz->name quiz",
-            QuizAction::Answer->name => "Answer a question in $quiz->name quiz",
-            QuizAction::Complete->name => "Finish a $quiz->name quiz",
+            QuizAction::Start->name => "Start a {$quiz['name']} quiz",
+            QuizAction::Answer->name => "Answer a question in {$quiz['name']} quiz",
+            QuizAction::Complete->name => "Finish a {$quiz['name']} quiz",
         ];
 
         return $user->activities()->create([
