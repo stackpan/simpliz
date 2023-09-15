@@ -20,8 +20,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])
         ->name('profile.edit');
+
     Route::patch('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])
         ->name('profile.update');
+
     Route::delete('/profile', [\App\Http\Controllers\ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 
@@ -31,15 +33,24 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/quiz/sessions', [\App\Http\Controllers\QuizSessionController::class, 'start'])
         ->name('quiz_sessions.start');
+
     Route::middleware(\App\Http\Middleware\QuizSessionMiddleware::class)->group(function () {
+
         Route::middleware(\App\Http\Middleware\QuizSessionTimeout::class)->group(function () {
+
             Route::get('/quiz/sessions', [\App\Http\Controllers\QuizSessionController::class, 'continue'])
                 ->name('quiz_sessions.continue');
-            Route::patch('/quiz/sessions/answer', [\App\Http\Controllers\QuizSessionController::class, 'answer'])
-                ->name('quiz_sessions.answer');
+
+            if (config('app.env') === 'testing') {
+                Route::patch('/quiz/sessions/answer', [\App\Http\Controllers\QuizSessionController::class, 'answer'])
+                    ->name('quiz_sessions.answer');
+            }
+
         });
+
         Route::delete('/quiz/sessions',  [\App\Http\Controllers\QuizSessionController::class, 'complete'])
             ->name('quiz_sessions.complete');
+
         Route::get('/quiz/sessions/timeout', [\App\Http\Controllers\QuizSessionController::class, 'timeout'])
             ->name('quiz_sessions.timeout');
     });

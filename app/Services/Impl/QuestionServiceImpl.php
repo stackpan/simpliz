@@ -15,6 +15,7 @@ class QuestionServiceImpl implements QuestionService
         return $result
             ->questions()
             ->withPivot('id', 'option_id', 'is_correct')
+            ->with('options')
             ->paginate(10);
     }
 
