@@ -16,9 +16,9 @@
             </section>
             <section class="my-4 leading-snug sm:leading-tight sm:text-lg">
                 <livewire:question-options
-                    :options="$questions[0]->options"
-                    :quizSession="$quizSession"
-                    :question="$questions[0]"
+                    :options="$questions[0]->options->toArray()"
+                    :quizSession="$quizSession->toArray()"
+                    :questionId="$questions[0]->id"
                 />
             </section>
             <div class="mt-12 flex flex-col sm:flex-row-reverse sm:justify-between gap-4">
