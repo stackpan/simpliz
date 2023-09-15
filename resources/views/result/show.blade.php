@@ -68,9 +68,11 @@
         </div>
 
         <div class="my-4 md:mt-8 flex justify-center sm:justify-start">
-            <x-button.link href="{{ route('quizzes.show', $result->quiz->id) }}">
-                <x-icon.arrow-sm-left class="hidden sm:inline-block mr-2 align-text-top w-6 h-6"/>
-                <span class="align-middle">{{ __('Done') }}</span></x-button.link>
+            <a href="{{ route('quizzes.show', $result->quiz->id) }}">
+                <x-button.link>
+                    <x-icon.arrow-sm-left class="hidden sm:inline-block mr-2 align-text-top w-6 h-6"/>
+                    <span class="align-middle">{{ __('Done') }}</span></x-button.link>
+            </a>
         </div>
     </div>
 </x-app-layout>
