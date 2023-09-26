@@ -73,7 +73,11 @@
                 <form action="{{ route('quiz_sessions.start') }}" method="post">
                     @csrf
                     <input type="hidden" name="quizId" value="{{ $quiz->id }}">
-                    <x-button.primary>{{ __('Start') }}</x-button.primary>
+                    @if($quiz->is_enabled)
+                        <x-button.primary>{{ __('Start') }}</x-button.primary>
+                    @else
+                        <x-button.primary disabled>{{ __('Disabled') }}</x-button.primary>
+                    @endif
                 </form>
             @endisset
         </div>

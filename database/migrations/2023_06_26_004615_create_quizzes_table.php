@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name', 255);
             $table->text('description');
             $table->integer('duration');
+            $table->boolean('is_enabled')->default(true);
             $table->timestamps();
         });
     }

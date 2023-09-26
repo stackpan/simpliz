@@ -6,6 +6,7 @@ use App\Enums\QuizAction;
 use App\Exceptions\UserAlreadyTakeQuizException;
 use App\Http\Requests\QuizSession\AnswerQuizSessionRequest;
 use App\Http\Requests\QuizSession\StartQuizSessionRequest;
+use App\Models\Quiz;
 use App\Models\QuizSession;
 use App\Services\Facades\ActivityService;
 use App\Services\Facades\QuizSessionService;
@@ -25,9 +26,11 @@ class QuizSessionController extends Controller
     {
         $request->ensureUserIsNotInAQuizSession();
 
-        $this->authorize('create', [QuizSession::class, $request->quizId]);
+        $quiz = Quiz::find($request->validated('quizId'));
 
-        $quizSession = QuizSessionService::handleStart($request->validated());
+        $this->authorize('create', [QuizSession::class, $quiz]);
+
+        $quizSession = QuizSessionService::handleStart($quiz);
 
         ActivityService::storeQuizActivity(
                 QuizAction::Start,

@@ -14,7 +14,7 @@ interface QuizSessionService
 
     public function getById(string $id): ?QuizSession;
 
-    public function handleStart(array $validated): QuizSession;
+    public function handleStart(Quiz $quiz): QuizSession;
 
     public function getPaginatedQuestions(QuizSession $quizSession, int $page): LengthAwarePaginator;
 

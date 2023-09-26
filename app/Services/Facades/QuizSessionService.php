@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static \App\Models\QuizSession|\null getById(string $id)
- * @method static \App\Models\QuizSession handleStart(array $validated)
+ * @method static \App\Models\QuizSession handleStart(\App\Models\Quiz $quiz)
  * @method static \Illuminate\Pagination\LengthAwarePaginator getPaginatedQuestions(\App\Models\QuizSession $quizSession, int $page)
  * @method static \void handleAnswer(array $validated)
  * @method static \string handleComplete(\App\Models\QuizSession $quizSession)

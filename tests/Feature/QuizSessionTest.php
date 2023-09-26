@@ -59,6 +59,20 @@ class QuizSessionTest extends TestCase
         }
     }
 
+    public function test_user_cannot_start_disabled_quiz(): void
+    {
+        $this->quiz->is_enabled = false;
+        $this->quiz->save();
+
+        TestUtilAuth::userLogin($this, $this->user);
+
+        $response = $this->post(route('quiz_sessions.start'), [
+            'quizId' => $this->quiz->id,
+        ]);
+
+        $response->assertForbidden();
+    }
+
     public function test_user_cannot_start_multiple_quiz(): void
     {
         $otherQuiz = Quiz::factory()->create();

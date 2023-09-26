@@ -16,6 +16,8 @@ entity quizzes {
     * id: uuid <<PK>>
     * name: varchar(255)
     * description: text
+    * duration: int
+    * is_enabled: boolean
     * created_at: timestamp
     * updated_at: timestamp
     ---

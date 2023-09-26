@@ -18,13 +18,9 @@ class QuizSessionServiceImpl implements QuizSessionService
         return QuizSession::find($id);
     }
 
-    public function handleStart(array $validated): QuizSession
+    public function handleStart(Quiz $quiz): QuizSession
     {
-        extract($validated);
-
         DB::beginTransaction();
-
-        $quiz = Quiz::find($quizId);
 
         $result = $quiz
             ->results()

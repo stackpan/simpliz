@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Quiz;
 use App\Models\QuizSession;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -27,9 +28,9 @@ class QuizSessionPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, string $quizId): bool
+    public function create(User $user, Quiz $quiz): bool
     {
-        return $user->isAssignedTo($quizId);
+        return $user->isAssignedTo($quiz->id) && $quiz->is_enabled;
     }
 
     /**

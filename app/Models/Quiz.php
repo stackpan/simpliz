@@ -36,6 +36,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static Builder|Quiz whereName($value)
  * @method static Builder|Quiz whereUpdatedAt($value)
  * @method static Builder|Quiz withQuestionsCount()
+ * @property bool $is_enabled
+ * @method static Builder|Quiz whereIsEnabled($value)
  * @mixin \Eloquent
  */
 class Quiz extends Model
