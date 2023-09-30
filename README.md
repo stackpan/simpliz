@@ -1,6 +1,6 @@
 # Welcome to Simpliz project
 
-![Simpliz logo](assets/readme/img/simpliz_logo.png)
+![Simpliz logo](docs/assets/readme/img/simpliz_logo.png)
 
 ## Overview
 
@@ -10,11 +10,11 @@ Simpliz stands for **sim**ultaneously **pl**ayable qu**iz**. Just a simple quiz 
 
 Basic quiz features. Like start a quiz, answer the questions, complete the quiz, and review the result.
 
-![Answering question page](assets/readme/img/answering_question_page_screenshot.png)
+![Answering question page](docs/assets/readme/img/answering_question_page_screenshot.png)
 
 There is also has an admin feature. Where admin can manage users, quizzes, questions, answer, results, etc.
 
-![Admin dashboard page](assets/readme/img/admin_dasboard_home_page_screenshot.png)
+![Admin dashboard page](docs/assets/readme/img/admin_dasboard_home_page_screenshot.png)
 
 And the features will continue to grow as long as the maintainer is still breathing.
 
