@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserRole;
 use App\Models\Quiz;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -14,7 +15,7 @@ class AssignQuizSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::all();
+        $users = User::where('role', UserRole::Examinee)->get();
         $quizzes = Quiz::all();
 
         $users->each(function (User $user) use ($quizzes) {

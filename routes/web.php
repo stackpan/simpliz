@@ -58,6 +58,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/results/{result}', [\App\Http\Controllers\ResultController::class, 'show'])
         ->name('results.show')
         ->can('view', 'result');
+
+    Route::middleware('manager')->group(function () {
+
+        Route::get('/manager', function () {
+            return 'Hello world';
+        })->name('manager.home');
+
+    });
 });
 
 require __DIR__.'/auth.php';

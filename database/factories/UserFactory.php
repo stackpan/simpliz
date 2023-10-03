@@ -49,4 +49,23 @@ class UserFactory extends Factory
         ]);
     }
 
+    public function superAdmin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'email' => 'superadmin@dummy.com',
+            'role' => UserRole::SuperAdmin,
+            'password' => Hash::make('superadminsecret'),
+        ]);
+    }
+
+    public function testAdminDummy(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'name' => 'Admin Tester',
+            'role' => UserRole::Admin,
+            'email' => 'testadmindummy@example.com',
+            'password' => Hash::make('adminsecret'),
+        ]);
+    }
+
 }

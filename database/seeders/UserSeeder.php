@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        
+
         User::factory()
             ->count(5)
             ->unverified()
@@ -23,6 +23,16 @@ class UserSeeder extends Seeder
         User::factory()
             ->unverified()
             ->testDummy()
+            ->create();
+
+        User::factory()
+            ->testAdminDummy()
+            ->unverified()
+            ->create();
+
+        User::factory()
+            ->superAdmin()
+            ->unverified()
             ->create();
     }
 }
