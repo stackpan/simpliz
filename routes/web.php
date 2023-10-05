@@ -61,9 +61,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('manager')->group(function () {
 
-        Route::get('/manager', function () {
-            return 'Hello world';
-        })->name('manager.home');
+        Route::get('/manager', [\App\Http\Controllers\Manager\HomeManagerController::class, 'index'])->name('manager.index');
 
     });
 });

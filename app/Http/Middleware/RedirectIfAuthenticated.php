@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserRole;
 use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
@@ -21,6 +22,9 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
+                if (Auth::user()->role === UserRole::SuperAdmin || Auth::user()->role === UserRole::Admin) {
+                    return redirect(route('manager.index'));
+                }
                 return redirect(RouteServiceProvider::HOME);
             }
         }
