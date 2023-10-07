@@ -30,10 +30,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if ($request->user()->role === UserRole::SuperAdmin || $request->user()->role === UserRole::Admin) {
-            return redirect()->intended(route('manager.index'));
-        }
-
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
