@@ -43,7 +43,7 @@
     </div>
     <div class="drawer-side">
         <label for="manager-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-        <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content text-lg">
+        <ul class="menu p-4 w-80 min-h-full bg-base-300 text-base-content text-lg">
             <!-- Sidebar content here -->
             <li>
                 <a href="{{ route('manager.index') }}" class="py-6 btn-disabled">
