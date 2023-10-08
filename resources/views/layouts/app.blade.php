@@ -29,25 +29,7 @@
                     </a>
                 </div>
                 <div class="flex-none hidden lg:block">
-                    <ul class="menu menu-horizontal">
-                        <!-- Navbar menu content here -->
-                        <li>
-                            <details>
-                                <summary>{{ auth()->user()->name }}</summary>
-                                <ul class="p-2 bg-base-100">
-                                    <li><a href="{{ route('profile.edit') }}">{{ __('Profile') }}</a></li>
-                                    <li>
-                                        <form method="POST" action="{{ route('logout') }}">
-                                            @csrf
-                                            <a>
-                                                <button type="submit">{{ __('Logout') }}</button>
-                                            </a>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </details>
-                        </li>
-                    </ul>
+                    <x-profile-navigation />
                 </div>
                 <div class="flex-none lg:hidden">
                     <label for="drawer" class="btn btn-square btn-ghost">

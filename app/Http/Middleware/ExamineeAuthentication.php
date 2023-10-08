@@ -19,7 +19,7 @@ class ExamineeAuthentication
     {
         $user = Auth::user();
 
-        if ($user->role != UserRole::Admin && $user->role != UserRole::SuperAdmin) {
+        if ($user->role != UserRole::Examinee) {
             abort(403);
         }
 
