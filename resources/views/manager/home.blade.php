@@ -7,21 +7,21 @@
         <section class="stats shadow bg-base-200">
             <article class="stat">
                 <div class="stat-figure text-secondary">
-                    <x-icon.users class="h-8 w-8" />
+                    <x-heroicon-s-users class="h-8 w-8" />
                 </div>
                 <div class="stat-title">Users</div>
                 <div class="stat-value">{{ $counts['user'] }}</div>
             </article>
             <article class="stat">
                 <div class="stat-figure text-secondary">
-                    <x-icon.document-text class="h-8 w-8" />
+                    <x-heroicon-s-document-text class="h-8 w-8" />
                 </div>
                 <div class="stat-title">Quizzes</div>
                 <div class="stat-value">{{ $counts['quiz'] }}</div>
             </article>
             <article class="stat">
                 <div class="stat-figure text-secondary">
-                    <x-icon.clipboard-document-list class="h-8 w-8" />
+                    <x-heroicon-s-clipboard-document-list class="h-8 w-8" />
                 </div>
                 <div class="stat-title">Results</div>
                 <div class="stat-value">{{ $counts['result'] }}</div>

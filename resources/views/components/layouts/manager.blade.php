@@ -52,25 +52,25 @@
             </li>
             <li>
                 <x-drawer-navigation href="{{ route('manager.home') }}" :active="request()->routeIs('manager.home')">
-                    <x-icon.home />
+                    <x-heroicon-s-home class="h-5 w-5" />
                     <span>Home</span>
                 </x-drawer-navigation>
             </li>
             <li>
                 <x-drawer-navigation href="{{ route('manager.user') }}" :active="request()->routeIs('manager.user')">
-                    <x-icon.users />
+                    <x-heroicon-s-users class="h-5 w-5" />
                     <span>User</span>
                 </x-drawer-navigation>
             </li>
             <li>
                 <x-drawer-navigation href="{{ route('manager.quiz') }}" :active="request()->routeIs('manager.quiz')">
-                    <x-icon.document-text />
+                    <x-heroicon-s-document-text class="h-5 w-5" />
                     <span>Quiz</span>
                 </x-drawer-navigation>
             </li>
             <li>
                 <x-drawer-navigation href="{{ route('manager.result') }}" :active="request()->routeIs('manager.result')">
-                    <x-icon.clipboard-document-list />
+                    <x-heroicon-s-clipboard-document-list class="h-5 w-5" />
                     <span>Result</span>
                 </x-drawer-navigation>
             </li>
