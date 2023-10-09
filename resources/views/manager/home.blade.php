@@ -1,6 +1,6 @@
 <x-layouts.manager>
     <x-slot name="breadcrumbs">
-        <li><a href="{{ route('manager.index') }}">Home</a></li>
+        <li>Home</li>
     </x-slot>
     <article class="space-y-2">
         <h2 class="font-bold text-2xl">Stats</h2>

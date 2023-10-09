@@ -31,4 +31,19 @@ class DashboardController extends Controller
                 'activites' => ActivityService::getLatestActivity()
             ]);
     }
+
+    public function user(): View
+    {
+        return view('manager.user');
+    }
+
+    public function quiz(): View
+    {
+        return view('manager.quiz');
+    }
+
+    public function result(): View
+    {
+        return view('manager.result');
+    }
 }
