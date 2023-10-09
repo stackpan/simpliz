@@ -4,7 +4,7 @@
             <h2
                 class="inline-block px-4 py-1 font-bold text-2xl sm:text-3xl bg-neutral text-primary-content/80 text-center rounded">{{ $questions->currentPage() }}</h2>
             <p class="lg:mt-8 font-bold">
-                <x-icon.clock class="inline-block lg:block md:w-6 lg:w-10 md:h-6 lg:h-10 text-primary-content/20"/>
+                <x-heroicon-s-clock class="inline-block lg:block md:w-6 lg:w-10 md:h-6 lg:h-10 text-primary-content/20"/>
                 <span id="countdownTimer" class="text-primary-content/80 align-middle">00:00</span></p>
         </div>
         <div class="sm:max-w-xl lg:max-w-3xl mx-auto lg:px-8">

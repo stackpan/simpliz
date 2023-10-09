@@ -20,8 +20,9 @@
                                     <a href="{{ route('quizzes.show', $quiz->id) }}">
                                         <button class="btn btn-ghost">
                                             {{ __('Open') }}
-                                            <x-icon.arrow-sm-right
-                                                class="before:content-['Open'] inline-block align-text-top w-5 h-5"/>
+                                            <x-heroicon-s-arrow-small-right
+                                                class="before:content-['Open'] inline-block align-text-top w-5 h-5"
+                                            />
                                         </button>
                                     </a>
                                 </div>
