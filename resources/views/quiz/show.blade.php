@@ -10,7 +10,7 @@
                     <p class="text-error">{{ $error->first('body') }}</p>
                     <a href="{{ $error->first('last_session_url') }}"
                        class="text-info font-bold"><span>Go back to your work</span>
-                        <x-icon.arrow-sm-right class="inline-block align-text-top"/>
+                        <x-heroicon-s-arrow-small-left class="inline-block align-text-top"/>
                     </a>
                 </div>
             @endif
@@ -20,11 +20,11 @@
                 <p class="text-base-content/80 mb-6">{{ $quiz->description }}</p>
                 <div class="flex flex-col justify-between text-base-content/80">
                     <p class="my-1 text-lg md:text-xl font-bold">
-                        <x-icon.clipboard-document-list
+                        <x-heroicon-s-clipboard-document-list
                             class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6"/>
                         <span>{{ $quiz->questions_count }} {{ __('Questions') }}</span></p>
                     <p class="my-1 text-lg md:text-xl font-bold">
-                        <x-icon.clock class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6"/>
+                        <x-heroicon-s-clock class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6"/>
                         <span>{{ $quiz->duration }} {{ __('Minutes') }}</span></p>
                 </div>
             </div>
@@ -42,15 +42,17 @@
                                     <td></td>
                                     <td class="text-base-content/70 text-end"><a
                                             href="{{ route('quiz_sessions.continue') . '?page=' . $lastQuizSession->last_question_page }}"><span>{{ __('continue') }}</span>
-                                            <x-icon.arrow-sm-right class="inline-block ml-2"/>
+                                            <x-heroicon-s-arrow-small-right class="inline-block ml-2"/>
                                         </a></td>
                                 @else
                                     <td class="font-bold">{{ $result->score }}%</td>
                                     <td>{{ $result->completed_at->timezone('Asia/Jakarta')->diffForHumans() }}</td>
-                                    <td class="text-base-content/70 text-end"><a
-                                            href="{{ route('results.show', $result->id) }}"><span>{{ __('details') }}</span>
-                                            <x-icon.arrow-sm-right class="inline-block ml-2"/>
-                                        </a></td>
+                                    <td class="text-base-content/70 text-end">
+                                        <a href="{{ route('results.show', $result->id) }}">
+                                            <span>{{ __('details') }}</span>
+                                            <x-heroicon-s-arrow-small-right class="inline-block ml-2 h-5 w-5"/>
+                                        </a>
+                                    </td>
                                 @endif
                             </tr>
                         @endforeach
@@ -62,8 +64,9 @@
         <div class="mt-12 sm:mt-0 sm:mb-8 flex flex-row justify-between">
             <a href="{{ route('home') }}">
                 <x-button.link class="px-0">
-                    <x-icon.arrow-sm-left class="inline-block mr-2 align-text-top w-6 h-6"/>
-                    <span>{{ __('Back') }}</span></x-button.link>
+                    <x-heroicon-s-arrow-small-left class="inline-block mr-2 align-text-top w-6 h-6"/>
+                    <span>{{ __('Back') }}</span>
+                </x-button.link>
             </a>
             @isset($lastQuizSession)
                 <a href="{{ route('quiz_sessions.continue') . '?page=' . $lastQuizSession->last_question_page }}">

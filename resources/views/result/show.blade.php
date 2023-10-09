@@ -6,19 +6,19 @@
             <div class="flex flex-row justify-between text-base-content/80 font-bold">
                 <div>
                     <p class="my-1 text-lg md:text-xl">
-                        <x-icon.clock class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6"/>
+                        <x-heroicon-s-clock class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6"/>
                         <span>{{ Carbon\CarbonInterval::seconds($result->completed_duration/1000)->cascade() }}</span>
                     </p>
                     <p class="my-1 text-lg md:text-xl">
-                        <x-icon.user class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6"/>
+                        <x-heroicon-s-user class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6"/>
                         <span>{{ $result->user->name }}</span></p>
                     <p class="my-1 text-lg md:text-xl">
-                        <x-icon.calendar class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6"/>
+                        <x-heroicon-s-calendar class="inline-block mr-1 md:mr-3 align-text-top w-5 md:w-6 h-5 md:h-6"/>
                         <span>{{ $result->completed_at->timezone('Asia/Jakarta')->format('l\, j F o H:i:s \G\M\T P') }}</span>
                     </p>
                 </div>
                 <p class="my-1 text-2xl md:text-4xl justify-self-end">
-                    <x-icon.check-circle class="inline-block -mb-1 align-text-top w-9 md:w-14 h-9 md:h-14"/>
+                    <x-heroicon-s-check-circle class="inline-block -mb-1 align-text-top w-9 md:w-14 h-9 md:h-14"/>
                     <span class="align-middle">{{ $result->score }}%</span></p>
             </div>
         </div>
@@ -70,7 +70,7 @@
         <div class="my-4 md:mt-8 flex justify-center sm:justify-start">
             <a href="{{ route('quizzes.show', $result->quiz->id) }}">
                 <x-button.link>
-                    <x-icon.arrow-sm-left class="hidden sm:inline-block mr-2 align-text-top w-6 h-6"/>
+                    <x-heroicon-s-arrow-small-left class="hidden sm:inline-block mr-2 align-text-top w-6 h-6"/>
                     <span class="align-middle">{{ __('Done') }}</span></x-button.link>
             </a>
         </div>
