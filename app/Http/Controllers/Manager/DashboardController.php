@@ -4,25 +4,31 @@ namespace App\Http\Controllers\Manager;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
-use App\Models\Activity;
 use App\Models\Quiz;
 use App\Models\Result;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Services\Facades\ActivityService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
-class HomeManagerController extends Controller
+class DashboardController extends Controller
 {
-    public function index(): View
+
+    public function index(): RedirectResponse
     {
-        return view('manager.index')
+        return redirect(route('manager.home'));
+    }
+
+    public function home(): View
+    {
+        return view('manager.home')
             ->with([
                 'counts' => [
                     'user' => User::whereRole(UserRole::Examinee)->count(),
                     'quiz' => Quiz::count(),
                     'result' => Result::whereNotNull('completed_at')->count(),
                 ],
-                'activites' => Activity::with('user:id,name')->latest()->get()
+                'activites' => ActivityService::getLatestActivity()
             ]);
     }
 }

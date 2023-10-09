@@ -7,6 +7,7 @@ use App\Models\Activity;
 use App\Models\Quiz;
 use App\Models\User;
 use App\Services\ActivityService;
+use Illuminate\Database\Eloquent\Collection;
 
 class ActivityServiceImpl implements ActivityService
 {
@@ -25,4 +26,11 @@ class ActivityServiceImpl implements ActivityService
     }
 
 
+    public function getLatestActivity(int $limit = 10): Collection
+    {
+        return Activity::with('user:id,name')
+            ->latest()
+            ->limit($limit)
+            ->get();
+    }
 }

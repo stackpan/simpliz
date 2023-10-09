@@ -35,16 +35,16 @@
                 <thead>
                 <tr>
                     <th>Timestamp</th>
-                    <th>Activity</th>
                     <th>User</th>
+                    <th>Activity</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($activites as $activity)
                     <tr>
                         <td>{{ $activity->created_at }}</td>
-                        <td>{{ $activity->body }}</td>
                         <td>{{ $activity->user->name }}</td>
+                        <td>{{ $activity->body }}</td>
                     </tr>
                 @endforeach
                 </tbody>

@@ -65,7 +65,11 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('manager')->group(function () {
 
-        Route::get('/manager', [\App\Http\Controllers\Manager\HomeManagerController::class, 'index'])->name('manager.index');
+        Route::get('/manager', [\App\Http\Controllers\Manager\DashboardController::class, 'index'])->name('manager.index');
+        Route::get('/manager/home', [\App\Http\Controllers\Manager\DashboardController::class, 'home'])->name('manager.home');
+        Route::get('/manager/user', [\App\Http\Controllers\Manager\DashboardController::class, 'user'])->name('manager.user');
+        Route::get('/manager/quiz', [\App\Http\Controllers\Manager\DashboardController::class, 'quiz'])->name('manager.quiz');
+        Route::get('/manager/result', [\App\Http\Controllers\Manager\DashboardController::class, 'result'])->name('manager.result');
 
     });
 });

@@ -51,28 +51,28 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('manager.index') }}">
+                <x-drawer-navigation href="{{ route('manager.home') }}" :active="request()->routeIs('manager.home')">
                     <x-icon.home />
                     <span>Home</span>
-                </a>
+                </x-drawer-navigation>
             </li>
             <li>
-                <a>
+                <x-drawer-navigation href="{{ route('manager.user') }}" :active="request()->routeIs('manager.user')">
                     <x-icon.users />
                     <span>User</span>
-                </a>
+                </x-drawer-navigation>
             </li>
             <li>
-                <a>
+                <x-drawer-navigation href="{{ route('manager.quiz') }}" :active="request()->routeIs('manager.quiz')">
                     <x-icon.document-text />
                     <span>Quiz</span>
-                </a>
+                </x-drawer-navigation>
             </li>
             <li>
-                <a>
+                <x-drawer-navigation href="{{ route('manager.result') }}" :active="request()->routeIs('manager.result')">
                     <x-icon.clipboard-document-list />
                     <span>Result</span>
-                </a>
+                </x-drawer-navigation>
             </li>
         </ul>
     </div>
