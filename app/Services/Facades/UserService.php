@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static \Illuminate\Pagination\LengthAwarePaginator getExamineers(int $perPage = 15)
+ * @method static \string create(array $validated, \App\Enums\UserRole $role = \App\Enums\UserRole::Examinee)
+ * @method static \bool update(\App\Model\User $user, array $validated)
  *
  * @see \App\Services\UserService
  */

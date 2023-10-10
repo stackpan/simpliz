@@ -1,12 +1,12 @@
-@props(['options', 'selected'])
+@props(['options', 'value'])
 
 <select {{ $attributes->merge(['class' => 'select select-bordered']) }}>
-    @if(!isset($selected))
+    @if(!isset($value))
         <option value="">{{ __('Select') }}</option>
     @endif
     @foreach($options as $option)
         <option value="{{ $option->value }}"
-            @if(isset($selected) && $option->value === $selected)
+            @if(isset($value) && $option->value === $value)
                 selected
             @endif
             >{{ __($option->name) }}</option>

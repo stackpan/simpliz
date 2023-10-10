@@ -65,11 +65,32 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('manager')->group(function () {
 
-        Route::get('/manager', [\App\Http\Controllers\Manager\DashboardController::class, 'index'])->name('manager.index');
-        Route::get('/manager/home', [\App\Http\Controllers\Manager\DashboardController::class, 'home'])->name('manager.home');
-        Route::get('/manager/user', [\App\Http\Controllers\Manager\DashboardController::class, 'user'])->name('manager.user');
-        Route::get('/manager/quiz', [\App\Http\Controllers\Manager\DashboardController::class, 'quiz'])->name('manager.quiz');
-        Route::get('/manager/result', [\App\Http\Controllers\Manager\DashboardController::class, 'result'])->name('manager.result');
+        Route::get('/manager', [\App\Http\Controllers\Manager\DashboardController::class, 'index'])
+            ->name('manager.index');
+
+        Route::get('/manager/home', [\App\Http\Controllers\Manager\DashboardController::class, 'home'])
+            ->name('manager.home');
+
+        Route::get('/manager/user', [\App\Http\Controllers\Manager\DashboardController::class, 'user'])
+            ->name('manager.user');
+
+        Route::get('/manager/user/create', [\App\Http\Controllers\Manager\UserEditorController::class, 'create'])
+            ->name('manager.user.create');
+
+        Route::post('/manager/users', [\App\Http\Controllers\Manager\UserEditorController::class, 'store'])
+            ->name('manager.user.store');
+
+        Route::get('/manager/user/{user}/edit', [\App\Http\Controllers\Manager\UserEditorController::class, 'edit'])
+            ->name('manager.user.edit');
+
+        Route::put('/manager/users/{user}', [\App\Http\Controllers\Manager\UserEditorController::class, 'update'])
+            ->name('manager.user.update');
+
+        Route::get('/manager/quiz', [\App\Http\Controllers\Manager\DashboardController::class, 'quiz'])
+            ->name('manager.quiz');
+
+        Route::get('/manager/result', [\App\Http\Controllers\Manager\DashboardController::class, 'result'])
+            ->name('manager.result');
 
     });
 });
