@@ -1,13 +1,13 @@
 <x-layouts.manager>
     <x-slot name="breadcrumbs">
-        <li>User</li>
+        <li>{{ __('User') }}</li>
     </x-slot>
 
     <article class="space-y-4">
         <section class="flex justify-end">
             <a href="{{ route('manager.user.create') }}" class="btn btn-sm">
                 <x-heroicon-m-user-plus class="w-5" />
-                <span>Create</span>
+                <span>{{ __('Create') }}</span>
             </a>
         </section>
         <section>
@@ -16,10 +16,10 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Gender</th>
-                            <th>Actions</th>
+                            <th>{{ __('Name') }}</th>
+                            <th>{{ __('Email') }}</th>
+                            <th>{{ __('Gender') }}</th>
+                            <th>{{ __('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>

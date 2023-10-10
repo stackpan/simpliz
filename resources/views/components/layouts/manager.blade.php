@@ -27,7 +27,7 @@
                 @if(isset($breadcrumbs))
                     <nav class="text-sm breadcrumbs">
                         <ul>
-                            <li><a href="{{ route('manager.index') }}">Manager</a></li>
+                            <li><a href="{{ route('manager.index') }}">{{ __('Manager') }}</a></li>
                             {{ $breadcrumbs }}
                         </ul>
                     </nav>
@@ -53,25 +53,25 @@
             <li>
                 <x-drawer-navigation href="{{ route('manager.home') }}" :active="request()->routeIs('manager.home')">
                     <x-heroicon-s-home class="h-5 w-5" />
-                    <span>Home</span>
+                    <span>{{ __('Home') }}</span>
                 </x-drawer-navigation>
             </li>
             <li>
                 <x-drawer-navigation href="{{ route('manager.user') }}" :active="request()->routeIs('manager.user')">
                     <x-heroicon-s-users class="h-5 w-5" />
-                    <span>User</span>
+                    <span>{{ __('User') }}</span>
                 </x-drawer-navigation>
             </li>
             <li>
                 <x-drawer-navigation href="{{ route('manager.quiz') }}" :active="request()->routeIs('manager.quiz')">
                     <x-heroicon-s-document-text class="h-5 w-5" />
-                    <span>Quiz</span>
+                    <span>{{ __('Quiz') }}</span>
                 </x-drawer-navigation>
             </li>
             <li>
                 <x-drawer-navigation href="{{ route('manager.result') }}" :active="request()->routeIs('manager.result')">
                     <x-heroicon-s-clipboard-document-list class="h-5 w-5" />
-                    <span>Result</span>
+                    <span>{{ __('Result') }}</span>
                 </x-drawer-navigation>
             </li>
         </ul>
