@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Manager;
 
-use App\Enums\UserRole;
-use App\Http\Controllers\Controller;
 use App\Models\Quiz;
-use App\Models\Result;
 use App\Models\User;
-use App\Services\Facades\ActivityService;
-use Illuminate\Http\RedirectResponse;
+use App\Models\Result;
+use App\Enums\UserRole;
 use Illuminate\View\View;
+use App\Http\Controllers\Controller;
+use App\Services\Facades\UserService;
+use Illuminate\Http\RedirectResponse;
+use App\Services\Facades\ActivityService;
 
 class DashboardController extends Controller
 {
@@ -34,7 +35,10 @@ class DashboardController extends Controller
 
     public function user(): View
     {
-        return view('manager.user');
+        return view('manager.user')
+            ->with([
+                'users' => UserService::getExamineers(),
+            ]);
     }
 
     public function quiz(): View
