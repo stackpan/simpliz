@@ -15,4 +15,6 @@ interface UserService
 
     public function update(User $user, array $validated): bool;
 
+    public function delete(string $userId): bool;
+
 }

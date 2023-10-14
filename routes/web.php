@@ -71,25 +71,28 @@ Route::middleware('auth')->group(function () {
         Route::get('/manager/home', [\App\Http\Controllers\Manager\DashboardController::class, 'home'])
             ->name('manager.home');
 
-        Route::get('/manager/user', [\App\Http\Controllers\Manager\DashboardController::class, 'user'])
+        Route::get('/manager/users', [\App\Http\Controllers\Manager\DashboardController::class, 'user'])
             ->name('manager.user');
 
-        Route::get('/manager/user/create', [\App\Http\Controllers\Manager\UserEditorController::class, 'create'])
+        Route::get('/manager/users/create', [\App\Http\Controllers\Manager\UserController::class, 'create'])
             ->name('manager.user.create');
 
-        Route::post('/manager/users', [\App\Http\Controllers\Manager\UserEditorController::class, 'store'])
+        Route::post('/manager/users', [\App\Http\Controllers\Manager\UserController::class, 'store'])
             ->name('manager.user.store');
 
-        Route::get('/manager/user/{user}/edit', [\App\Http\Controllers\Manager\UserEditorController::class, 'edit'])
+        Route::get('/manager/users/{user}/edit', [\App\Http\Controllers\Manager\UserController::class, 'edit'])
             ->name('manager.user.edit');
 
-        Route::put('/manager/users/{user}', [\App\Http\Controllers\Manager\UserEditorController::class, 'update'])
+        Route::put('/manager/users/{user}', [\App\Http\Controllers\Manager\UserController::class, 'update'])
             ->name('manager.user.update');
 
-        Route::get('/manager/quiz', [\App\Http\Controllers\Manager\DashboardController::class, 'quiz'])
+        Route::delete('/manager/users/{id}', [App\Http\Controllers\Manager\UserController::class, 'destroy'])
+            ->name('manager.user.delete');
+
+        Route::get('/manager/quizzes', [\App\Http\Controllers\Manager\DashboardController::class, 'quiz'])
             ->name('manager.quiz');
 
-        Route::get('/manager/result', [\App\Http\Controllers\Manager\DashboardController::class, 'result'])
+        Route::get('/manager/results', [\App\Http\Controllers\Manager\DashboardController::class, 'result'])
             ->name('manager.result');
 
     });

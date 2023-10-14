@@ -51,4 +51,11 @@ class UserServiceImpl implements UserService {
         return true;
     }
 
+    public function delete(string $userId): bool
+    {
+        $user = User::find($userId);
+
+        return $user->delete();
+    }
+
 }

@@ -35,9 +35,14 @@
                                             class="btn btn-xs btn-square btn-ghost join-item">
                                             <x-heroicon-s-pencil-square class="w-5" />
                                         </a>
-                                        <button class="btn btn-xs btn-square btn-ghost join-item">
-                                            <x-heroicon-s-trash class="w-5" />
-                                        </button>
+                                        <form action="{{ route('manager.user.delete', $user->id) }}" method="post">
+                                            @method('DELETE')
+                                            @csrf
+
+                                            <button type="submit" class="btn btn-xs btn-square btn-ghost join-item">
+                                                <x-heroicon-s-trash class="w-5" />
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
