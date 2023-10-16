@@ -8,6 +8,7 @@ use App\Models\Result;
 use App\Enums\UserRole;
 use Illuminate\View\View;
 use App\Http\Controllers\Controller;
+use App\Services\Facades\QuizService;
 use App\Services\Facades\UserService;
 use Illuminate\Http\RedirectResponse;
 use App\Services\Facades\ActivityService;
@@ -43,7 +44,10 @@ class DashboardController extends Controller
 
     public function quiz(): View
     {
-        return view('manager.quiz');
+        return view('manager.quiz')
+            ->with([
+                'quizzes' => QuizService::getAll(userCount: true),
+            ]);
     }
 
     public function result(): View

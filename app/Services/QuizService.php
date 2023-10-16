@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 interface QuizService
 {
 
-    public function getAll(User $user): Collection;
+    public function getAll(?User $user, bool $userCount): Collection;
 
     public function loadDetails(Quiz $quiz): Quiz;
 }
