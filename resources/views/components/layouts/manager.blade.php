@@ -51,25 +51,25 @@
                 </a>
             </li>
             <li>
-                <x-drawer-navigation href="{{ route('manager.home') }}" :active="request()->routeIs('manager.home')">
+                <x-drawer-navigation href="{{ route('manager.home.index') }}" :active="request()->routeIs('manager.home*')">
                     <x-heroicon-s-home class="h-5 w-5" />
                     <span>{{ __('Home') }}</span>
                 </x-drawer-navigation>
             </li>
             <li>
-                <x-drawer-navigation href="{{ route('manager.user') }}" :active="request()->routeIs('manager.user')">
+                <x-drawer-navigation href="{{ route('manager.users.index') }}" :active="request()->routeIs('manager.users*')">
                     <x-heroicon-s-users class="h-5 w-5" />
                     <span>{{ __('User') }}</span>
                 </x-drawer-navigation>
             </li>
             <li>
-                <x-drawer-navigation href="{{ route('manager.quiz') }}" :active="request()->routeIs('manager.quiz')">
+                <x-drawer-navigation href="{{ route('manager.quizzes.index') }}" :active="request()->routeIs('manager.quizzes*')">
                     <x-heroicon-s-document-text class="h-5 w-5" />
                     <span>{{ __('Quiz') }}</span>
                 </x-drawer-navigation>
             </li>
             <li>
-                <x-drawer-navigation href="{{ route('manager.result') }}" :active="request()->routeIs('manager.result')">
+                <x-drawer-navigation href="{{ route('manager.results.index') }}" :active="request()->routeIs('manager.results*')">
                     <x-heroicon-s-clipboard-document-list class="h-5 w-5" />
                     <span>{{ __('Result') }}</span>
                 </x-drawer-navigation>

@@ -1,6 +1,6 @@
 <x-layouts.manager>
     <x-slot name="breadcrumbs">
-        <li><a href="{{ route('manager.user') }}">{{ __('User') }}</a></li>
+        <li><a href="{{ route('manager.users.index') }}">{{ __('User') }}</a></li>
         <li>{{ $meta['title'] }}</li>
     </x-slot>
 

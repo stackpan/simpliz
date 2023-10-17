@@ -5,7 +5,7 @@
 
     <article class="space-y-4">
         <section class="flex justify-end">
-            <a href="{{ route('manager.user.create') }}" class="btn btn-sm">
+            <a href="{{ route('manager.users.create') }}" class="btn btn-sm">
                 <x-heroicon-m-user-plus class="w-5" />
                 <span>{{ __('Create') }}</span>
             </a>
@@ -31,11 +31,11 @@
                                 <td>{{ $user->gender->name }}</td>
                                 <td>
                                     <div class="join">
-                                        <a href="{{ route('manager.user.edit', $user) }}"
+                                        <a href="{{ route('manager.users.edit', $user) }}"
                                             class="btn btn-xs btn-square btn-ghost join-item">
                                             <x-heroicon-s-pencil-square class="w-5" />
                                         </a>
-                                        <form action="{{ route('manager.user.delete', $user->id) }}" method="post">
+                                        <form action="{{ route('manager.users.destroy', $user->id) }}" method="post">
                                             @method('DELETE')
                                             @csrf
 

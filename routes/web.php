@@ -8,8 +8,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\QuizSessionTimeout;
 use App\Http\Middleware\QuizSessionMiddleware;
 use App\Http\Controllers\QuizSessionController;
+use App\Http\Controllers\Manager\HomeManagerController;
 use App\Http\Controllers\Manager\QuizManagerController;
 use App\Http\Controllers\Manager\UserManagerController;
+use App\Http\Controllers\Manager\ResultManagerController;
 use App\Http\Controllers\Manager\DashboardManagerController;
 
 /*
@@ -43,10 +45,10 @@ Route::middleware('auth')->group(function () {
     });
     Route::middleware('manager')->prefix('manager')->name('manager.')->group(function () {
         Route::get('/', [DashboardManagerController::class, 'index'])->name('index');
-        Route::get('/home', [DashboardManagerController::class, 'home'])->name('home.index');
+        Route::get('/home', [HomeManagerController::class, 'index'])->name('home.index');
         Route::resource('users', UserManagerController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
         Route::resource('quizzes', QuizManagerController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
-        Route::get('/results', [DashboardManagerController::class, 'result'])->name('results');
+        Route::get('/results', [ResultManagerController::class, 'index'])->name('results.index');
     });
 });
 

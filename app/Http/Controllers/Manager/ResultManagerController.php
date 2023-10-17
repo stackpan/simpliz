@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers\Manager;
 
-use App\Http\Controllers\Controller;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class QuizController extends Controller
+class ResultManagerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): View
     {
-        //
+        return view('manager.result');
     }
 
     /**

@@ -11,8 +11,16 @@ use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\Manager\UserCreateRequest;
 
-class UserController extends Controller
+class UserManagerController extends Controller
 {
+
+    public function index(): View
+    {
+        return view('manager.user')
+            ->with([
+                'users' => UserService::getExamineers(),
+            ]);
+    }
 
     public function create(): View
     {
@@ -22,7 +30,7 @@ class UserController extends Controller
                     'title' => 'Create',
                 ],
                 'href' => [
-                    'store' => route('manager.user.store'),
+                    'store' => route('manager.users.store'),
                 ]
             ]);
     }
@@ -31,7 +39,7 @@ class UserController extends Controller
     {
         $userId = UserService::create($request->validated());
 
-        return redirect()->route('manager.user.edit', $userId);
+        return redirect()->route('manager.users.edit', $userId);
     }
 
     public function edit(string $id): View
@@ -45,7 +53,7 @@ class UserController extends Controller
                     'title' => 'Editor',
                 ],
                 'href' => [
-                    'store' => route('manager.user.update', $user->id),
+                    'store' => route('manager.users.update', $user->id),
                 ],
             ]);
     }

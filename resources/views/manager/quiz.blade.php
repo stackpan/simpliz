@@ -5,7 +5,7 @@
 
     <article class="space-y-4">
         <section class="flex justify-end">
-            <a href="{{ route('manager.user.create') }}" class="btn btn-sm">
+            <a href="{{ route('manager.quizzes.create') }}" class="btn btn-sm">
                 <x-heroicon-m-user-plus class="w-5" />
                 <span>{{ __('Create') }}</span>
             </a>
