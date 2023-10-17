@@ -1,6 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\QuizController;
+use App\Http\Controllers\ResultController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\QuizSessionTimeout;
+use App\Http\Middleware\QuizSessionMiddleware;
+use App\Http\Controllers\QuizSessionController;
+use App\Http\Controllers\Manager\QuizManagerController;
+use App\Http\Controllers\Manager\UserManagerController;
+use App\Http\Controllers\Manager\DashboardManagerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,87 +24,29 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth')->group(function () {
-
-    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])
-        ->name('profile.edit');
-
-    Route::patch('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])
-        ->name('profile.update');
-
-    Route::delete('/profile', [\App\Http\Controllers\ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
-
-    Route::get('/quizzes/{quiz}', [\App\Http\Controllers\QuizController::class, 'show'])
-        ->name('quizzes.show')
-        ->can('view', 'quiz');
-
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show')->can('view', 'quiz');
     Route::middleware('examinee')->group(function () {
-
-        Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])
-            ->name('home');
-
-        Route::post('/quiz/sessions', [\App\Http\Controllers\QuizSessionController::class, 'start'])
-            ->name('quiz_sessions.start');
-
-        Route::middleware(\App\Http\Middleware\QuizSessionMiddleware::class)->group(function () {
-
-            Route::middleware(\App\Http\Middleware\QuizSessionTimeout::class)->group(function () {
-
-                Route::get('/quiz/sessions', [\App\Http\Controllers\QuizSessionController::class, 'continue'])
-                    ->name('quiz_sessions.continue');
-
-                if (config('app.env') === 'testing') {
-                    Route::patch('/quiz/sessions/answer', [\App\Http\Controllers\QuizSessionController::class, 'answer'])
-                        ->name('quiz_sessions.answer');
-                }
-
+        Route::get('/', [HomeController::class, 'index'])->name('home');
+        Route::post('/quiz/sessions', [QuizSessionController::class, 'start'])->name('quiz_sessions.start');
+        Route::middleware(QuizSessionMiddleware::class)->group(function () {
+            Route::middleware(QuizSessionTimeout::class)->group(function () {
+                Route::get('/quiz/sessions', [QuizSessionController::class, 'continue'])->name('quiz_sessions.continue');
+                if (config('app.env') === 'testing') Route::patch('/quiz/sessions/answer', [QuizSessionController::class, 'answer'])->name('quiz_sessions.answer');
             });
-
-            Route::delete('/quiz/sessions',  [\App\Http\Controllers\QuizSessionController::class, 'complete'])
-                ->name('quiz_sessions.complete');
-
-            Route::get('/quiz/sessions/timeout', [\App\Http\Controllers\QuizSessionController::class, 'timeout'])
-                ->name('quiz_sessions.timeout');
+            Route::delete('/quiz/sessions',  [QuizSessionController::class, 'complete'])->name('quiz_sessions.complete');
+            Route::get('/quiz/sessions/timeout', [QuizSessionController::class, 'timeout'])->name('quiz_sessions.timeout');
         });
-
-        Route::get('/results/{result}', [\App\Http\Controllers\ResultController::class, 'show'])
-            ->name('results.show')
-            ->can('view', 'result');
-
+        Route::get('/results/{result}', [ResultController::class, 'show'])->name('results.show')->can('view', 'result');
     });
-
-    Route::middleware('manager')->group(function () {
-
-        Route::get('/manager', [\App\Http\Controllers\Manager\DashboardController::class, 'index'])
-            ->name('manager.index');
-
-        Route::get('/manager/home', [\App\Http\Controllers\Manager\DashboardController::class, 'home'])
-            ->name('manager.home');
-
-        Route::get('/manager/users', [\App\Http\Controllers\Manager\DashboardController::class, 'user'])
-            ->name('manager.user');
-
-        Route::get('/manager/users/create', [\App\Http\Controllers\Manager\UserController::class, 'create'])
-            ->name('manager.user.create');
-
-        Route::post('/manager/users', [\App\Http\Controllers\Manager\UserController::class, 'store'])
-            ->name('manager.user.store');
-
-        Route::get('/manager/users/{user}/edit', [\App\Http\Controllers\Manager\UserController::class, 'edit'])
-            ->name('manager.user.edit');
-
-        Route::put('/manager/users/{user}', [\App\Http\Controllers\Manager\UserController::class, 'update'])
-            ->name('manager.user.update');
-
-        Route::delete('/manager/users/{id}', [App\Http\Controllers\Manager\UserController::class, 'destroy'])
-            ->name('manager.user.delete');
-
-        Route::get('/manager/quizzes', [\App\Http\Controllers\Manager\DashboardController::class, 'quiz'])
-            ->name('manager.quiz');
-
-        Route::get('/manager/results', [\App\Http\Controllers\Manager\DashboardController::class, 'result'])
-            ->name('manager.result');
-
+    Route::middleware('manager')->prefix('manager')->name('manager.')->group(function () {
+        Route::get('/', [DashboardManagerController::class, 'index'])->name('index');
+        Route::get('/home', [DashboardManagerController::class, 'home'])->name('home.index');
+        Route::resource('users', UserManagerController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+        Route::resource('quizzes', QuizManagerController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+        Route::get('/results', [DashboardManagerController::class, 'result'])->name('results');
     });
 });
 
