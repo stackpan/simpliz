@@ -6,6 +6,7 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Facades\QuizService;
+use App\Http\Requests\Manager\QuizCreateRequest;
 
 class QuizManagerController extends Controller
 {
@@ -22,15 +23,19 @@ class QuizManagerController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(QuizCreateRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $quizId = QuizService::create($validated['title'], $validated['description'], $validated['duration']);
+
+        return redirect()->route('manager.quizzes.edit', $quizId);
     }
 
     /**

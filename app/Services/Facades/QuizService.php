@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @method static \Illuminate\Database\Eloquent\Collection getAll(\App\Models\User|\null $user, \bool $userCount)
  * @method static \App\Models\Quiz loadDetails(\App\Models\Quiz $quiz)
+ * @method static \App\Models\Quiz|\null getById(string $id)
+ * @method static \string|null create(\string $title, \string $description, \int $duration)
  *
  * @see \App\Services\QuizService
  */

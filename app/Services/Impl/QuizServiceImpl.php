@@ -12,7 +12,7 @@ class QuizServiceImpl implements QuizService
 
     public function getAll(?User $user = null, bool $userCount = false): Collection
     {
-        $quizzes = Quiz::withQuestionsCount();
+        $quizzes = Quiz::select('quizzes.id', 'name', 'duration')->withQuestionsCount();
 
         if ($user) {
             $quizzes = $quizzes
@@ -24,7 +24,7 @@ class QuizServiceImpl implements QuizService
             $quizzes = $quizzes->withCount('users');
         }
 
-        return $quizzes->get('quizzes.id', 'name', 'duration');
+        return $quizzes->get();
     }
 
     public function loadDetails(Quiz $quiz): Quiz
@@ -32,6 +32,22 @@ class QuizServiceImpl implements QuizService
         return $quiz
             ->loadQuestionCount()
             ->loadUserResults(auth()->user());
+    }
+
+    public function getById(string $id): ?Quiz
+    {
+        return Quiz::find($id);
+    }
+
+    public function create(string $title, string $description, int $duration): ?string
+    {
+        $quiz = Quiz::create([
+            'title' => $title,
+            'description' => $description,
+            'duration' => $duration,
+        ]);
+
+        return $quiz->id;
     }
 
 }

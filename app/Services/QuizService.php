@@ -12,4 +12,8 @@ interface QuizService
     public function getAll(?User $user, bool $userCount): Collection;
 
     public function loadDetails(Quiz $quiz): Quiz;
+
+    public function getById(string $id): ?Quiz;
+
+    public function create(string $title, string $description, int $duration): ?string;
 }
