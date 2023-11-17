@@ -4,7 +4,7 @@ namespace App\Http\Requests\Manager;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class QuizCreateRequest extends FormRequest
+class QuizUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

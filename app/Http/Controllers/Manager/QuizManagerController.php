@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Manager;
 
+use App\Models\Quiz;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Facades\QuizService;
-use App\Http\Requests\Manager\QuizCreateRequest;
+use App\Http\Requests\Manager\QuizUpdateRequest;
 
 class QuizManagerController extends Controller
 {
@@ -23,17 +24,21 @@ class QuizManagerController extends Controller
      */
     public function create()
     {
-        
+
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(QuizCreateRequest $request)
+    public function store(QuizUpdateRequest $request)
     {
         $validated = $request->validated();
 
-        $quizId = QuizService::create($validated['title'], $validated['description'], $validated['duration']);
+        $quizId = QuizService::create(
+            title: $validated['title'],
+            description: $validated['description'],
+            duration: $validated['duration'],
+        );
 
         return redirect()->route('manager.quizzes.edit', $quizId);
     }
@@ -59,9 +64,19 @@ class QuizManagerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(QuizUpdateRequest $request, string $id)
     {
-        //
+        $validated = $request->validated();
+
+        $quiz = Quiz::find($id);
+        $status = QuizService::update(
+            quiz: $quiz,
+            title: $validated['title'],
+            description: $validated['description'],
+            duration: $validated['duration']
+        );
+
+        return redirect()->back();
     }
 
     /**

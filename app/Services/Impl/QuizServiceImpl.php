@@ -50,4 +50,15 @@ class QuizServiceImpl implements QuizService
         return $quiz->id;
     }
 
+    public function update(Quiz $quiz, string $title, string $description, int $duration): bool
+    {
+        $quiz->fill([
+            'title' => $title,
+            'description' => $description,
+            'duration' => $duration,
+        ])->save();
+
+        return $quiz->wasChange();
+    }
+
 }

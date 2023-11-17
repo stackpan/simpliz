@@ -1,4 +1,4 @@
-@startuml
+@startuml Simpliz Database Design
 
 entity users {
     * id: uuid <<PK>>

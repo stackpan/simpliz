@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Facades\UserService;
 use Illuminate\Http\RedirectResponse;
-use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\Manager\UserCreateRequest;
+use App\Http\Requests\Manager\UserUpdateRequest;
 
 class UserManagerController extends Controller
 {

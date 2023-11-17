@@ -1,4 +1,4 @@
-@startuml
+@startuml Simpliz QuizSession Sequence Diagram
 'https://plantuml.com/sequence-diagram
 
 actor User as User
