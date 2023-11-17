@@ -4,6 +4,7 @@ namespace App\Services\Impl;
 
 use App\Models\Quiz;
 use App\Models\User;
+use App\Dto\QuizUpdateDto;
 use App\Services\QuizService;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -50,12 +51,12 @@ class QuizServiceImpl implements QuizService
         return $quiz->id;
     }
 
-    public function update(Quiz $quiz, string $title, string $description, int $duration): bool
+    public function update(Quiz $quiz, QuizUpdateDto $dto): bool
     {
         $quiz->fill([
-            'title' => $title,
-            'description' => $description,
-            'duration' => $duration,
+            'title' => $dto->title,
+            'description' => $dto->description,
+            'duration' => $dto->duration,
         ])->save();
 
         return $quiz->wasChange();

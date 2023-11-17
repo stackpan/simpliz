@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Quiz;
 use App\Models\User;
+use App\Dto\QuizUpdateDto;
 use Illuminate\Database\Eloquent\Collection;
 
 interface QuizService
@@ -17,5 +18,5 @@ interface QuizService
 
     public function create(string $title, string $description, int $duration): ?string;
 
-    public function update(Quiz $quiz, string $title, string $description, int $duration): bool;
+    public function update(Quiz $quiz, QuizUpdateDto $dto): bool;
 }

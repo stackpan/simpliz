@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Manager;
 
 use App\Models\Quiz;
 use Illuminate\View\View;
+use App\Dto\QuizUpdateDto;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Facades\QuizService;
@@ -69,12 +70,13 @@ class QuizManagerController extends Controller
         $validated = $request->validated();
 
         $quiz = Quiz::find($id);
-        $status = QuizService::update(
-            quiz: $quiz,
+        $dto = new QuizUpdateDto(
             title: $validated['title'],
             description: $validated['description'],
-            duration: $validated['duration']
+            duration: $validated['duration'],
         );
+        
+        $status = QuizService::update($quiz, $dto);
 
         return redirect()->back();
     }
