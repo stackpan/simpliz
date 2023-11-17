@@ -4,6 +4,8 @@ namespace App\Services\Impl;
 
 use App\Models\User;
 use App\Enums\UserRole;
+use App\Enums\UserGender;
+use App\Dto\UserUpdateDto;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -17,14 +19,14 @@ class UserServiceImpl implements UserService {
             ->paginate($perPage);
     }
 
-    public function create(array $validated, UserRole $role = UserRole::Examinee): string
+    public function create(string $name, string $email, string $password, int $gender, UserRole $role = UserRole::Examinee): string
     {
-        extract($validated);
+        $hashedPassword = Hash::make($password);
 
         $user = User::create([
             'name' => $name,
             'email' => $email,
-            'password' => Hash::make($password),
+            'password' => Hash::make($hashedPassword),
             'gender' => $gender,
             'role' => $role,
         ]);
@@ -32,23 +34,22 @@ class UserServiceImpl implements UserService {
         return $user->id;
     }
 
-    public function update(User $user, array $validated): bool
+    public function update(User $user, UserUpdateDto $dto): bool
     {
-        extract($validated);
-
         $data = collect([
-            'name' => $name,
-            'email' => $email,
-            'gender' => $gender,
+            'name' => $dto->name,
+            'email' => $dto->email,
+            'gender' => $dto->gender,
         ]);
 
-        if ($password !== null) {
-            $data->put('password', $password);
+        if ($dto->password !== null) {
+            $hashedPassword = Hash::make($dto->password);
+            $data->put('password', $hashedPassword);
         }
 
         $user = $user->fill($data->toArray())->save();
 
-        return true;
+        return $user->wasChange();
     }
 
     public function delete(string $userId): bool
