@@ -6,6 +6,7 @@ use App\Models\Quiz;
 use App\Models\User;
 use App\Dto\QuizUpdateDto;
 use App\Services\QuizService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class QuizServiceImpl implements QuizService
@@ -13,11 +14,11 @@ class QuizServiceImpl implements QuizService
 
     public function getAll(?User $user = null, bool $userCount = false): Collection
     {
-        $quizzes = Quiz::select('quizzes.id', 'name', 'duration')->withQuestionsCount();
+        $quizzes = Quiz::select(['quizzes.id', 'name', 'duration'])->withQuestionsCount();
 
         if ($user) {
             $quizzes = $quizzes
-                ->whereUser($user)
+                ->whereRelation('users', 'user_id', $user->id)
                 ->has('questions');
         }
 

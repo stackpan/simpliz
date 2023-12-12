@@ -26,12 +26,12 @@ use App\Http\Controllers\Manager\DashboardManagerController;
 */
 
 Route::middleware('auth')->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show')->can('view', 'quiz');
     Route::middleware('examinee')->group(function () {
-        Route::get('/', [HomeController::class, 'index'])->name('home');
         Route::post('/quiz/sessions', [QuizSessionController::class, 'start'])->name('quiz_sessions.start');
         Route::middleware(QuizSessionMiddleware::class)->group(function () {
             Route::middleware(QuizSessionTimeout::class)->group(function () {
