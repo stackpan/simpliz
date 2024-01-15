@@ -3,7 +3,11 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Enums\Color;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Nette\Utils\Arrays;
+use UnitEnum;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,11 +16,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        $colors = Arrays::map(Color::cases(), fn(UnitEnum $unit) => [
+            'id' => $unit->value,
+            'name' => $unit->name
+        ]);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        DB::table('colors')->insert($colors);
     }
 }

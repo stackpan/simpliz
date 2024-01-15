@@ -1,0 +1,88 @@
+@startuml
+
+entity User {
+    * id: uuid
+    * name: varchar(50)
+    * email: varchar(100)
+    email_verified_at: timestamp
+    * password: varchar(255)
+    remember_token: varchar(100)
+    * accountable_id: uuid
+    * accountable_type: varchar(255)
+    created_at: timestamp
+    updated_at: timestamp
+    --
+}
+
+entity Participant {
+    * id: uuid
+    --
+}
+
+entity Proctor {
+    * id: uuid
+    --
+}
+
+entity Quiz {
+    * id: uuid
+    * name: varchar(50)
+    description: varchar(255)
+    * duration: unsigned bigint
+    max_attempts: unsigned smallint
+    * color_id: unsigned bigint
+    * status: enum('open', 'draft', 'published', 'closed')
+    created_by: uuid
+    created_at: timestamp
+    updated_at: timestamp
+    --
+}
+
+entity Color {
+    * id: unsigned bigint
+    * name: varchar(255)
+    --
+}
+
+entity Question {
+    * id: uuid
+    * quiz_id: uuid
+    * body: text
+    created_at: timestamp
+    updated_at: timestamp
+}
+
+entity Option {
+    * id: uuid
+    * question_id: uuid
+    * body: text
+    * is_answer: boolean
+    created_at: timestamp
+    updated_at: timestamp
+}
+
+entity ParticipantQuiz {
+    * participant_id: uuid
+    * quiz_id: uuid
+}
+
+entity Result {
+    * id: uuid
+    * user_id: uuid
+    * quiz_id: uuid
+    * data: json
+    created_at: timestamp
+}
+
+Color |o--|{ Quiz
+Quiz |o--|{ Question
+Question |o--|{ Option
+Participant ||--|| User
+Proctor ||--|| User
+Quiz ||--|{ QuizParticipant
+Participant ||--|{ QuizParticipant
+Proctor ||--|{ Quiz
+Participant ||--|{ Result
+Quiz ||--|{ Result
+
+@enduml
