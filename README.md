@@ -2,6 +2,8 @@
 
 ![Simpliz logo](docs/assets/readme/img/simpliz_logo.png)
 
+***This project is being reforged for better architecture and mantainability. Check out [this branch](https://github.com/stackpan/simpliz/tree/v2)***
+
 ## Overview
 
 Simpliz stands for **sim**ultaneously **pl**ayable qu**iz**. Just a simple quiz web app.
