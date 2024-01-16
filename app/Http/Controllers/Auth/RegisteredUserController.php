@@ -32,11 +32,9 @@ class RegisteredUserController extends Controller
      */
     public function store(StoreRegisteredUserRequest $request): RedirectResponse
     {
-        $data = new RegisterUserData(
-            name: $request->name,
-            email: $request->email,
-            password: $request->password
-        );
+        $validated = $request->validated();
+
+        $data = RegisterUserData::createFromValidated($validated);
 
         $user = $this->userService->register($data);
 

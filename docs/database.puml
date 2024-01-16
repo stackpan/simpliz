@@ -30,17 +30,11 @@ entity Quiz {
     description: varchar(255)
     * duration: unsigned bigint
     max_attempts: unsigned smallint
-    * color_id: unsigned bigint
+    * color: unsigned smallint
     * status: enum('open', 'draft', 'published', 'closed')
     created_by: uuid
     created_at: timestamp
     updated_at: timestamp
-    --
-}
-
-entity Color {
-    * id: unsigned bigint
-    * name: varchar(255)
     --
 }
 

@@ -2,7 +2,7 @@
 
 namespace App\Data;
 
-class RegisterUserData
+class RegisterUserData implements ValidatedCreatable
 {
     public function __construct(
         public readonly string $name,
@@ -10,5 +10,14 @@ class RegisterUserData
         public readonly string $password,
     )
     {
+    }
+
+    public static function createFromValidated(array $validated): RegisterUserData
+    {
+        return new RegisterUserData(
+            name: $validated['name'],
+            email: $validated['email'],
+            password: $validated['password']
+        );
     }
 }

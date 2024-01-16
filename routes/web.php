@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Proctor\QuizManagerController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +34,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::middleware('can:access-proctor-panel')->name('proctor.')->group(function () {
+        Route::resource('quizzes', QuizManagerController::class);
+    });
 });
 
 require __DIR__.'/auth.php';
