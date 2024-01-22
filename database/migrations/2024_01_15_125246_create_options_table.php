@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('options', function (Blueprint $table) {
-            $table->ulid('id')->primary();
-            $table->foreignUlid('question_id')->constrained();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('question_id')->constrained();
             $table->text('body');
             $table->boolean('is_answer');
             $table->timestamps();

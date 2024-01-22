@@ -68,13 +68,12 @@ entity Result {
     created_at: timestamp
 }
 
-Color |o--|{ Quiz
 Quiz |o--|{ Question
 Question |o--|{ Option
 Participant ||--|| User
 Proctor ||--|| User
-Quiz ||--|{ QuizParticipant
-Participant ||--|{ QuizParticipant
+Quiz ||--|{ ParticipantQuiz
+Participant ||--|{ ParticipantQuiz
 Proctor ||--|{ Quiz
 Participant ||--|{ Result
 Quiz ||--|{ Result

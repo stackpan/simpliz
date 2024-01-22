@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('quizzes', function (Blueprint $table) {
-            $table->ulid('id')->primary();
+            $table->uuid('id')->primary();
             $table->string('name', 50);
             $table->text('description')->nullable();
             $table->unsignedBigInteger('duration');
             $table->unsignedSmallInteger('max_attempts')->nullable();
             $table->unsignedSmallInteger('color');
             $table->enum('status', ['draft', 'published', 'open', 'closed'])->default('draft');
-            $table->foreignUlid('created_by')->nullable()
+            $table->foreignUuid('created_by')->nullable()
                 ->references('id')->on('proctors')
                 ->nullOnDelete();
             $table->timestamps();

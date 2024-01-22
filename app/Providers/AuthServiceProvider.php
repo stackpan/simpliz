@@ -3,10 +3,7 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
-use App\Models\User;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -24,10 +21,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::define('access-proctor-panel', function (User $user) {
-            $user->isProctor()
-                ? Response::allow()
-                : Response::deny('You must be a proctor.');
-        });
+        //
     }
 }

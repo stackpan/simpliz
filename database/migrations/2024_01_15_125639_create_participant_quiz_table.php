@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('participant_quiz', function (Blueprint $table) {
-            $table->foreignUlid('participant_id')->constrained();
-            $table->foreignUlid('quiz_id')->constrained();
+            $table->foreignUuid('participant_id')->constrained();
+            $table->foreignUuid('quiz_id')->constrained();
         });
     }
 

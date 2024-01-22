@@ -1,0 +1,401 @@
+openapi: 3.0.3
+info:
+  title: 'Simpliz 2 API'
+  description: 'Simpliz stands for simultaneously playable quiz. Just a simple quiz web app.'
+  version: 2.0.0
+  contact:
+    name: 'Ivan Rizkyanto'
+    email: 'ivanzkyanto@outlook.com'
+externalDocs:
+  description: 'Project Repository'
+  url: https://github.com/stackpan/simpliz
+servers:
+  - url: http://localhost/api/v2
+tags:
+  - name: Quiz
+paths:
+  /quizzes:
+    get:
+      tags:
+        - Quiz
+      description: 'Get all quizzes'
+      responses:
+        403:
+          description: 'Forbidden'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Access forbidden'
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Success'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Quiz'
+    post:
+      tags:
+        - Quiz
+      description: 'Store general information of quiz'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeneralQuiz'
+      responses:
+        201:
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Created'
+                  data:
+                    $ref: '#/components/schemas/Quiz'
+        400:
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Invalid request'
+                  errors:
+                    type: array
+        403:
+          description: 'Forbidden'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Access forbidden'
+  /quizzes/{quizId}:
+    get:
+      tags:
+        - Quiz
+      description: 'Get quiz details'
+      responses:
+        200:
+          description: 'Found'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Found'
+                  data:
+                    $ref: '#/components/schemas/QuizDetails'
+        403:
+          description: 'Forbidden'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Access forbidden'
+        404:
+          description: 'Quiz not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Quiz not found'
+    put:
+      tags:
+        - Quiz
+      description: 'Update quiz'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuizRequest'
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Success'
+                  data:
+                    $ref: '#/components/schemas/Quiz'
+        400:
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Invalid request'
+                  errors:
+                    type: array
+        403:
+          description: 'Forbidden'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Access forbidden'
+        404:
+          description: 'Quiz not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Quiz not found'
+    delete:
+      tags:
+        - Quiz
+      description: 'Delete a quiz'
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Quiz deleted successfully'
+                  data:
+                    type: object
+                    properties:
+                      quizId:
+                        type: string
+                        example: 'ff6d1855-e3e7-4d22-87be-a90749e60d25'
+        403:
+          description: 'Forbidden'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Access forbidden'
+        404:
+          description: 'Quiz not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Quiz not found'
+components:
+  schemas:
+    Quiz:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 'ff6d1855-e3e7-4d22-87be-a90749e60d25'
+        name:
+          type: string
+          example: 'Quiz Name'
+        description:
+          type: string
+          example: 'This is quiz description'
+        duration:
+          type: integer
+          format: int64
+          example: 3600000
+        maxAttempts:
+          type: integer
+          format: int32
+          example: 3
+        color:
+          type: string
+          example: 'Blue'
+        status:
+          type: string
+          example: 'open'
+        createdBy:
+          type: string
+          example: 'Proctor'
+        createdAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+        updatedAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+    GeneralQuiz:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Quiz Name'
+        description:
+          type: string
+          example: 'This is a quiz description'
+        duration:
+          type: integer
+          format: int64
+          example: 3600000
+        maxAttempts:
+          type: integer
+          format: int32
+          example: 3
+        color:
+          type: string
+          example: 'Blue'
+    QuizRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Quiz Name'
+        description:
+          type: string
+          example: 'This is quiz description'
+        duration:
+          type: integer
+          format: int64
+          example: 3600000
+        maxAttempts:
+          type: integer
+          format: int32
+          example: 3
+        color:
+          type: string
+          example: 'Blue'
+        status:
+          type: string
+          example: 'open'
+    QuizDetails:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 'ff6d1855-e3e7-4d22-87be-a90749e60d25'
+        name:
+          type: string
+          example: 'Quiz Name'
+        description:
+          type: string
+          example: 'This is quiz description'
+        duration:
+          type: integer
+          format: int64
+          example: 3600000
+        maxAttempts:
+          type: integer
+          format: int32
+          example: 3
+        color:
+          type: string
+          example: 'Blue'
+        status:
+          type: string
+          example: 'open'
+        createdBy:
+          type: string
+          example: 'Proctor'
+        createdAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+        updatedAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    Question:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '383ed99c-374b-4e1c-8726-c2c0365694ac'
+        body:
+          type: string
+          example: 'This is a question body'
+        createdAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+        updatedAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/Option'
+    Option:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '8f01e273-ce82-4fe9-89c4-0b53aaf9a422'
+        body:
+          type: string
+          example: 'This is a question body'
+        isAnswer:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+        updatedAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '481d3a94-1b87-4596-b7cd-9906acdd7c09'
+        name:
+          type: string
+          example: 'User'
+        email:
+          type: string
+          example: 'user@example.com'
+        createdAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+        updatedAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
