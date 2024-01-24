@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('participant_quiz', function (Blueprint $table) {
             $table->foreignUuid('participant_id')->constrained();
             $table->foreignUuid('quiz_id')->constrained();
+            $table->integer('highest_score')->nullable();
+            $table->integer('attempt_count')->nullable();
         });
     }
 

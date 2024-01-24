@@ -15,8 +15,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('participant_id')->constrained();
             $table->foreignUuid('quiz_id')->constrained();
+            $table->integer('score');
             $table->json('data');
-            $table->timestamp('created_at')->nullable();
+            $table->timestamp('created_at');
         });
     }
 
