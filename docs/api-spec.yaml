@@ -784,6 +784,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
   /quiz-sessions:
     get:
       tags:
@@ -968,7 +970,7 @@ components:
               errors:
                 type: array
     401Unauthorized:
-      description: 'Access token is missing or invalid'
+      description: 'Unauthorized.'
       content:
         application/json:
           schema:
@@ -976,7 +978,7 @@ components:
             properties:
               message:
                 type: string
-                example: 'Access token is missing or invalid.'
+                example: 'Unauthorized.'
     403Forbidden:
       description: 'Forbidden'
       content:

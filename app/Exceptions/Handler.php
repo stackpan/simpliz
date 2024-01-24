@@ -2,7 +2,11 @@
 
 namespace App\Exceptions;
 
+use App\Http\Resources\ApiResponse;
+use App\Http\Resources\ErrorResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -25,6 +29,21 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        $this->renderable(function (ValidationException $e) {
+            $errors = $e->errors();
+            return (new ErrorResponse($errors, __('message.bad_request')))->response()->setStatusCode(400);
+        });
+
+        $this->renderable(function (Throwable $e) {
+            if ($e instanceof HttpResponseException) {
+                return $e->getResponse();
+            }
+
+            if (!config('app.debug')) {
+                return (new ErrorResponse([], __('message.server_error')))->response()->setStatusCode(500);
+            }
         });
     }
 }
