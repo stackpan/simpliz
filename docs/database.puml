@@ -58,14 +58,17 @@ entity Option {
 entity ParticipantQuiz {
     * participant_id: uuid
     * quiz_id: uuid
+    highest_score: int
+    attempt_count: int
 }
 
 entity Result {
     * id: uuid
     * user_id: uuid
     * quiz_id: uuid
+    * score: int
     * data: json
-    created_at: timestamp
+    * created_at: timestamp
 }
 
 Quiz |o--|{ Question

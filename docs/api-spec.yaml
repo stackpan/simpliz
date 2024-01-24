@@ -12,24 +12,26 @@ externalDocs:
 servers:
   - url: http://localhost/api/v2
 tags:
+  - name: Authentication
+  - name: User
   - name: Quiz
+  - name: Question
+  - name: Option
+  - name: QuizSession
+  - name: Result
 paths:
-  /quizzes:
-    get:
+  /authentication/login:
+    post:
       tags:
-        - Quiz
-      description: 'Get all quizzes'
+        - Authentication
+      description: 'Login'
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
       responses:
-        403:
-          description: 'Forbidden'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Access forbidden'
         200:
           description: 'Success'
           content:
@@ -39,11 +41,88 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Success'
+                    example: 'Login successfully.'
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+        400:
+          $ref: '#/components/responses/400BadRequest'
+        401:
+          description: 'Wrong credentials.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Wrong credentials.'
+  /authentication/logout:
+    delete:
+      tags:
+        - Authentication
+      description: 'Logout'
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Successfully logged out.'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+  /quizzes:
+    get:
+      tags:
+        - Quiz
+      description: 'Get paginated quizzes'
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Success.'
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Quiz'
+                      oneOf:
+                        - $ref: '#/components/schemas/Quiz'
+                        - $ref: '#/components/schemas/ParticipantQuiz'
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
     post:
       tags:
         - Quiz
@@ -63,36 +142,22 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Created'
+                    example: 'Quiz created successfully.'
                   data:
                     $ref: '#/components/schemas/Quiz'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
         400:
-          description: 'Bad request'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Invalid request'
-                  errors:
-                    type: array
+          $ref: '#/components/responses/400BadRequest'
         403:
-          description: 'Forbidden'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Access forbidden'
+          $ref: '#/components/responses/403Forbidden'
   /quizzes/{quizId}:
     get:
       tags:
         - Quiz
-      description: 'Get quiz details'
+      description: 'Get a quiz'
+      parameters:
+        - $ref: '#/components/parameters/QuizIdPath'
       responses:
         200:
           description: 'Found'
@@ -103,33 +168,21 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Found'
+                    example: 'Found.'
                   data:
-                    $ref: '#/components/schemas/QuizDetails'
+                    $ref: '#/components/schemas/Quiz'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
         403:
-          description: 'Forbidden'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Access forbidden'
+          $ref: '#/components/responses/403Forbidden'
         404:
-          description: 'Quiz not found'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Quiz not found'
+          $ref: '#/components/responses/404QuizNotFound'
     put:
       tags:
         - Quiz
       description: 'Update quiz'
+      parameters:
+        - $ref: '#/components/parameters/QuizIdPath'
       requestBody:
         content:
           application/json:
@@ -145,45 +198,23 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Success'
+                    example: 'Success.'
                   data:
                     $ref: '#/components/schemas/Quiz'
         400:
-          description: 'Bad request'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Invalid request'
-                  errors:
-                    type: array
+          $ref: '#/components/responses/400BadRequest'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
         403:
-          description: 'Forbidden'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Access forbidden'
+          $ref: '#/components/responses/403Forbidden'
         404:
-          description: 'Quiz not found'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Quiz not found'
+          $ref: '#/components/responses/404QuizNotFound'
     delete:
       tags:
         - Quiz
       description: 'Delete a quiz'
+      parameters:
+        - $ref: '#/components/parameters/QuizIdPath'
       responses:
         200:
           description: 'Success'
@@ -194,25 +225,37 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Quiz deleted successfully'
+                    example: 'Quiz deleted successfully.'
                   data:
                     type: object
                     properties:
                       quizId:
                         type: string
                         example: 'ff6d1855-e3e7-4d22-87be-a90749e60d25'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
         403:
-          description: 'Forbidden'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Access forbidden'
+          $ref: '#/components/responses/403Forbidden'
         404:
-          description: 'Quiz not found'
+          $ref: '#/components/responses/404QuizNotFound'
+  /quizzes/{quizId}/questions:
+    get:
+      tags:
+        - Question
+      description: 'Get paginated questions from a quiz'
+      parameters:
+        - $ref: '#/components/parameters/QuizIdPath'
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Found'
           content:
             application/json:
               schema:
@@ -220,8 +263,815 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Quiz not found'
+                    example: 'Found.'
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/QuestionDetails'
+                        - $ref: '#/components/schemas/SafeQuestionDetails'
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404QuizNotFound'
+    post:
+      tags:
+        - Question
+      description: 'Add a question to a quiz'
+      parameters:
+        - $ref: '#/components/parameters/QuizIdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionRequest'
+      responses:
+        201:
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Question created successfully.'
+                  data:
+                    $ref: '#/components/schemas/Question'
+        400:
+          $ref: '#/components/responses/400BadRequest'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404QuizNotFound'
+  /quizzes/{quizId}/participants:
+    get:
+      tags:
+        - Quiz
+      description: 'Get participants to a quiz'
+      parameters:
+        - $ref: '#/components/parameters/QuizIdPath'
+      responses:
+        200:
+          description: 'Found'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Found.'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404QuizNotFound'
+    post:
+      tags:
+        - Quiz
+      description: 'Add participants to a quiz'
+      parameters:
+        - $ref: '#/components/parameters/QuizIdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddParticipantRequest'
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Successfully added participant into quiz.'
+                  data:
+                    $ref: '#/components/schemas/User'
+        400:
+          $ref: '#/components/responses/400BadRequest'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404QuizNotFound'
+  /quizzes/{quizId}/participants/{participantId}:
+    delete:
+      tags:
+        - Quiz
+      description: 'Remove participant from a quiz'
+      parameters:
+        - $ref: '#/components/parameters/QuizIdPath'
+        - $ref: '#/components/parameters/ParticipantIdPath'
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Successfully removed participant from quiz'
+                  data:
+                    type: object
+                    properties:
+                      participantId:
+                        type: string
+                        example: '481d3a94-1b87-4596-b7cd-9906acdd7c09'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404QuizNotFound'
+  /questions/{questionId}:
+    get:
+      tags:
+        - Question
+      description: 'Get a question'
+      parameters:
+        - $ref: '#/components/parameters/QuestionIdPath'
+        - in: header
+          name: 'X-QUIZ-SESSION-TOKEN'
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Question updated successfully.'
+                  data:
+                    $ref: '#/components/schemas/SafeQuestionDetails'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404QuestionNotFound'
+    put:
+      tags:
+        - Question
+      description: 'Update a question'
+      parameters:
+        - $ref: '#/components/parameters/QuestionIdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionRequest'
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Question updated successfully.'
+                  data:
+                    $ref: '#/components/schemas/Question'
+        400:
+          $ref: '#/components/responses/400BadRequest'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404QuestionNotFound'
+    delete:
+      tags:
+        - Question
+      description: 'Delete a question'
+      parameters:
+        - $ref: '#/components/parameters/QuestionIdPath'
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Question deleted successfully.'
+                  data:
+                    type: object
+                    properties:
+                      questionId:
+                        type: string
+                        example: '383ed99c-374b-4e1c-8726-c2c0365694ac'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404QuestionNotFound'
+  /questions/{questionId}/options:
+    get:
+      tags:
+        - Option
+      description: 'Get options from a question'
+      parameters:
+        - $ref: '#/components/parameters/QuestionIdPath'
+      responses:
+        200:
+          description: 'Found'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Found.'
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/Option'
+                        - $ref: '#/components/schemas/SafeOption'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404QuestionNotFound'
+    post:
+      tags:
+        - Option
+      description: 'Add an option to a question'
+      parameters:
+        - $ref: '#/components/parameters/QuestionIdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OptionRequest'
+      responses:
+        201:
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Created.'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Option'
+        400:
+          $ref: '#/components/responses/400BadRequest'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404QuestionNotFound'
+  /questions/{questionId}/set-answer:
+    post:
+      tags:
+        - Question
+      description: 'Set answer in a question'
+      parameters:
+        - $ref: '#/components/parameters/QuestionIdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetAnswerRequest'
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Answer set successfully.'
+        400:
+          $ref: '#/components/responses/400BadRequest'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404QuestionNotFound'
+  /questions/{questionId}/select-answer:
+    post:
+      tags:
+        - Question
+      description: 'Select answer in a question'
+      parameters:
+        - $ref: '#/components/parameters/QuestionIdPath'
+        - in: header
+          name: 'X-QUIZ-SESSION-TOKEN'
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetAnswerRequest'
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Answer selection successfully.'
+        400:
+          $ref: '#/components/responses/400BadRequest'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404QuestionNotFound'
+  /options/{optionId}:
+    put:
+      tags:
+        - Option
+      description: 'Update an option'
+      parameters:
+        - $ref: '#/components/parameters/OptionIdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OptionRequest'
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Option updated successfully.'
+                  data:
+                    $ref: '#/components/schemas/Option'
+        400:
+          $ref: '#/components/responses/400BadRequest'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404OptionNotFound'
+    delete:
+      tags:
+        - Option
+      description: 'Delete an option'
+      parameters:
+        - $ref: '#/components/parameters/OptionIdPath'
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Option deleted successfully.'
+                  data:
+                    type: object
+                    properties:
+                      optionId:
+                        type: string
+                        example: '8f01e273-ce82-4fe9-89c4-0b53aaf9a422'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404OptionNotFound'
+  /quizzes/{quizId}/export:
+    get:
+      tags:
+        - Quiz
+      description: 'Export a quiz to csv file'
+      parameters:
+        - $ref: '#/components/parameters/QuizIdPath'
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Success.'
+            text/csv:
+              schema:
+                type: string
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404QuizNotFound'
+  /quizzes/import:
+    post:
+      tags:
+        - Quiz
+      description: 'Import a quiz from csv file'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Success.'
+                  data:
+                    type: object
+                    properties:
+                      quizId:
+                        type: string
+                        example: 'ff6d1855-e3e7-4d22-87be-a90749e60d25'
+        400:
+          $ref: '#/components/responses/400BadRequest'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404QuizNotFound'
+  /participants:
+    get:
+      tags:
+        - User
+      description: 'Search participants'
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Success.'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+  /quiz-sessions:
+    get:
+      tags:
+        - QuizSession
+      description: 'Get quiz sessions'
+      parameters:
+        - in: query
+          name: quizId
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Success.'
+                  data:
+                    type: array
+                    $ref: '#/components/schemas/QuizSession'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+    post:
+      tags:
+        - QuizSession
+      description: 'Start a quiz session'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quizId:
+                  type: string
+      responses:
+        201:
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Created.'
+                  data:
+                    $ref: '#/components/schemas/QuizSession'
+        400:
+          $ref: '#/components/responses/400BadRequest'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+    delete:
+      tags:
+        - QuizSession
+      description: 'End a quiz session'
+      parameters:
+        - in: header
+          name: 'X-QUIZ-SESSION-TOKEN'
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Quiz session has ended.'
+                  data:
+                    type: object
+                    properties:
+                      resultId:
+                        type: string
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+  /results:
+    get:
+      tags:
+        - Result
+      description: Get paginated user results
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+        - in: query
+          name: filter
+          schema:
+            type: object
+            properties:
+              quizId:
+                type: string
+        - in: query
+          name: sort
+          schema:
+            type: object
+            properties:
+              latest:
+                type: boolean
+              oldest:
+                type: boolean
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Success.'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Result'
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+  /results/{resultId}:
+    get:
+      tags:
+        - Result
+      description: Get user results
+      parameters:
+        - $ref: '#/components/parameters/ResultIdPath'
+      responses:
+        200:
+          description: 'Found'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Found.'
+                  data:
+                    $ref: '#/components/schemas/ResultDetails'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404ResultNotFound'
+security:
+  - BearerAuth: []
 components:
+  responses:
+    400BadRequest:
+      description: 'Bad request'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'Invalid request.'
+              errors:
+                type: array
+    401Unauthorized:
+      description: 'Access token is missing or invalid'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'Access token is missing or invalid.'
+    403Forbidden:
+      description: 'Forbidden'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'Access forbidden.'
+    404QuizNotFound:
+      description: 'Quiz not found'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'Quiz not found.'
+    404QuestionNotFound:
+      description: 'Question not found'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'Question not found.'
+    404OptionNotFound:
+      description: 'Option not found'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'Option not found.'
+    404ParticipantNotFound:
+      description: 'Participant not found'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'Participant not found.'
+    404ResultNotFound:
+      description: 'Result not found'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'Result not found.'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    QuizIdPath:
+      in: path
+      name: quizId
+      required: true
+      schema:
+        type: string
+    ParticipantIdPath:
+      in: path
+      name: participantId
+      required: true
+      schema:
+        type: string
+    QuestionIdPath:
+      in: path
+      name: questionId
+      required: true
+      schema:
+        type: string
+    OptionIdPath:
+      in: path
+      name: optionId
+      required: true
+      schema:
+        type: string
+    ResultIdPath:
+      in: path
+      name: resultId
+      required: true
+      schema:
+        type: string
   schemas:
     Quiz:
       type: object
@@ -258,6 +1108,49 @@ components:
         updatedAt:
           type: string
           example: '1970-01-01 00:00:01.000000'
+    ParticipantQuiz:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 'ff6d1855-e3e7-4d22-87be-a90749e60d25'
+        name:
+          type: string
+          example: 'Quiz Name'
+        description:
+          type: string
+          example: 'This is quiz description'
+        duration:
+          type: integer
+          format: int64
+          example: 3600000
+        maxAttempts:
+          type: integer
+          format: int32
+          example: 3
+        color:
+          type: string
+          example: 'Blue'
+        status:
+          type: string
+          example: 'open'
+        createdBy:
+          type: string
+          example: 'Proctor'
+        createdAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+        updatedAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+        attemptCount:
+          type: integer
+          format: int32
+          example: 1
+        highestScore:
+          type: integer
+          format: int32
+          example: 78
     GeneralQuiz:
       type: object
       properties:
@@ -301,50 +1194,22 @@ components:
         status:
           type: string
           example: 'open'
-    QuizDetails:
+    Question:
       type: object
       properties:
         id:
           type: string
-          example: 'ff6d1855-e3e7-4d22-87be-a90749e60d25'
-        name:
+          example: '383ed99c-374b-4e1c-8726-c2c0365694ac'
+        body:
           type: string
-          example: 'Quiz Name'
-        description:
-          type: string
-          example: 'This is quiz description'
-        duration:
-          type: integer
-          format: int64
-          example: 3600000
-        maxAttempts:
-          type: integer
-          format: int32
-          example: 3
-        color:
-          type: string
-          example: 'Blue'
-        status:
-          type: string
-          example: 'open'
-        createdBy:
-          type: string
-          example: 'Proctor'
+          example: 'This is a question body'
         createdAt:
           type: string
           example: '1970-01-01 00:00:01.000000'
         updatedAt:
           type: string
           example: '1970-01-01 00:00:01.000000'
-        questions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Question'
-        participants:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-    Question:
+    QuestionDetails:
       type: object
       properties:
         id:
@@ -363,6 +1228,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Option'
+    SafeQuestionDetails:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '383ed99c-374b-4e1c-8726-c2c0365694ac'
+        body:
+          type: string
+          example: 'This is a question body'
+        createdAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+        updatedAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/SafeOption'
     Option:
       type: object
       properties:
@@ -371,10 +1255,25 @@ components:
           example: '8f01e273-ce82-4fe9-89c4-0b53aaf9a422'
         body:
           type: string
-          example: 'This is a question body'
+          example: 'This is an option body'
         isAnswer:
           type: boolean
           example: true
+        createdAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+        updatedAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+    SafeOption:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '8f01e273-ce82-4fe9-89c4-0b53aaf9a422'
+        body:
+          type: string
+          example: 'This is an option body'
         createdAt:
           type: string
           example: '1970-01-01 00:00:01.000000'
@@ -399,3 +1298,153 @@ components:
         updatedAt:
           type: string
           example: '1970-01-01 00:00:01.000000'
+    QuestionRequest:
+      type: object
+      properties:
+        body:
+          type: string
+          example: 'This is a question body'
+    OptionRequest:
+      type: object
+      properties:
+        body:
+          type: string
+          example: 'This is an option body'
+    SetAnswerRequest:
+      type: object
+      properties:
+        optionId:
+          type: string
+          example: '8f01e273-ce82-4fe9-89c4-0b53aaf9a422'
+    AddParticipantRequest:
+      type: object
+      properties:
+        participantId:
+          type: string
+          example: '481d3a94-1b87-4596-b7cd-9906acdd7c09'
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    PaginationLinks:
+      type: object
+      properties:
+        first:
+          type: string
+          example: 'http://example.com/api/resources?page=1'
+        last:
+          type: string
+          example: 'http://example.com/api/resources?page=5'
+        prev:
+          type: string
+          example: 'http://example.com/api/resources?page=2'
+        next:
+          type: string
+          example: 'http://example.com/api/resources?page=4'
+    PaginationMeta:
+      type: object
+      properties:
+        currentPage:
+          type: integer
+          format: int32
+          example: 3
+        from:
+          type: integer
+          format: int32
+          example: 1
+        lastPage:
+          type: integer
+          format: int32
+          example: 1
+        path:
+          type: string
+          example: 'http://example.com/api/resources'
+        perPage:
+          type: integer
+          format: int32
+          example: 15
+        to:
+          type: integer
+          format: int32
+          example: 10
+        total:
+          type: integer
+          format: int32
+          example: 10
+    QuizSession:
+      type: object
+      properties:
+        quizSessionId:
+          type: string
+        quizId:
+          type: string
+        userId:
+          type: string
+        token:
+          type: string
+        createdAt:
+          type: string
+        expiredAt:
+          type: string
+    Result:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '8f01e273-ce82-4fe9-89c4-0b53aaf9a422'
+        user:
+          $ref: '#/components/schemas/User'
+        quiz:
+          $ref: '#/components/schemas/Quiz'
+        score:
+          type: integer
+          format: int32
+          example: 78
+        createdAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+    ResultDetails:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '8f01e273-ce82-4fe9-89c4-0b53aaf9a422'
+        user:
+          $ref: '#/components/schemas/User'
+        quiz:
+          $ref: '#/components/schemas/Quiz'
+        score:
+          type: integer
+          format: int32
+          example: 78
+        data:
+          $ref: '#/components/schemas/ResultDetailsData'
+        createdAt:
+          type: string
+          example: '1970-01-01 00:00:01.000000'
+    ResultDetailsData:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              question:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: '4f28711b-1ad0-4bd9-87c9-631f94eafe9a'
+              option:
+                type: object
+                properties:
+                  selectedId:
+                    type: string
+                    example: '11dc6003-b00a-4924-81f4-3e86f62f2080'
+                  answerId:
+                    type: string
+                    example: '4d68448e-2a1a-4144-a125-a40a37ea88d2'
