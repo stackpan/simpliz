@@ -2,11 +2,13 @@
 
 namespace App\Exceptions;
 
-use App\Http\Resources\ApiResponse;
 use App\Http\Resources\ErrorResponse;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
+use Laravel\Sanctum\Exceptions\MissingAbilityException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -34,6 +36,10 @@ class Handler extends ExceptionHandler
         $this->renderable(function (ValidationException $e) {
             $errors = $e->errors();
             return (new ErrorResponse($errors, __('message.bad_request')))->response()->setStatusCode(400);
+        });
+
+        $this->renderable(function (AccessDeniedHttpException $e) {
+            return (new ErrorResponse([], __('message.forbidden')))->response()->setStatusCode(403);
         });
 
         $this->renderable(function (Throwable $e) {

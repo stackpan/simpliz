@@ -33,7 +33,7 @@ class AuthenticationTest extends TestCase
         ]);
     }
 
-    public function testLoginSuccess()
+    public function testLoginSuccess(): void
     {
         $this->post('/api/v2/authentication/login', $this->credentials)
             ->assertOk()
@@ -43,7 +43,7 @@ class AuthenticationTest extends TestCase
             );
     }
 
-    public function testLoginBadRequest()
+    public function testLoginBadRequest(): void
     {
         $this->post('/api/v2/authentication/login', [
                 'username' => $this->credentials['username'],
@@ -56,7 +56,7 @@ class AuthenticationTest extends TestCase
     }
 
 
-    public function testLoginWrongCredentials()
+    public function testLoginWrongCredentials(): void
     {
         $this->post('/api/v2/authentication/login', [
                 'username' => $this->credentials['username'],
@@ -69,7 +69,7 @@ class AuthenticationTest extends TestCase
             );
     }
 
-    public function testLogoutSuccess()
+    public function testLogoutSuccess(): void
     {
         Sanctum::actingAs($this->user, ['proctor']);
 
@@ -80,7 +80,7 @@ class AuthenticationTest extends TestCase
             );
     }
 
-    public function testLogoutUnauthorized()
+    public function testLogoutUnauthorized(): void
     {
         $this->delete('/api/v2/authentication/logout')
             ->assertUnauthorized()
@@ -90,7 +90,7 @@ class AuthenticationTest extends TestCase
             );
     }
 
-    public function testAntiAuthenticationTokenDuplication()
+    public function testAntiAuthenticationTokenDuplication(): void
     {
         $this->post('/api/v2/authentication/login', $this->credentials);
         $this->post('/api/v2/authentication/login', $this->credentials);

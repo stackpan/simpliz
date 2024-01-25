@@ -9,3 +9,8 @@ services:
       POSTGRES_DB: simpliz
       POSTGRES_USER: developer
       POSTGRES_PASSWORD: devsecret
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+volumes:
+  postgres-data:
+    driver: local

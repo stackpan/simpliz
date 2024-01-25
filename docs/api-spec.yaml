@@ -761,10 +761,7 @@ paths:
         - in: query
           name: search
           schema:
-            type: object
-            properties:
-              name:
-                type: string
+            type: string
         - in: query
           name: limit
           schema:
@@ -809,7 +806,8 @@ paths:
                     example: 'Success.'
                   data:
                     type: array
-                    $ref: '#/components/schemas/QuizSession'
+                    items:
+                      $ref: '#/components/schemas/QuizSession'
         401:
           $ref: '#/components/responses/401Unauthorized'
         403:
@@ -1288,9 +1286,18 @@ components:
         id:
           type: string
           example: '481d3a94-1b87-4596-b7cd-9906acdd7c09'
+        accountId:
+          type: string
+          example: '02459e3a-a429-4266-95e1-a7638fe4e1aa'
         name:
           type: string
           example: 'User'
+        firstName:
+          type: string
+          example: 'Someone'
+        lastName:
+          type: string
+          example: 'Last Name'
         email:
           type: string
           example: 'user@example.com'

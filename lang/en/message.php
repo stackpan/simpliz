@@ -8,5 +8,6 @@ return [
     'unauthorized' => 'Unauthorized.',
     'wrong_credentials' => 'Wrong credentials.',
     'bad_request' => 'Invalid request.',
-    'server_error' => 'Internal server error.'
+    'server_error' => 'Internal server error.',
+    'forbidden' => 'Access forbidden.'
 ];
