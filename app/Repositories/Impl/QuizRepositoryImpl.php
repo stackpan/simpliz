@@ -6,6 +6,7 @@ use App\Models\Participant;
 use App\Models\Proctor;
 use App\Models\Quiz;
 use App\Repositories\QuizRepository;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class QuizRepositoryImpl implements QuizRepository
@@ -30,5 +31,15 @@ class QuizRepositoryImpl implements QuizRepository
     public function create(array $data, Proctor $proctor): Quiz
     {
         return $proctor->quizzes()->create($data);
+    }
+
+    public function getById(string $id): ?Quiz
+    {
+        return Quiz::find($id);
+    }
+
+    public function loadParticipantPivot(Quiz $quiz, Participant $participant): Quiz
+    {
+        return $participant->quizzes()->find($quiz->id);
     }
 }

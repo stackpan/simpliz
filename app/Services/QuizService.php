@@ -16,4 +16,6 @@ interface QuizService
     public function getPaginated(User $user, ?string $search, ?int $page, ?int $limit): LengthAwarePaginator;
 
     public function create(CreateQuizDto $data, Proctor $creator): Quiz;
+
+    public function get(Quiz $quiz, User $user);
 }

@@ -43,4 +43,12 @@ class QuizServiceImpl implements QuizService
 
         return $this->quizRepository->create($attributes, $creator);
     }
+
+    public function get(Quiz $quiz, User $user)
+    {
+        if ($user->accountable_type === Participant::class)
+            $quiz = $this->quizRepository->loadParticipantPivot($quiz, $user->accountable);
+
+        return $quiz;
+    }
 }

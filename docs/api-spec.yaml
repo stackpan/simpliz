@@ -167,7 +167,9 @@ paths:
                     type: string
                     example: 'Found.'
                   data:
-                    $ref: '#/components/schemas/Quiz'
+                    oneOf:
+                      - $ref: '#/components/schemas/Quiz'
+                      - $ref: '#/components/schemas/ParticipantQuiz'
         401:
           $ref: '#/components/responses/401Unauthorized'
         403:

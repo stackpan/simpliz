@@ -3,7 +3,9 @@
 namespace App\Exceptions;
 
 use App\Http\Resources\ErrorResponse;
+use App\Util\Strings;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
@@ -43,6 +45,7 @@ class Handler extends ExceptionHandler
         });
 
         $this->renderable(function (Throwable $e) {
+
             if ($e instanceof HttpResponseException) {
                 return $e->getResponse();
             }
@@ -51,5 +54,14 @@ class Handler extends ExceptionHandler
                 return (new ErrorResponse([], __('message.server_error')))->response()->setStatusCode(500);
             }
         });
+    }
+
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof ModelNotFoundException) {
+            return (new ErrorResponse([], __('message.not_found', ['resource' => Strings::shortenClassName($e->getModel())])))->response()->setStatusCode(404);
+        }
+
+        return parent::render($request, $e);
     }
 }

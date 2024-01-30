@@ -6,6 +6,8 @@ use App\Data\CreateQuizDto;
 use App\Http\Requests\StoreQuizRequest;
 use App\Http\Resources\QuizCollection;
 use App\Http\Resources\QuizResource;
+use App\Models\Participant;
+use App\Models\Quiz;
 use App\Services\QuizService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,6 +16,7 @@ class QuizController extends Controller
 {
     public function __construct(private readonly QuizService $quizService)
     {
+        $this->authorizeResource(Quiz::class, 'quiz');
     }
 
     /**
@@ -58,9 +61,14 @@ class QuizController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Quiz $quiz): QuizResource
     {
-        //
+        $quiz = $this->quizService->get($quiz, auth()->user());
+
+        return (new QuizResource($quiz))
+            ->additional([
+                'message' => __('message.found'),
+            ]);
     }
 
     /**

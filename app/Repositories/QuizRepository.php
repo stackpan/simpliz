@@ -14,4 +14,8 @@ interface QuizRepository
     public function getPaginatedByParticipant(Participant $participant, ?string $search, ?int $page = 1, ?int $limit = 10): LengthAwarePaginator;
 
     public function create(array $data, Proctor $proctor): Quiz;
+
+    public function getById(string $id): ?Quiz;
+
+    public function loadParticipantPivot(Quiz $quiz, Participant $participant): Quiz;
 }

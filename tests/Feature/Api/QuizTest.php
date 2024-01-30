@@ -334,7 +334,7 @@ class QuizTest extends TestCase
             );
     }
 
-    public function testNonProctorStoreGeneralInformationShouldForbidden(): void
+    public function testStoreGeneralInformationByNonProctorShouldForbidden(): void
     {
         Sanctum::actingAs($this->participant, ['participant']);
 
@@ -353,4 +353,121 @@ class QuizTest extends TestCase
                 ->etc()
             );
     }
+
+    public function testGetByProctorSuccess(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetQuiz = $this->quizzes->random();
+
+        $this->get("/api/v2/quizzes/{$targetQuiz->id}")
+            ->assertOk()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.found'))
+                ->has('data', fn (AssertableJson $json) => $json
+                    ->hasAll([
+                        'id',
+                        'name',
+                        'description',
+                        'duration',
+                        'maxAttempts',
+                        'color',
+                        'status',
+                        'createdBy',
+                        'createdAt',
+                        'updatedAt',
+                    ])
+                    ->has('createdBy', fn (AssertableJson $json) => $json
+                        ->hasAll(['proctorId', 'name'])
+                    )
+                    ->where('id', $targetQuiz->id)
+                )
+            );
+    }
+
+    public function testGetByParticipantSuccess(): void
+    {
+        Sanctum::actingAs($this->participant, ['participant']);
+
+        $targetQuiz = $this->participant->accountable->quizzes->random();
+
+        $this->get("/api/v2/quizzes/{$targetQuiz->id}")
+            ->assertOk()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.found'))
+                ->has('data', fn (AssertableJson $json) => $json
+                    ->hasAll([
+                        'id',
+                        'name',
+                        'description',
+                        'duration',
+                        'maxAttempts',
+                        'color',
+                        'status',
+                        'createdBy',
+                        'createdAt',
+                        'updatedAt',
+                        'attemptCount',
+                        'highestScore',
+                    ])
+                    ->has('createdBy', fn (AssertableJson $json) => $json
+                        ->hasAll(['proctorId', 'name'])
+                    )
+                    ->where('id', $targetQuiz->id)
+                )
+            );
+    }
+
+    public function testGetUnauthenticated(): void
+    {
+        $targetQuiz = $this->quizzes->random();
+
+        $this->get("/api/v2/quizzes/{$targetQuiz->id}")
+            ->assertUnauthorized()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.unauthorized'))
+                ->etc(),
+            );
+    }
+
+    public function testGetByProctorForbidden()
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetQuiz = Quiz::factory()->create();
+
+        $this->get("/api/v2/quizzes/{$targetQuiz->id}")
+            ->assertForbidden()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.forbidden'))
+                ->etc(),
+            );
+    }
+
+    public function testGetByParticipantForbidden()
+    {
+        Sanctum::actingAs($this->participant, ['participant']);
+
+        $targetQuiz = Quiz::factory()->create();
+
+        $this->get("/api/v2/quizzes/{$targetQuiz->id}")
+            ->assertForbidden()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.forbidden'))
+                ->etc(),
+            );
+    }
+
+    public function testGetNotFound()
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $this->get("/api/v2/quizzes/fictionalid")
+            ->assertNotFound()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.not_found', ['resource' => 'Quiz']))
+                ->etc(),
+            );
+    }
+
 }

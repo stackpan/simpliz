@@ -9,5 +9,7 @@ return [
     'wrong_credentials' => 'Wrong credentials.',
     'bad_request' => 'Invalid request.',
     'server_error' => 'Internal server error.',
-    'forbidden' => 'Access forbidden.'
+    'forbidden' => 'Access forbidden.',
+    'found' => 'Found.',
+    'not_found' => ':resource not found.'
 ];
