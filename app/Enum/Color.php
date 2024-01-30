@@ -2,8 +2,13 @@
 
 namespace App\Enum;
 
+use App\Traits\HasEnumFromName;
+use App\Traits\HasEnumGetNames;
+
 enum Color: int
 {
+    use HasEnumFromName, HasEnumGetNames;
+
     case Red = 1;
     case Orange = 2;
     case Yellow = 3;

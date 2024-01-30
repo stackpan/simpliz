@@ -2,13 +2,13 @@
 
 namespace App\Http\Resources;
 
-use App\Traits\HasMessageSuccess;
+use App\Traits\HasResourceMessageSuccess;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class UserCollection extends ResourceCollection
 {
-    use HasMessageSuccess;
+    use HasResourceMessageSuccess;
 
     /**
      * Transform the resource collection into an array.

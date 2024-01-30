@@ -26,4 +26,9 @@ class QuizRepositoryImpl implements QuizRepository
 
         return $query->paginate($limit, page: $page);
     }
+
+    public function create(array $data, Proctor $proctor): Quiz
+    {
+        return $proctor->quizzes()->create($data);
+    }
 }

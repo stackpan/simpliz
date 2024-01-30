@@ -77,7 +77,7 @@ class ParticipantTest extends TestCase
             );
     }
 
-    public function testSearchForbidden()
+    public function testSearchForbidden(): void
     {
         $participant = User::factory()->participant()->create();
 

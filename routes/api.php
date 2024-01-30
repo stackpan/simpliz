@@ -26,9 +26,10 @@ Route::prefix('/v2')->group(function () {
 
         Route::middleware(['ability:proctor'])->group(function () {
             Route::get('/participants', SearchParticipantController::class);
+            Route::apiResource('quizzes', QuizController::class)->only(['store', 'update', 'destroy']);
         });
 
-        Route::get('/quizzes', [QuizController::class, 'index']);
+        Route::apiResource('quizzes', QuizController::class)->except(['store', 'update', 'destroy']);
     });
 });
 

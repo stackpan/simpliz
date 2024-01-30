@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api;
 
+use App\Enum\Color;
 use App\Models\Quiz;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -47,7 +48,7 @@ class QuizTest extends TestCase
         );
     }
 
-    public function testGetAllByProctor()
+    public function testGetAllByProctor(): void
     {
         Sanctum::actingAs($this->proctor, ['proctor']);
 
@@ -93,7 +94,7 @@ class QuizTest extends TestCase
             );
     }
 
-    public function testGetAllByParticipant()
+    public function testGetAllByParticipant(): void
     {
         Sanctum::actingAs($this->participant, ['participant']);
 
@@ -141,7 +142,7 @@ class QuizTest extends TestCase
             );
     }
 
-    public function testGetAllPagination()
+    public function testGetAllPagination(): void
     {
         Sanctum::actingAs($this->proctor, ['proctor']);
 
@@ -190,7 +191,7 @@ class QuizTest extends TestCase
             );
     }
 
-    public function testGetAllSearch()
+    public function testGetAllSearch(): void
     {
         Sanctum::actingAs($this->proctor, ['proctor']);
 
@@ -240,7 +241,7 @@ class QuizTest extends TestCase
             );
     }
 
-    public function testGetAllUnauthenticated()
+    public function testGetAllUnauthenticated(): void
     {
         $this->get('/api/v2/quizzes?search=Foo')
             ->assertUnauthorized()
@@ -250,5 +251,106 @@ class QuizTest extends TestCase
             );
     }
 
+    public function testStoreGeneralInformationSuccess(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
 
+        $payload = [
+            'name' => fake()->sentence(3),
+            'description' => fake()->paragraph(),
+            'duration' => fake()->numberBetween(1, 100),
+            'maxAttempts' => fake()->numberBetween(1, 5),
+            'color' => fake()->randomElement(Color::getNames()),
+        ];
+
+        $this->post('/api/v2/quizzes', $payload)
+            ->assertCreated()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.created'))
+                ->has('data', fn (AssertableJson $json) => $json
+                    ->hasAll([
+                        'id',
+                        'name',
+                        'description',
+                        'duration',
+                        'maxAttempts',
+                        'color',
+                        'status',
+                        'createdBy',
+                        'createdAt',
+                        'updatedAt',
+                    ])
+                    ->has('createdBy', fn (AssertableJson $json) => $json
+                        ->hasAll(['proctorId', 'name'])
+                    )
+                )
+            );
+
+        $this->assertDatabaseHas('quizzes', [
+            'name' => $payload['name'],
+            'description' => $payload['description'],
+            'duration' => $payload['duration'],
+            'max_attempts' => $payload['maxAttempts'],
+            'color' => Color::fromName($payload['color']),
+            'created_by' => $this->proctor->accountable->id,
+        ]);
+    }
+
+    public function testStoreGeneralInformationBadPayload(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $payload = [
+            'description' => fake()->paragraph(),
+            'duration' => 0,
+            'maxAttempts' => -2,
+            'color' => 'Not a color',
+        ];
+
+        $this->post('/api/v2/quizzes', $payload)
+            ->assertBadRequest()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.bad_request'))
+                ->whereType('errors', 'array')
+                ->has('errors', 4)
+            );
+    }
+
+    public function testStoreGeneralInformationUnauthenticated(): void
+    {
+        $payload = [
+            'name' => fake()->sentence(3),
+            'description' => fake()->paragraph(),
+            'duration' => fake()->numberBetween(1, 100),
+            'maxAttempts' => fake()->numberBetween(1, 5),
+            'color' => fake()->randomElement(Color::getNames()),
+        ];
+
+        $this->post('/api/v2/quizzes', $payload)
+            ->assertUnauthorized()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.unauthorized'))
+                ->etc()
+            );
+    }
+
+    public function testNonProctorStoreGeneralInformationShouldForbidden(): void
+    {
+        Sanctum::actingAs($this->participant, ['participant']);
+
+        $payload = [
+            'name' => fake()->sentence(3),
+            'description' => fake()->paragraph(),
+            'duration' => fake()->numberBetween(1, 100),
+            'maxAttempts' => fake()->numberBetween(1, 5),
+            'color' => fake()->randomElement(Color::getNames()),
+        ];
+
+        $this->post('/api/v2/quizzes', $payload)
+            ->assertForbidden()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.forbidden'))
+                ->etc()
+            );
+    }
 }

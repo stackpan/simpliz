@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 
-trait HasMessageSuccess
+trait HasResourceMessageSuccess
 {
     public function with(Request $request): array
     {

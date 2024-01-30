@@ -51,6 +51,15 @@ class Quiz extends Model
         'color' => Color::class,
     ];
 
+    protected $fillable = [
+        'name',
+        'description',
+        'duration',
+        'max_attempts',
+        'color',
+        'status',
+    ];
+
     public function participants(): BelongsToMany
     {
         return $this->belongsToMany(Participant::class)->withPivot('highest_score', 'attempt_count');

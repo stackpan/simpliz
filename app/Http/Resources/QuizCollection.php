@@ -2,13 +2,13 @@
 
 namespace App\Http\Resources;
 
-use App\Traits\HasMessageSuccess;
+use App\Traits\HasResourceMessageSuccess;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class QuizCollection extends ResourceCollection
 {
-    use HasMessageSuccess;
+    use HasResourceMessageSuccess;
 
     public function paginationInformation($request, $paginated, $default)
     {

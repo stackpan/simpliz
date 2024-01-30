@@ -2,8 +2,11 @@
 
 namespace App\Services\Impl;
 
+use App\Data\CreateQuizDto;
+use App\Enum\Color;
 use App\Models\Participant;
 use App\Models\Proctor;
+use App\Models\Quiz;
 use App\Models\User;
 use App\Repositories\QuizRepository;
 use App\Services\QuizService;
@@ -26,5 +29,18 @@ class QuizServiceImpl implements QuizService
                 break;
         }
         return $quizzes;
+    }
+
+    public function create(CreateQuizDto $data, Proctor $creator): Quiz
+    {
+        $attributes = [
+            'name' => $data->name,
+            'description' => $data->description,
+            'duration' => $data->duration,
+            'max_attempts' => $data->maxAttempts,
+            'color' => Color::fromName($data->color),
+        ];
+
+        return $this->quizRepository->create($attributes, $creator);
     }
 }
