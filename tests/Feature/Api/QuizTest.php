@@ -6,7 +6,6 @@ use App\Models\Quiz;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
@@ -36,9 +35,12 @@ class QuizTest extends TestCase
             'password' => Hash::make('password'),
         ]);
 
-        $this->quizzes = Quiz::factory(20)->for($this->proctor->accountable, 'createdBy')->create([
-            'name' => 'Test Quiz',
-        ]);
+        $this->quizzes = Quiz::factory(30)->for($this->proctor->accountable, 'createdBy')
+            ->sequence(
+                ['name' => 'Foo Quiz'],
+                ['name' => 'Bar Quiz'],
+            )
+            ->create();
 
         $this->participant->accountable->quizzes()->saveMany(
             $this->quizzes->slice(0, 10)
@@ -49,12 +51,12 @@ class QuizTest extends TestCase
     {
         Sanctum::actingAs($this->proctor, ['proctor']);
 
-        $this->get('/api/v2/quizzes?limit=5')
+        $this->get('/api/v2/quizzes')
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->where('message', 'Success.')
+                ->where('message', __('message.success'))
                 ->whereType('data', 'array')
-                ->has('data', 5)
+                ->has('data', 10)
                 ->has('data.0', fn (AssertableJson $json) => $json
                     ->hasAll([
                         'id',
@@ -86,8 +88,6 @@ class QuizTest extends TestCase
                         'total',
                         'links',
                     ])
-                    ->where('currentPage', 1)
-                    ->where('perPage', 5)
                     ->whereType('links', 'array')
                 )
             );
@@ -97,12 +97,12 @@ class QuizTest extends TestCase
     {
         Sanctum::actingAs($this->participant, ['participant']);
 
-        $this->get('/api/v2/quizzes?page=1&limit=5')
+        $this->get('/api/v2/quizzes')
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->where('message', 'Success.')
+                ->where('message', __('message.success'))
                 ->whereType('data', 'array')
-                ->has('data', 5)
+                ->has('data', 10)
                 ->has('data.0', fn (AssertableJson $json) => $json
                     ->hasAll([
                         'id',
@@ -136,11 +136,119 @@ class QuizTest extends TestCase
                         'total',
                         'links',
                     ])
-                    ->where('currentPage', 1)
-                    ->where('perPage', 5)
                     ->whereType('links', 'array')
                 )
             );
     }
+
+    public function testGetAllPagination()
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $this->get('/api/v2/quizzes?page=2&limit=5')
+            ->assertOk()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.success'))
+                ->whereType('data', 'array')
+                ->has('data', 5)
+                ->has('data.0', fn (AssertableJson $json) => $json
+                    ->hasAll([
+                        'id',
+                        'name',
+                        'description',
+                        'duration',
+                        'maxAttempts',
+                        'color',
+                        'status',
+                        'createdBy',
+                        'createdAt',
+                        'updatedAt',
+                    ])
+                    ->has('createdBy', fn (AssertableJson $json) => $json
+                        ->hasAll(['proctorId', 'name'])
+                    )
+                )
+                ->has('links', fn (AssertableJson $json) => $json
+                    ->hasAll(['first', 'last', 'prev', 'next'])
+                )
+                ->has('meta', fn (AssertableJson $json) => $json
+                    ->hasAll([
+                        'currentPage',
+                        'from',
+                        'lastPage',
+                        'path',
+                        'perPage',
+                        'to',
+                        'total',
+                        'links',
+                    ])
+                    ->where('currentPage', 2)
+                    ->where('perPage', 5)
+                    ->where('lastPage', 6)
+                    ->whereType('links', 'array')
+                )
+            );
+    }
+
+    public function testGetAllSearch()
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $this->get('/api/v2/quizzes?search=Foo')
+            ->assertOk()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.success'))
+                ->whereType('data', 'array')
+                ->has('data', 10)
+                ->has('data.0', fn (AssertableJson $json) => $json
+                    ->hasAll([
+                        'id',
+                        'name',
+                        'description',
+                        'duration',
+                        'maxAttempts',
+                        'color',
+                        'status',
+                        'createdBy',
+                        'createdAt',
+                        'updatedAt',
+                    ])
+                    ->has('createdBy', fn (AssertableJson $json) => $json
+                        ->hasAll(['proctorId', 'name'])
+                    )
+                )
+                ->has('links', fn (AssertableJson $json) => $json
+                    ->hasAll(['first', 'last', 'prev', 'next'])
+                )
+                ->has('meta', fn (AssertableJson $json) => $json
+                    ->hasAll([
+                        'currentPage',
+                        'from',
+                        'lastPage',
+                        'path',
+                        'perPage',
+                        'to',
+                        'total',
+                        'links',
+                    ])
+                    ->where('currentPage', 1)
+                    ->where('perPage', 10)
+                    ->where('lastPage', 2)
+                    ->where('total', 15)
+                    ->whereType('links', 'array')
+                )
+            );
+    }
+
+    public function testGetAllUnauthenticated()
+    {
+        $this->get('/api/v2/quizzes?search=Foo')
+            ->assertUnauthorized()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.unauthorized'))
+                ->etc()
+            );
+    }
+
 
 }
