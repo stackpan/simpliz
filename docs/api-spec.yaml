@@ -86,10 +86,7 @@ paths:
         - in: query
           name: search
           schema:
-            type: object
-            properties:
-              name:
-                type: string
+            type: string
         - in: query
           name: page
           schema:
@@ -1100,8 +1097,14 @@ components:
           type: string
           example: 'open'
         createdBy:
-          type: string
-          example: 'Proctor'
+          type: object
+          properties:
+            proctorId:
+              type: string
+              example: 'de8ba90d-6541-44e7-8c75-06fb8e42933b'
+            name:
+              type: string
+              example: 'Proctor'
         createdAt:
           type: string
           example: '1970-01-01 00:00:01.000000'
@@ -1135,8 +1138,14 @@ components:
           type: string
           example: 'open'
         createdBy:
-          type: string
-          example: 'Proctor'
+          type: object
+          properties:
+            proctorId:
+              type: string
+              example: 'de8ba90d-6541-44e7-8c75-06fb8e42933b'
+            name:
+              type: string
+              example: 'Proctor'
         createdAt:
           type: string
           example: '1970-01-01 00:00:01.000000'

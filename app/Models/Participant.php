@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
@@ -16,6 +17,9 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @method static \Illuminate\Database\Eloquent\Builder|Participant newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Participant query()
  * @method static \Illuminate\Database\Eloquent\Builder|Participant whereId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Quiz> $quizzes
+ * @property-read int|null $quizzes_count
+ * @method static \Database\Factories\ParticipantFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  */
 class Participant extends Model
@@ -29,5 +33,10 @@ class Participant extends Model
     public function account(): MorphOne
     {
         return $this->morphOne(User::class, 'accountable');
+    }
+
+    public function quizzes(): BelongsToMany
+    {
+        return $this->belongsToMany(Quiz::class)->withPivot('highest_score', 'attempt_count');
     }
 }

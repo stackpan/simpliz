@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
@@ -16,6 +17,9 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @method static \Illuminate\Database\Eloquent\Builder|Proctor newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Proctor query()
  * @method static \Illuminate\Database\Eloquent\Builder|Proctor whereId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Quiz> $quizzes
+ * @property-read int|null $quizzes_count
+ * @method static \Database\Factories\ProctorFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  */
 class Proctor extends Model
@@ -29,5 +33,10 @@ class Proctor extends Model
     public function account(): MorphOne
     {
         return $this->morphOne(User::class, 'accountable');
+    }
+
+    public function quizzes(): HasMany
+    {
+        return $this->hasMany(Quiz::class, 'created_by');
     }
 }

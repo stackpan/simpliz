@@ -2,11 +2,14 @@
 
 namespace App\Http\Resources;
 
+use App\Traits\HasMessageSuccess;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class UserCollection extends ResourceCollection
 {
+    use HasMessageSuccess;
+
     /**
      * Transform the resource collection into an array.
      *
@@ -15,12 +18,5 @@ class UserCollection extends ResourceCollection
     public function toArray(Request $request): array
     {
         return parent::toArray($request);
-    }
-
-    public function with(Request $request): array
-    {
-        return [
-            'message' => __('message.success'),
-        ];
     }
 }

@@ -2,10 +2,8 @@
 
 namespace Tests\Feature\Api;
 
-use App\Models\Participant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
@@ -57,6 +55,25 @@ class ParticipantTest extends TestCase
                     ])
                     ->where('firstName', 'Dummy')
                 )
+            );
+    }
+
+    public function testSearchLimit(): void
+    {
+        for ($i = 0; $i < 15; $i++) {
+            User::factory()->participant()->create([
+                'first_name' => 'Dummy'
+            ]);
+        }
+
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $this->get('/api/v2/participants?search=Dummy&limit=5')
+            ->assertOk()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.success'))
+                ->whereType('data', 'array')
+                ->has('data', 5)
             );
     }
 
