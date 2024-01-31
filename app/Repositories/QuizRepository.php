@@ -18,4 +18,8 @@ interface QuizRepository
     public function getById(string $id): ?Quiz;
 
     public function loadParticipantPivot(Quiz $quiz, Participant $participant): Quiz;
+
+    public function update(Quiz $quiz, array $data): Quiz;
+
+    public function delete(Quiz $quiz): string;
 }

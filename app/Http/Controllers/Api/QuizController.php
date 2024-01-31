@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Data\CreateQuizDto;
+use App\Data\UpdateQuizDto;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreQuizRequest;
+use App\Http\Requests\UpdateQuizRequest;
 use App\Http\Resources\QuizCollection;
 use App\Http\Resources\QuizResource;
-use App\Models\Participant;
 use App\Models\Quiz;
 use App\Services\QuizService;
 use Illuminate\Http\JsonResponse;
@@ -19,9 +21,6 @@ class QuizController extends Controller
         $this->authorizeResource(Quiz::class, 'quiz');
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request): QuizCollection
     {
         $search = $request->query('search');
@@ -32,9 +31,6 @@ class QuizController extends Controller
         return new QuizCollection($paginatedQuizzes);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreQuizRequest $request): JsonResponse
     {
         $validated = $request->validated();
@@ -58,9 +54,6 @@ class QuizController extends Controller
             ->setStatusCode(201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Quiz $quiz): QuizResource
     {
         $quiz = $this->quizService->get($quiz, auth()->user());
@@ -71,27 +64,36 @@ class QuizController extends Controller
             ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(UpdateQuizRequest $request, Quiz $quiz): QuizResource
     {
-        //
+        $validated = $request->validated();
+
+        $dto = new UpdateQuizDto(
+            $validated['name'],
+            $validated['description'],
+            $validated['duration'],
+            $validated['maxAttempts'],
+            $validated['color'],
+            $validated['status'],
+        );
+
+        $quiz = $this->quizService->update($quiz, $dto);
+
+        return (new QuizResource($quiz))
+            ->additional([
+                'message' => __('message.success'),
+            ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Quiz $quiz): JsonResponse
     {
-        //
-    }
+        $quizId = $this->quizService->delete($quiz);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json([
+            'message' => __('message.success'),
+            'data' => [
+                'quizId' => $quizId,
+            ],
+        ]);
     }
 }

@@ -19,8 +19,8 @@ class QuizResource extends JsonResource
             'name'=> $this->name,
             'description'=> $this->description,
             'duration'=> $this->duration,
-            'maxAttempts'=> $this->max_attempts,
-            'color'=> $this->color,
+            'maxAttempts'=> $this->max_attempts ? (integer) $this->max_attempts : null,
+            'color'=> $this->color->name,
             'status'=> $this->status,
             'createdBy'=> [
                 'proctorId' => $this->createdBy->id,

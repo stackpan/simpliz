@@ -2,9 +2,8 @@
 
 use App\Http\Controllers\Api\Authentication\LoginController;
 use App\Http\Controllers\Api\Authentication\LogoutController;
+use App\Http\Controllers\Api\QuizController;
 use App\Http\Controllers\Api\SearchParticipantController;
-use App\Http\Controllers\QuizController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*

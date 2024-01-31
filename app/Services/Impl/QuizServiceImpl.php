@@ -3,6 +3,7 @@
 namespace App\Services\Impl;
 
 use App\Data\CreateQuizDto;
+use App\Data\UpdateQuizDto;
 use App\Enum\Color;
 use App\Models\Participant;
 use App\Models\Proctor;
@@ -44,11 +45,30 @@ class QuizServiceImpl implements QuizService
         return $this->quizRepository->create($attributes, $creator);
     }
 
-    public function get(Quiz $quiz, User $user)
+    public function get(Quiz $quiz, User $user): Quiz
     {
         if ($user->accountable_type === Participant::class)
             $quiz = $this->quizRepository->loadParticipantPivot($quiz, $user->accountable);
 
         return $quiz;
+    }
+
+    public function update(Quiz $quiz, UpdateQuizDto $data): Quiz
+    {
+        $attributes = [
+            'name' => $data->name,
+            'description' => $data->description,
+            'duration' => $data->duration,
+            'max_attempts' => $data->maxAttempts,
+            'color' => Color::fromName($data->color),
+            'status' => $data->status,
+        ];
+
+        return $this->quizRepository->update($quiz, $attributes);
+    }
+
+    public function delete(Quiz $quiz): string
+    {
+        return $this->quizRepository->delete($quiz);
     }
 }

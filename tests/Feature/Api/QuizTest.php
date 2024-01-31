@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api;
 
 use App\Enum\Color;
+use App\Enum\QuizStatus;
 use App\Models\Quiz;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -430,7 +431,7 @@ class QuizTest extends TestCase
             );
     }
 
-    public function testGetByProctorForbidden()
+    public function testGetByProctorForbidden(): void
     {
         Sanctum::actingAs($this->proctor, ['proctor']);
 
@@ -444,7 +445,7 @@ class QuizTest extends TestCase
             );
     }
 
-    public function testGetByParticipantForbidden()
+    public function testGetByParticipantForbidden(): void
     {
         Sanctum::actingAs($this->participant, ['participant']);
 
@@ -458,7 +459,7 @@ class QuizTest extends TestCase
             );
     }
 
-    public function testGetNotFound()
+    public function testGetNotFound(): void
     {
         Sanctum::actingAs($this->proctor, ['proctor']);
 
@@ -467,6 +468,202 @@ class QuizTest extends TestCase
             ->assertJson(fn (AssertableJson $json) => $json
                 ->where('message', __('message.not_found', ['resource' => 'Quiz']))
                 ->etc(),
+            );
+    }
+
+    public function testUpdateSuccess(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetQuiz = $this->quizzes->random();
+
+        $payload = [
+            'name' => fake()->sentence(3),
+            'description' => fake()->paragraph(),
+            'duration' => fake()->numberBetween(1, 100),
+            'maxAttempts' => fake()->optional()->numberBetween(1, 5),
+            'color' => fake()->randomElement(Color::getNames()),
+            'status' => fake()->randomElement(QuizStatus::getValues()),
+        ];
+
+        $this->put("/api/v2/quizzes/{$targetQuiz->id}", $payload)
+            ->assertOk()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.success'))
+                ->has('data', fn (AssertableJson $json) => $json
+                    ->hasAll([
+                        'id',
+                        'name',
+                        'description',
+                        'duration',
+                        'maxAttempts',
+                        'color',
+                        'status',
+                        'createdBy',
+                        'createdAt',
+                        'updatedAt',
+                    ])
+                    ->has('createdBy', fn (AssertableJson $json) => $json
+                        ->hasAll(['proctorId', 'name'])
+                    )
+                    ->where('id', $targetQuiz->id)
+                    ->where('name', $payload['name'])
+                    ->where('description', $payload['description'])
+                    ->where('duration', $payload['duration'])
+                    ->where('maxAttempts', $payload['maxAttempts'])
+                    ->where('color', $payload['color'])
+                    ->where('status', $payload['status'])
+                )
+            );
+
+        $this->assertDatabaseHas('quizzes', [
+            'name' => $payload['name'],
+            'description' => $payload['description'],
+            'duration' => $payload['duration'],
+            'max_attempts' => $payload['maxAttempts'],
+            'color' => Color::fromName($payload['color']),
+            'created_by' => $this->proctor->accountable->id,
+        ]);
+    }
+
+    public function testUpdateBadRequest(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetQuiz = $this->quizzes->random();
+
+        $payload = [
+            'duration' => '1 hour',
+            'color' => 'not a color',
+            'status' => 'anotherstatus',
+        ];
+
+        $this->put("/api/v2/quizzes/{$targetQuiz->id}", $payload)
+            ->assertBadRequest()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.bad_request'))
+                ->has('errors', 4)
+            );
+    }
+
+    public function testUpdateUnauthenticated(): void
+    {
+        $targetQuiz = $this->quizzes->random();
+
+        $payload = [
+            'name' => fake()->sentence(3),
+            'description' => fake()->paragraph(),
+            'duration' => fake()->numberBetween(1, 100),
+            'maxAttempts' => fake()->optional()->numberBetween(1, 5),
+            'color' => fake()->randomElement(Color::getNames()),
+            'status' => fake()->randomElement(QuizStatus::getValues()),
+        ];
+
+        $this->put("/api/v2/quizzes/{$targetQuiz->id}", $payload)
+            ->assertUnauthorized()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.unauthorized'))
+                ->etc()
+            );
+    }
+
+    public function testUpdateByNonProctorShouldForbidden(): void
+    {
+        Sanctum::actingAs($this->participant, ['participant']);
+
+        $targetQuiz = $this->quizzes->random();
+
+        $payload = [
+            'name' => fake()->sentence(3),
+            'description' => fake()->paragraph(),
+            'duration' => fake()->numberBetween(1, 100),
+            'maxAttempts' => fake()->optional()->numberBetween(1, 5),
+            'color' => fake()->randomElement(Color::getNames()),
+            'status' => fake()->randomElement(QuizStatus::getValues()),
+        ];
+
+        $this->put("/api/v2/quizzes/{$targetQuiz->id}", $payload)
+            ->assertForbidden()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.forbidden'))
+                ->etc()
+            );
+    }
+
+    public function testUpdateNotFound(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $payload = [
+            'name' => fake()->sentence(3),
+            'description' => fake()->paragraph(),
+            'duration' => fake()->numberBetween(1, 100),
+            'maxAttempts' => fake()->optional()->numberBetween(1, 5),
+            'color' => fake()->randomElement(Color::getNames()),
+            'status' => fake()->randomElement(QuizStatus::getValues()),
+        ];
+
+        $this->put('/api/v2/quizzes/fictionalid', $payload)
+            ->assertNotFound()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.not_found', ['resource' => 'Quiz']))
+                ->etc()
+            );
+    }
+
+    public function testDeleteSuccess(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetQuiz = $this->quizzes->random();
+
+        $this->delete("/api/v2/quizzes/{$targetQuiz->id}")
+            ->assertOk()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.success'))
+                ->where('data.quizId', $targetQuiz->id)
+            );
+
+        $this->assertDatabaseMissing('quizzes', [
+            'id' => $targetQuiz->id,
+        ]);
+    }
+
+    public function testDeleteUnauthenticated(): void
+    {
+        $targetQuiz = $this->quizzes->random();
+
+        $this->delete("/api/v2/quizzes/{$targetQuiz->id}")
+            ->assertUnauthorized()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.unauthorized'))
+                ->etc()
+            );
+    }
+
+    public function testDeleteByNonProctorShouldForbidden()
+    {
+        Sanctum::actingAs($this->participant, ['participant']);
+
+        $targetQuiz = $this->quizzes->random();
+
+        $this->delete("/api/v2/quizzes/{$targetQuiz->id}")
+            ->assertForbidden()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.forbidden'))
+                ->etc()
+            );
+    }
+
+    public function testDeleteNotFound()
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $this->delete('/api/v2/quizzes/fictionalid')
+            ->assertNotFound()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.not_found', ['resource' => 'Quiz']))
+                ->etc()
             );
     }
 

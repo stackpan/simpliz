@@ -48,7 +48,7 @@ class QuizPolicy
      */
     public function update(User $user, Quiz $quiz): bool
     {
-        //
+        return $quiz->created_by === $user->accountable_id;
     }
 
     /**
@@ -56,7 +56,7 @@ class QuizPolicy
      */
     public function delete(User $user, Quiz $quiz): bool
     {
-        //
+        return $quiz->created_by === $user->accountable_id;
     }
 
     /**
@@ -64,7 +64,7 @@ class QuizPolicy
      */
     public function restore(User $user, Quiz $quiz): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -72,6 +72,6 @@ class QuizPolicy
      */
     public function forceDelete(User $user, Quiz $quiz): bool
     {
-        //
+        return false;
     }
 }

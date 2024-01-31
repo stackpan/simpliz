@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enum\Color;
+use App\Enum\QuizStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -49,6 +50,7 @@ class Quiz extends Model
 
     protected $casts = [
         'color' => Color::class,
+        'status' => QuizStatus::class,
     ];
 
     protected $fillable = [
