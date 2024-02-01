@@ -140,6 +140,16 @@ class QuizParticipantTest extends TestCase
             ->assertJsonPath('message', __('message.forbidden'));
     }
 
+    public function testGetParticipantsByNonQuizAuthorShouldForbidden(): void
+    {
+        $user = User::factory()->proctor()->create();
+        Sanctum::actingAs($user, ['proctor']);
+
+        $this->get("/api/v2/quizzes/{$this->quiz->id}/participants")
+            ->assertForbidden()
+            ->assertJsonPath('message', __('message.forbidden'));
+    }
+
     public function testGetParticipantsNotFound(): void
     {
         Sanctum::actingAs($this->proctor, ['proctor']);
@@ -241,6 +251,22 @@ class QuizParticipantTest extends TestCase
             ->assertJsonPath('message', __('message.forbidden'));
     }
 
+    public function testAddParticipantToQuizByNonQuizAuthorShouldForbidden(): void
+    {
+        $user = User::factory()->proctor()->create();
+        Sanctum::actingAs($user, ['proctor']);
+
+        $targetParticipant = User::factory()->participant()->create()->accountable;
+
+        $payload = [
+            'participantId' => $targetParticipant->id,
+        ];
+
+        $this->post("/api/v2/quizzes/{$this->quiz->id}/participants", $payload)
+            ->assertForbidden()
+            ->assertJsonPath('message', __('message.forbidden'));
+    }
+
     public function testAddParticipantToQuizNotFound(): void
     {
         Sanctum::actingAs($this->proctor, ['proctor']);
@@ -311,6 +337,18 @@ class QuizParticipantTest extends TestCase
     public function testRemoveParticipantFromQuizByNonProctorShouldForbidden(): void
     {
         Sanctum::actingAs($this->participants->random()->account, ['participant']);
+
+        $targetParticipant = $this->participants->random();
+
+        $this->delete("/api/v2/quizzes/{$this->quiz->id}/participants/{$targetParticipant->id}")
+            ->assertForbidden()
+            ->assertJsonPath('message', __('message.forbidden'));
+    }
+
+    public function testRemoveParticipantFromQuizByNonQuizAuthorShouldForbidden(): void
+    {
+        $user = User::factory()->proctor()->create();
+        Sanctum::actingAs($user, ['proctor']);
 
         $targetParticipant = $this->participants->random();
 

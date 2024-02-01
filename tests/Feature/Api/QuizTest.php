@@ -436,7 +436,7 @@ class QuizTest extends TestCase
             );
     }
 
-    public function testGetByProctorForbidden(): void
+    public function testGetByNonAuthorShouldForbidden(): void
     {
         Sanctum::actingAs($this->proctor, ['proctor']);
 
@@ -450,7 +450,7 @@ class QuizTest extends TestCase
             );
     }
 
-    public function testGetByParticipantForbidden(): void
+    public function testGetByNonParticipantShouldForbidden(): void
     {
         Sanctum::actingAs($this->participant, ['participant']);
 
@@ -595,6 +595,30 @@ class QuizTest extends TestCase
             );
     }
 
+    public function testUpdateByNonAuthorShouldForbidden(): void
+    {
+        $user = User::factory()->proctor()->create();
+        Sanctum::actingAs($user, ['proctor']);
+
+        $targetQuiz = $this->quizzes->random();
+
+        $payload = [
+            'name' => fake()->sentence(3),
+            'description' => fake()->paragraph(),
+            'duration' => fake()->numberBetween(1, 100),
+            'maxAttempts' => fake()->optional()->numberBetween(1, 5),
+            'color' => fake()->randomElement(Color::getNames()),
+            'status' => fake()->randomElement(QuizStatus::getValues()),
+        ];
+
+        $this->put("/api/v2/quizzes/{$targetQuiz->id}", $payload)
+            ->assertForbidden()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.forbidden'))
+                ->etc()
+            );
+    }
+
     public function testUpdateNotFound(): void
     {
         Sanctum::actingAs($this->proctor, ['proctor']);
@@ -649,6 +673,21 @@ class QuizTest extends TestCase
     public function testDeleteByNonProctorShouldForbidden()
     {
         Sanctum::actingAs($this->participant, ['participant']);
+
+        $targetQuiz = $this->quizzes->random();
+
+        $this->delete("/api/v2/quizzes/{$targetQuiz->id}")
+            ->assertForbidden()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.forbidden'))
+                ->etc()
+            );
+    }
+
+    public function testDeleteByNonAuthorShouldForbidden()
+    {
+        $user = User::factory()->proctor()->create();
+        Sanctum::actingAs($user, ['proctor']);
 
         $targetQuiz = $this->quizzes->random();
 

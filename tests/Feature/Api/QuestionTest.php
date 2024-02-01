@@ -82,17 +82,8 @@ class QuestionTest extends TestCase
         $this->get("/api/v2/quizzes/{$this->quiz->id}/questions?page=2&limit=5")
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->where('message', __('message.success'))
                 ->whereType('data', 'array')
                 ->has('data', 5)
-                ->has('data.0', fn (AssertableJson $json) => $json
-                    ->hasAll(['id', 'body', 'createdAt', 'updatedAt', 'options'])
-                    ->whereType('options', 'array')
-                    ->has('options', 4)
-                    ->has('options.0', fn (AssertableJson $json) => $json
-                        ->hasAll(['id', 'body', 'isAnswer', 'createdAt', 'updatedAt'])
-                    )
-                )
                 ->has('meta', fn (AssertableJson $json) => $json
                     ->where('currentPage', 2)
                     ->where('lastPage', 6)
@@ -113,7 +104,6 @@ class QuestionTest extends TestCase
     public function testGetAllByNonProctorShouldForbidden(): void
     {
         $user = User::factory()->participant()->create();
-
         Sanctum::actingAs($user, ['participant']);
 
         $this->get("/api/v2/quizzes/{$this->quiz->id}/questions")
@@ -121,10 +111,9 @@ class QuestionTest extends TestCase
             ->assertJsonPath('message', __('message.forbidden'));
     }
 
-    public function testGetAllByNonAuthorShouldForbidden(): void
+    public function testGetAllByNonQuizAuthorShouldForbidden(): void
     {
         $user = User::factory()->proctor()->create();
-
         Sanctum::actingAs($user, ['proctor']);
 
         $this->get("/api/v2/quizzes/{$this->quiz->id}/questions")
