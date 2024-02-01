@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Data\CreateQuizDto;
 use App\Data\UpdateQuizDto;
+use App\Models\Participant;
 use App\Models\Proctor;
 use App\Models\Quiz;
 use App\Models\User;
@@ -23,4 +24,9 @@ interface QuizService
     public function update(Quiz $quiz, UpdateQuizDto $data): Quiz;
 
     public function delete(Quiz $quiz): string;
+
+    /**
+     * @return LengthAwarePaginator<Participant>
+     */
+    public function getParticipants(Quiz $quiz, ?string $search, ?int $page, ?int $limit): LengthAwarePaginator;
 }

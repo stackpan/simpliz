@@ -18,7 +18,12 @@ class QuizTest extends TestCase
     use RefreshDatabase;
 
     private User $proctor;
+
     private User $participant;
+
+    /**
+     * @var Collection<Quiz>
+     */
     private Collection $quizzes;
 
     protected function setUp(): void

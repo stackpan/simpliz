@@ -7,7 +7,7 @@ use App\Traits\HasResourcePaginatedInformation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class QuizCollection extends ResourceCollection
+class ParticipantCollection extends ResourceCollection
 {
     use HasResourceMessageSuccess, HasResourcePaginatedInformation;
 

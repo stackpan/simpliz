@@ -71,4 +71,9 @@ class QuizServiceImpl implements QuizService
     {
         return $this->quizRepository->delete($quiz);
     }
+
+    public function getParticipants(Quiz $quiz, ?string $search, ?int $page, ?int $limit): LengthAwarePaginator
+    {
+        return $this->quizRepository->getParticipants($quiz, $search, $page, $limit);
+    }
 }

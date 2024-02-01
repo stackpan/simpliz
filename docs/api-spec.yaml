@@ -315,9 +315,21 @@ paths:
     get:
       tags:
         - Quiz
-      description: 'Get participants to a quiz'
+      description: 'Get paginated quiz participants'
       parameters:
         - $ref: '#/components/parameters/QuizIdPath'
+        - in: query
+          name: search
+          schema:
+            type: string
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
       responses:
         200:
           description: 'Found'
@@ -333,6 +345,10 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/User'
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
         401:
           $ref: '#/components/responses/401Unauthorized'
         403:

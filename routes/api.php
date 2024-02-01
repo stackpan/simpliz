@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Authentication\LoginController;
 use App\Http\Controllers\Api\Authentication\LogoutController;
 use App\Http\Controllers\Api\QuizController;
+use App\Http\Controllers\Api\QuizParticipantController;
 use App\Http\Controllers\Api\SearchParticipantController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,7 @@ Route::prefix('/v2')->group(function () {
         Route::middleware(['ability:proctor'])->group(function () {
             Route::get('/participants', SearchParticipantController::class);
             Route::apiResource('quizzes', QuizController::class)->only(['store', 'update', 'destroy']);
+            Route::apiResource('quizzes.participants', QuizParticipantController::class)->only(['index', 'store', 'destroy']);
         });
 
         Route::apiResource('quizzes', QuizController::class)->except(['store', 'update', 'destroy']);
