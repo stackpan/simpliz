@@ -3,6 +3,7 @@
 return [
     'success' => 'Success.',
     'created' => 'Created.',
+    'resource_created' => ':resource created successfully.',
     'login_success' => 'Login successfully.',
     'logout_success' => 'Successfully logged out.',
     'unauthorized' => 'Unauthorized.',
@@ -14,6 +15,6 @@ return [
     'not_found' => ':resource is not found.',
     'success_attaching' => 'Successfully added :resourceA into :resourceB.',
     'success_detaching' => 'Successfully removed :resourceA from :resourceB.',
-    'already_registered' => ':resourceA with id: :resourceAId is already registered to :resourceB with id: :resourceBId',
-    'registered_resources' => ':resourceA with id: :resourceAId registered in :resourceB with id: :resourceBId',
+    'already_registered' => ':resourceA with id: :resourceAId is already registered to :resourceB with id: :resourceBId.',
+    'registered_resources' => ':resourceA with id: :resourceAId registered in :resourceB with id: :resourceBId.',
 ];

@@ -449,7 +449,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Question updated successfully.'
+                    example: 'Found.'
                   data:
                     $ref: '#/components/schemas/SafeQuestionDetails'
         401:
