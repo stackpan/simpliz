@@ -2,7 +2,7 @@
 
 ![Simpliz logo](docs/assets/readme/img/simpliz_logo.png)
 
-***This project is being reforged for better architecture and mantainability. Check out [this branch](https://github.com/stackpan/simpliz/tree/v2)***
+***This project is being reforged to better architecture and mantainability. Check out [this branch](https://github.com/stackpan/simpliz/tree/v2)***
 
 ## Overview
 
