@@ -14,7 +14,7 @@ class QuizParticipantRepositoryImpl implements QuizParticipantRepository
         return $quiz->participants()->where('participant_id', $participantId)->exists();
     }
 
-    public function getParticipants(Quiz $quiz, ?string $search, ?int $page = 1, ?int $limit = 10): LengthAwarePaginator
+    public function getPaginated(Quiz $quiz, ?string $search, ?int $page = 1, ?int $limit = 10): LengthAwarePaginator
     {
         $query = $quiz->participants();
 
@@ -23,5 +23,17 @@ class QuizParticipantRepositoryImpl implements QuizParticipantRepository
                 ->whereFullText(['name', 'email', 'first_name', 'last_name'], $search));
 
         return $query->paginate($limit, page: $page);
+    }
+
+    public function add(Quiz $quiz, string $participantId): bool
+    {
+        $quiz->participants()->attach($participantId);
+        return true;
+    }
+
+    public function remove(Quiz $quiz, string $participantId): bool
+    {
+        $quiz->participants()->detach($participantId);
+        return true;
     }
 }

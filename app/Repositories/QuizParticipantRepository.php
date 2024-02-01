@@ -13,5 +13,9 @@ interface QuizParticipantRepository
     /**
      * @return LengthAwarePaginator<Participant>
      */
-    public function getParticipants(Quiz $quiz, ?string $search, ?int $page = 1, ?int $limit = 10): LengthAwarePaginator;
+    public function getPaginated(Quiz $quiz, ?string $search, ?int $page = 1, ?int $limit = 10): LengthAwarePaginator;
+
+    public function add(Quiz $quiz, string $participantId): bool;
+
+    public function remove(Quiz $quiz, string $participantId): bool;
 }

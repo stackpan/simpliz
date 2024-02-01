@@ -43,7 +43,7 @@ class QuizParticipantTest extends TestCase
                 ['first_name' => 'Doe'],
             )
             ->create()
-            ->map(fn (User $user) => $user->accountable);
+            ->map(fn(User $user) => $user->accountable);
 
         $this->quiz->participants()->saveMany($this->participants);
     }
@@ -54,11 +54,11 @@ class QuizParticipantTest extends TestCase
 
         $this->get("/api/v2/quizzes/{$this->quiz->id}/participants")
             ->assertOk()
-            ->assertJson(fn (AssertableJson $json) => $json
+            ->assertJson(fn(AssertableJson $json) => $json
                 ->where('message', __('message.success'))
                 ->whereType('data', 'array')
                 ->has('data', 10)
-                ->has('data.0', fn (AssertableJson $json) => $json
+                ->has('data.0', fn(AssertableJson $json) => $json
                     ->hasAll([
                         'id',
                         'accountId',
@@ -70,10 +70,10 @@ class QuizParticipantTest extends TestCase
                         'createdAt',
                     ])
                 )
-                ->has('links', fn (AssertableJson $json) => $json
+                ->has('links', fn(AssertableJson $json) => $json
                     ->hasAll(['first', 'last', 'prev', 'next'])
                 )
-                ->has('meta', fn (AssertableJson $json) => $json
+                ->has('meta', fn(AssertableJson $json) => $json
                     ->hasAll([
                         'currentPage',
                         'from',
@@ -95,7 +95,7 @@ class QuizParticipantTest extends TestCase
 
         $this->get("/api/v2/quizzes/{$this->quiz->id}/participants?page=2&limit=5")
             ->assertOk()
-            ->assertJson(fn (AssertableJson $json) => $json
+            ->assertJson(fn(AssertableJson $json) => $json
                 ->where('message', __('message.success'))
                 ->whereType('data', 'array')
                 ->has('data', 5)
@@ -112,7 +112,7 @@ class QuizParticipantTest extends TestCase
 
         $this->get("/api/v2/quizzes/{$this->quiz->id}/participants?search=John")
             ->assertOk()
-            ->assertJson(fn (AssertableJson $json) => $json
+            ->assertJson(fn(AssertableJson $json) => $json
                 ->where('message', __('message.success'))
                 ->whereType('data', 'array')
                 ->has('data', 10)
@@ -147,6 +147,189 @@ class QuizParticipantTest extends TestCase
         $this->get("/api/v2/quizzes/fictionalquizid/participants?search=John")
             ->assertNotFound()
             ->assertJsonPath('message', __('message.not_found', ['resource' => 'Quiz']));
+    }
+
+    public function testAddParticipantToQuizSuccess(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetParticipant = User::factory()->participant()->create()->accountable;
+
+        $payload = [
+            'participantId' => $targetParticipant->id,
+        ];
+
+        $this->post("/api/v2/quizzes/{$this->quiz->id}/participants", $payload)
+            ->assertOk()
+            ->assertJson(fn(AssertableJson $json) => $json
+                ->where('message', __('message.success_attaching', [
+                    'resourceA' => 'Participant',
+                    'resourceB' => 'Quiz',
+                ]))
+                ->where('data.quizId', $this->quiz->id)
+                ->where('data.participantId', $targetParticipant->id)
+            );
+
+        $this->assertDatabaseHas('participant_quiz', [
+            'quiz_id' => $this->quiz->id,
+            'participant_id' => $targetParticipant->id,
+        ]);
+    }
+
+    public function testAddParticipantToQuizBadPayload(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $payload = [
+            'participantId' => 'not a participant id',
+        ];
+
+        $this->post("/api/v2/quizzes/{$this->quiz->id}/participants", $payload)
+            ->assertBadRequest()
+            ->assertJson(fn(AssertableJson $json) => $json
+                ->where('message', __('message.bad_request'))
+                ->whereType('errors', 'array')
+                ->has('errors', 1)
+            );
+    }
+
+    public function testAddAlreadyRegisteredParticipantToQuizShouldFail(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetParticipant = $this->participants->random();
+
+        $payload = [
+            'participantId' => $targetParticipant->id,
+        ];
+
+        $this->post("/api/v2/quizzes/{$this->quiz->id}/participants", $payload)
+            ->assertBadRequest()
+            ->assertJsonPath('message', __('message.already_registered', [
+                'resourceA' => 'Participant',
+                'resourceAId' => $targetParticipant->id,
+                'resourceB' => 'Quiz',
+                'resourceBId' => $this->quiz->id,
+            ]));
+    }
+
+    public function testAddParticipantToQuizUnauthenticated(): void
+    {
+        $targetParticipant = User::factory()->participant()->create()->accountable;
+
+        $payload = [
+            'participantId' => $targetParticipant->id,
+        ];
+
+        $this->post("/api/v2/quizzes/{$this->quiz->id}/participants", $payload)
+            ->assertUnauthorized()
+            ->assertJsonPath('message', __('message.unauthorized'));
+    }
+
+    public function testAddParticipantToQuizByNonProctorShouldForbidden(): void
+    {
+        Sanctum::actingAs($this->participants->random()->account, ['participant']);
+
+        $targetParticipant = User::factory()->participant()->create()->accountable;
+
+        $payload = [
+            'participantId' => $targetParticipant->id,
+        ];
+
+        $this->post("/api/v2/quizzes/{$this->quiz->id}/participants", $payload)
+            ->assertForbidden()
+            ->assertJsonPath('message', __('message.forbidden'));
+    }
+
+    public function testAddParticipantToQuizNotFound(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetParticipant = User::factory()->participant()->create()->accountable;
+
+        $payload = [
+            'participantId' => $targetParticipant->id,
+        ];
+
+        $this->post("/api/v2/quizzes/fictionalquizid/participants", $payload)
+            ->assertNotFound()
+            ->assertJsonPath('message', __('message.not_found', [
+                'resource' => 'Quiz',
+            ]));
+    }
+
+    public function testRemoveParticipantFromQuizSuccess(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetParticipant = $this->participants->random();
+
+        $this->delete("/api/v2/quizzes/{$this->quiz->id}/participants/{$targetParticipant->id}")
+            ->assertOk()
+            ->assertJson(fn(AssertableJson $json) => $json
+                ->where('message', __('message.success_detaching', [
+                    'resourceA' => 'Participant',
+                    'resourceB' => 'Quiz',
+                ]))
+                ->where('data.quizId', $this->quiz->id)
+                ->where('data.participantId', $targetParticipant->id)
+            );
+
+        $this->assertDatabaseMissing('participant_quiz', [
+            'quiz_id' => $this->quiz->id,
+            'participant_id' => $targetParticipant->id,
+        ]);
+    }
+
+    public function testRemoveNotRegisteredParticipantFromQuizShouldFail(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetParticipant = User::factory()->participant()->create()->accountable;
+
+        $this->delete("/api/v2/quizzes/{$this->quiz->id}/participants/{$targetParticipant->id}")
+            ->assertNotFound()
+            ->assertJsonPath('message', __('message.not_found', [
+                'resource' => __('message.registered_resources', [
+                    'resourceA' => 'Participant',
+                    'resourceAId' => $targetParticipant->id,
+                    'resourceB' => 'Quiz',
+                    'resourceBId' => $this->quiz->id,
+                ])
+            ]));
+    }
+
+    public function testRemoveParticipantFromQuizUnauthenticated(): void
+    {
+        $targetParticipant = $this->participants->random();
+
+        $this->delete("/api/v2/quizzes/{$this->quiz->id}/participants/{$targetParticipant->id}")
+            ->assertUnauthorized()
+            ->assertJsonPath('message', __('message.unauthorized'));
+    }
+
+    public function testRemoveParticipantFromQuizByNonProctorShouldForbidden(): void
+    {
+        Sanctum::actingAs($this->participants->random()->account, ['participant']);
+
+        $targetParticipant = $this->participants->random();
+
+        $this->delete("/api/v2/quizzes/{$this->quiz->id}/participants/{$targetParticipant->id}")
+            ->assertForbidden()
+            ->assertJsonPath('message', __('message.forbidden'));
+    }
+
+    public function testRemoveParticipantFromQuizNotFound(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetParticipant = $this->participants->random();
+
+        $this->delete("/api/v2/quizzes/fictionalquizid/participants/{$targetParticipant->id}")
+            ->assertNotFound()
+            ->assertJsonPath('message', __('message.not_found', [
+                'resource' => 'Quiz',
+            ]));
     }
 
 }

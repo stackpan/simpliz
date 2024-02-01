@@ -14,4 +14,8 @@ interface QuizParticipantService
      * @return LengthAwarePaginator<Participant>
      */
     public function getPaginated(Quiz $quiz, ?string $search, ?int $page, ?int $limit): LengthAwarePaginator;
+
+    public function add(Quiz $quiz, string $participantId): bool;
+
+    public function remove(Quiz $quiz, string $participantId): bool;
 }

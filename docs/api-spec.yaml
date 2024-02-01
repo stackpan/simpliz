@@ -378,7 +378,14 @@ paths:
                     type: string
                     example: 'Successfully added participant into quiz.'
                   data:
-                    $ref: '#/components/schemas/User'
+                    type: object
+                    properties:
+                      quizId:
+                        type: string
+                        example: '1e908b41-471c-4fac-abb7-fe77cf569aad'
+                      participantId:
+                        type: string
+                        example: '218e0f5f-256d-47b3-ac48-0e8688d47ad0'
         400:
           $ref: '#/components/responses/400BadRequest'
         401:
@@ -409,9 +416,12 @@ paths:
                   data:
                     type: object
                     properties:
+                      quizId:
+                        type: string
+                        example: '1e908b41-471c-4fac-abb7-fe77cf569aad'
                       participantId:
                         type: string
-                        example: '481d3a94-1b87-4596-b7cd-9906acdd7c09'
+                        example: '218e0f5f-256d-47b3-ac48-0e8688d47ad0'
         401:
           $ref: '#/components/responses/401Unauthorized'
         403:
