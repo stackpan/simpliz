@@ -55,14 +55,4 @@ class QuizRepositoryImpl implements QuizRepository
         return $quiz->id;
     }
 
-    public function getParticipants(Quiz $quiz, ?string $search, ?int $page = 1, ?int $limit = 10): LengthAwarePaginator
-    {
-        $query = $quiz->participants();
-
-        if ($search)
-            $query->whereHas('account', fn ($query) => $query
-                ->whereFullText(['name', 'email', 'first_name', 'last_name'], $search));
-
-        return $query->paginate($limit, page: $page);
-    }
 }

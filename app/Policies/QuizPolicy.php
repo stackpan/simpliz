@@ -6,10 +6,15 @@ use App\Models\Participant;
 use App\Models\Proctor;
 use App\Models\Quiz;
 use App\Models\User;
+use App\Services\QuizParticipantService;
 use Illuminate\Auth\Access\Response;
 
 class QuizPolicy
 {
+    public function __construct(private readonly QuizParticipantService $quizParticipantService)
+    {
+    }
+
     /**
      * Determine whether the user can view any models.
      */
@@ -28,7 +33,7 @@ class QuizPolicy
                 $allow = $quiz->created_by === $user->accountable_id;
                 break;
             case Participant::class:
-                $allow = $quiz->participants()->where('participant_id', $user->accountable_id)->exists();
+                $allow = $this->quizParticipantService->checkAuthorization($quiz, $user->accountable_id);
                 break;
         }
 

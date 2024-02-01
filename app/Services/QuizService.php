@@ -25,8 +25,4 @@ interface QuizService
 
     public function delete(Quiz $quiz): string;
 
-    /**
-     * @return LengthAwarePaginator<Participant>
-     */
-    public function getParticipants(Quiz $quiz, ?string $search, ?int $page, ?int $limit): LengthAwarePaginator;
 }
