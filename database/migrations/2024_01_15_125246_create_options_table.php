@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('options', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('question_id')->constrained();
+            $table->foreignUuid('question_id')->constrained()->cascadeOnDelete();
             $table->text('body');
             $table->boolean('is_answer')->default(false);
             $table->timestamps();

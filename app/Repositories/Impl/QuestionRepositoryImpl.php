@@ -23,4 +23,16 @@ class QuestionRepositoryImpl implements QuestionRepository
     {
         return $question->load('options');
     }
+
+    public function update(Question $question, array $data): Question
+    {
+        $question->update($data);
+        return $question;
+    }
+
+    public function delete(Question $question): string
+    {
+        $question->delete();
+        return $question->id;
+    }
 }

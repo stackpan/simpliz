@@ -33,4 +33,18 @@ class QuestionServiceImpl implements QuestionService
     {
         return $this->questionRepository->loadDetails($question);
     }
+
+    public function update(Question $question, QuestionDto $data): Question
+    {
+        $attributes = [
+            'body' => $data->body,
+        ];
+
+        return $this->questionRepository->update($question, $attributes);
+    }
+
+    public function delete(Question $question): string
+    {
+        return $this->questionRepository->delete($question);
+    }
 }

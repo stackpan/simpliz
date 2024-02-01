@@ -62,21 +62,46 @@ class QuestionController extends Controller
     {
         $this->authorize('view', $question->quiz);
 
-        $question = $this->questionService->get($question);
+        $questionDetails = $this->questionService->get($question);
 
-        return (new QuestionResource($question))
+        return (new QuestionResource($questionDetails))
             ->additional([
                 'message' => __('message.found'),
             ]);
     }
 
-    public function update(Request $request, string $id)
+    /**
+     * @throws AuthorizationException
+     */
+    public function update(QuestionRequest $request, Question $question): QuestionResource
     {
-        //
+        $this->authorize('update', $question->quiz);
+
+        $validated = $request->validated();
+
+        $data = new QuestionDto($validated['body']);
+        $updatedQuestion = $this->questionService->update($question, $data);
+
+        return (new QuestionResource($updatedQuestion))
+            ->additional([
+                'message' => __('message.resource_updated', ['resource' => 'Question'])
+            ]);
     }
 
-    public function destroy(string $id)
+    /**
+     * @throws AuthorizationException
+     */
+    public function destroy(Question $question): JsonResponse
     {
-        //
+        $this->authorize('update', $question->quiz);
+
+        $questionId = $this->questionService->delete($question);
+
+        return response()->json([
+            'message' => __('message.resource_deleted', ['resource' => 'Question']),
+            'data' => [
+                'questionId' => $questionId,
+            ],
+        ]);
     }
 }

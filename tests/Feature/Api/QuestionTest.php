@@ -342,4 +342,161 @@ class QuestionTest extends TestCase
             ->assertJsonPath('message', __('message.not_found', ['resource' => 'Question']));
     }
 
+    public function testUpdateSuccess(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetQuestion = $this->questions->random();
+
+        $payload = [
+            'body' => fake()->sentence(),
+        ];
+
+        $this->put("/api/v2/questions/{$targetQuestion->id}", $payload)
+            ->assertOk()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.resource_updated', ['resource' => 'Question']))
+                ->has('data', fn (AssertableJson $json) => $json
+                    ->hasAll(['id', 'body', 'createdAt', 'updatedAt'])
+                    ->where('body', $payload['body'])
+                    ->whereNot('updatedAt', $targetQuestion->updated_at)
+                )
+            );
+
+        $this->assertDatabaseHas('questions', [
+            'id' => $targetQuestion->id,
+            'body' => $payload['body'],
+        ]);
+    }
+
+    public function testUpdateBadPayload(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetQuestion = $this->questions->random();
+
+        $this->put("/api/v2/questions/{$targetQuestion->id}", [])
+            ->assertBadRequest()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.bad_request'))
+                ->has('errors', 1)
+            );
+    }
+
+    public function testUpdateUnauthenticated(): void
+    {
+        $targetQuestion = $this->questions->random();
+
+        $payload = [
+            'body' => fake()->sentence(),
+        ];
+
+        $this->put("/api/v2/questions/{$targetQuestion->id}", $payload)
+            ->assertUnauthorized()
+            ->assertJsonPath('message', __('message.unauthorized'));
+    }
+
+    public function testUpdateByNonProctorShouldForbidden(): void
+    {
+        Sanctum::actingAs($this->participant, ['participant']);
+
+        $targetQuestion = $this->questions->random();
+
+        $payload = [
+            'body' => fake()->sentence(),
+        ];
+
+        $this->put("/api/v2/questions/{$targetQuestion->id}", $payload)
+            ->assertForbidden()
+            ->assertJsonPath('message', __('message.forbidden'));
+    }
+
+    public function testUpdateByNonAuthorShouldForbidden(): void
+    {
+        $user = User::factory()->proctor()->create();
+        Sanctum::actingAs($user, ['proctor']);
+
+        $targetQuestion = $this->questions->random();
+
+        $payload = [
+            'body' => fake()->sentence(),
+        ];
+
+        $this->put("/api/v2/questions/{$targetQuestion->id}", $payload)
+            ->assertForbidden()
+            ->assertJsonPath('message', __('message.forbidden'));
+    }
+
+    public function testUpdateNotFound(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $payload = [
+            'body' => fake()->sentence(),
+        ];
+
+        $this->put('/api/v2/questions/ficitionalquestionid', $payload)
+            ->assertNotFound()
+            ->assertJsonPath('message', __('message.not_found', ['resource' => 'Question']));
+    }
+
+    public function testDeleteSuccess(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetQuestion = $this->questions->random();
+
+        $this->delete("/api/v2/questions/{$targetQuestion->id}")
+            ->assertOk()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.resource_deleted', ['resource' => 'Question']))
+                ->where('data.questionId', $targetQuestion->id)
+            );
+
+        $this->assertDatabaseMissing('questions', [
+            'id' => $targetQuestion->id,
+        ]);
+    }
+
+    public function testDeleteUnauthenticated(): void
+    {
+        $targetQuestion = $this->questions->random();
+
+        $this->delete("/api/v2/questions/{$targetQuestion->id}")
+            ->assertUnauthorized()
+            ->assertJsonPath('message', __('message.unauthorized'));
+    }
+
+    public function testDeleteByNonProctorShouldForbidden(): void
+    {
+        Sanctum::actingAs($this->participant, ['participant']);
+
+        $targetQuestion = $this->questions->random();
+
+        $this->delete("/api/v2/questions/{$targetQuestion->id}")
+            ->assertForbidden()
+            ->assertJsonPath('message', __('message.forbidden'));
+    }
+
+    public function testDeleteByNonAuthorShouldForbidden(): void
+    {
+        $user = User::factory()->proctor()->create();
+        Sanctum::actingAs($user, ['participant']);
+
+        $targetQuestion = $this->questions->random();
+
+        $this->delete("/api/v2/questions/{$targetQuestion->id}")
+            ->assertForbidden()
+            ->assertJsonPath('message', __('message.forbidden'));
+    }
+
+    public function testDeleteNotFound(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $this->delete('/api/v2/questions/fictionalquestionid')
+            ->assertNotFound()
+            ->assertJsonPath('message', __('message.not_found', ['resource' => 'Question']));
+    }
+
 }

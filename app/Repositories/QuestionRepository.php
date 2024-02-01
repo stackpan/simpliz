@@ -16,4 +16,8 @@ interface QuestionRepository
     public function create(Quiz $quiz, array $data): Question;
 
     public function loadDetails(Question $question): Question;
+
+    public function update(Question $question, array $data): Question;
+
+    public function delete(Question $question): string;
 }

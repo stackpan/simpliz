@@ -17,4 +17,8 @@ interface QuestionService
     public function create(Quiz $quiz, QuestionDto $data): Question;
 
     public function get(Question $question): Question;
+
+    public function update(Question $question, QuestionDto $data): Question;
+
+    public function delete(Question $question): string;
 }

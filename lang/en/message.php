@@ -4,6 +4,8 @@ return [
     'success' => 'Success.',
     'created' => 'Created.',
     'resource_created' => ':resource created successfully.',
+    'resource_updated' => ':resource updated successfully.',
+    'resource_deleted' => ':resource deleted successfully.',
     'login_success' => 'Login successfully.',
     'logout_success' => 'Successfully logged out.',
     'unauthorized' => 'Unauthorized.',
