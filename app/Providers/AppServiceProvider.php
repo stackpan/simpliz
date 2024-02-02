@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 use App\Models\PersonalAccessToken;
+use App\Repositories\Impl\OptionRepositoryImpl;
 use App\Repositories\Impl\QuestionRepositoryImpl;
 use App\Repositories\Impl\QuizParticipantRepositoryImpl;
 use App\Repositories\Impl\QuizRepositoryImpl;
 use App\Repositories\Impl\TokenRepositoryImpl;
 use App\Repositories\Impl\UserRepositoryImpl;
+use App\Repositories\OptionRepository;
 use App\Repositories\QuestionRepository;
 use App\Repositories\QuizParticipantRepository;
 use App\Repositories\QuizRepository;
@@ -15,10 +17,12 @@ use App\Repositories\TokenRepository;
 use App\Repositories\UserRepository;
 use App\Services\AuthenticationService;
 use App\Services\Impl\AuthenticationServiceImpl;
+use App\Services\Impl\OptionServiceImpl;
 use App\Services\Impl\ParticipantServiceImpl;
 use App\Services\Impl\QuestionServiceImpl;
 use App\Services\Impl\QuizParticipantServiceImpl;
 use App\Services\Impl\QuizServiceImpl;
+use App\Services\OptionService;
 use App\Services\ParticipantService;
 use App\Services\QuestionService;
 use App\Services\QuizParticipantService;
@@ -36,10 +40,13 @@ class AppServiceProvider extends ServiceProvider
         QuizRepository::class => QuizRepositoryImpl::class,
         QuizParticipantRepository::class => QuizParticipantRepositoryImpl::class,
         QuestionRepository::class => QuestionRepositoryImpl::class,
+        OptionRepository::class => OptionRepositoryImpl::class,
         AuthenticationService::class => AuthenticationServiceImpl::class,
         QuizService::class => QuizServiceImpl::class,
         QuizParticipantService::class => QuizParticipantServiceImpl::class,
         QuestionService::class => QuestionServiceImpl::class,
+        OptionService::class => OptionServiceImpl::class,
+        ParticipantService::class => ParticipantServiceImpl::class,
     ];
 
     /**
