@@ -29,22 +29,25 @@ use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
+
+    public array $singletons = [
+        TokenRepository::class => TokenRepositoryImpl::class,
+        UserRepository::class => UserRepositoryImpl::class,
+        QuizRepository::class => QuizRepositoryImpl::class,
+        QuizParticipantRepository::class => QuizParticipantRepositoryImpl::class,
+        QuestionRepository::class => QuestionRepositoryImpl::class,
+        AuthenticationService::class => AuthenticationServiceImpl::class,
+        QuizService::class => QuizServiceImpl::class,
+        QuizParticipantService::class => QuizParticipantServiceImpl::class,
+        QuestionService::class => QuestionServiceImpl::class,
+    ];
+
     /**
      * Register any application services.
      */
     public function register(): void
     {
-        $this->app->singleton(TokenRepository::class, TokenRepositoryImpl::class);
-        $this->app->singleton(UserRepository::class, UserRepositoryImpl::class);
-        $this->app->singleton(QuizRepository::class, QuizRepositoryImpl::class);
-        $this->app->singleton(QuizParticipantRepository::class, QuizParticipantRepositoryImpl::class);
-        $this->app->singleton(QuestionRepository::class, QuestionRepositoryImpl::class);
-
-        $this->app->singleton(AuthenticationService::class, AuthenticationServiceImpl::class);
-        $this->app->singleton(ParticipantService::class, ParticipantServiceImpl::class);
-        $this->app->singleton(QuizService::class, QuizServiceImpl::class);
-        $this->app->singleton(QuizParticipantService::class, QuizParticipantServiceImpl::class);
-        $this->app->singleton(QuestionService::class, QuestionServiceImpl::class);
+        //
     }
 
     /**
