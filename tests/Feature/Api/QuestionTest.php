@@ -49,22 +49,22 @@ class QuestionTest extends TestCase
 
         $this->get("/api/v2/quizzes/{$this->quiz->id}/questions")
             ->assertOk()
-            ->assertJson(fn (AssertableJson $json) => $json
+            ->assertJson(fn(AssertableJson $json) => $json
                 ->where('message', __('message.success'))
                 ->whereType('data', 'array')
                 ->has('data', 10)
-                ->has('data.0', fn (AssertableJson $json) => $json
+                ->has('data.0', fn(AssertableJson $json) => $json
                     ->hasAll(['id', 'body', 'createdAt', 'updatedAt', 'options'])
                     ->whereType('options', 'array')
                     ->has('options', 4)
-                    ->has('options.0', fn (AssertableJson $json) => $json
+                    ->has('options.0', fn(AssertableJson $json) => $json
                         ->hasAll(['id', 'body', 'isAnswer', 'createdAt', 'updatedAt'])
                     )
                 )
-                ->has('links', fn (AssertableJson $json) => $json
+                ->has('links', fn(AssertableJson $json) => $json
                     ->hasAll(['first', 'last', 'prev', 'next'])
                 )
-                ->has('meta', fn (AssertableJson $json) => $json
+                ->has('meta', fn(AssertableJson $json) => $json
                     ->hasAll([
                         'currentPage',
                         'from',
@@ -86,22 +86,22 @@ class QuestionTest extends TestCase
 
         $this->get("/api/v2/quizzes/{$this->quiz->id}/questions")
             ->assertOk()
-            ->assertJson(fn (AssertableJson $json) => $json
+            ->assertJson(fn(AssertableJson $json) => $json
                 ->where('message', __('message.success'))
                 ->whereType('data', 'array')
                 ->has('data', 10)
-                ->has('data.0', fn (AssertableJson $json) => $json
+                ->has('data.0', fn(AssertableJson $json) => $json
                     ->hasAll(['id', 'body', 'createdAt', 'updatedAt', 'options'])
                     ->whereType('options', 'array')
                     ->has('options', 4)
-                    ->has('options.0', fn (AssertableJson $json) => $json
+                    ->has('options.0', fn(AssertableJson $json) => $json
                         ->hasAll(['id', 'body', 'createdAt', 'updatedAt'])
                     )
                 )
-                ->has('links', fn (AssertableJson $json) => $json
+                ->has('links', fn(AssertableJson $json) => $json
                     ->hasAll(['first', 'last', 'prev', 'next'])
                 )
-                ->has('meta', fn (AssertableJson $json) => $json
+                ->has('meta', fn(AssertableJson $json) => $json
                     ->hasAll([
                         'currentPage',
                         'from',
@@ -123,10 +123,10 @@ class QuestionTest extends TestCase
 
         $this->get("/api/v2/quizzes/{$this->quiz->id}/questions?page=2&limit=5")
             ->assertOk()
-            ->assertJson(fn (AssertableJson $json) => $json
+            ->assertJson(fn(AssertableJson $json) => $json
                 ->whereType('data', 'array')
                 ->has('data', 5)
-                ->has('meta', fn (AssertableJson $json) => $json
+                ->has('meta', fn(AssertableJson $json) => $json
                     ->where('currentPage', 2)
                     ->where('lastPage', 6)
                     ->where('perPage', 5)
@@ -182,9 +182,9 @@ class QuestionTest extends TestCase
 
         $this->post("/api/v2/quizzes/{$this->quiz->id}/questions", $payload)
             ->assertCreated()
-            ->assertJson(fn (AssertableJson $json) => $json
+            ->assertJson(fn(AssertableJson $json) => $json
                 ->where('message', __('message.resource_created', ['resource' => 'Question']))
-                ->has('data', fn (AssertableJson $json) => $json
+                ->has('data', fn(AssertableJson $json) => $json
                     ->hasAll(['id', 'body', 'createdAt', 'updatedAt'])
                 )
             );
@@ -201,7 +201,7 @@ class QuestionTest extends TestCase
 
         $this->post("/api/v2/quizzes/{$this->quiz->id}/questions", [])
             ->assertBadRequest()
-            ->assertJson(fn (AssertableJson $json) => $json
+            ->assertJson(fn(AssertableJson $json) => $json
                 ->where('message', __('message.bad_request'))
                 ->has('errors', '1')
             );
@@ -266,13 +266,13 @@ class QuestionTest extends TestCase
 
         $this->get("/api/v2/questions/{$targetQuestion->id}")
             ->assertOk()
-            ->assertJson(fn (AssertableJson $json) => $json
+            ->assertJson(fn(AssertableJson $json) => $json
                 ->where('message', __('message.found'))
-                ->has('data', fn (AssertableJson $json) => $json
+                ->has('data', fn(AssertableJson $json) => $json
                     ->hasAll(['id', 'body', 'createdAt', 'updatedAt', 'options'])
                     ->where('id', $targetQuestion->id)
                     ->whereType('options', 'array')
-                    ->has('options.0', fn (AssertableJson $json) => $json
+                    ->has('options.0', fn(AssertableJson $json) => $json
                         ->hasAll(['id', 'body', 'isAnswer', 'createdAt', 'updatedAt'])
                     )
                 )
@@ -287,13 +287,13 @@ class QuestionTest extends TestCase
 
         $this->get("/api/v2/questions/{$targetQuestion->id}")
             ->assertOk()
-            ->assertJson(fn (AssertableJson $json) => $json
+            ->assertJson(fn(AssertableJson $json) => $json
                 ->where('message', __('message.found'))
-                ->has('data', fn (AssertableJson $json) => $json
+                ->has('data', fn(AssertableJson $json) => $json
                     ->hasAll(['id', 'body', 'createdAt', 'updatedAt', 'options'])
                     ->where('id', $targetQuestion->id)
                     ->whereType('options', 'array')
-                    ->has('options.0', fn (AssertableJson $json) => $json
+                    ->has('options.0', fn(AssertableJson $json) => $json
                         ->hasAll(['id', 'body', 'createdAt', 'updatedAt'])
                     )
                 )
@@ -354,9 +354,9 @@ class QuestionTest extends TestCase
 
         $this->put("/api/v2/questions/{$targetQuestion->id}", $payload)
             ->assertOk()
-            ->assertJson(fn (AssertableJson $json) => $json
+            ->assertJson(fn(AssertableJson $json) => $json
                 ->where('message', __('message.resource_updated', ['resource' => 'Question']))
-                ->has('data', fn (AssertableJson $json) => $json
+                ->has('data', fn(AssertableJson $json) => $json
                     ->hasAll(['id', 'body', 'createdAt', 'updatedAt'])
                     ->where('body', $payload['body'])
                     ->whereNot('updatedAt', $targetQuestion->updated_at)
@@ -377,7 +377,7 @@ class QuestionTest extends TestCase
 
         $this->put("/api/v2/questions/{$targetQuestion->id}", [])
             ->assertBadRequest()
-            ->assertJson(fn (AssertableJson $json) => $json
+            ->assertJson(fn(AssertableJson $json) => $json
                 ->where('message', __('message.bad_request'))
                 ->has('errors', 1)
             );
@@ -448,7 +448,7 @@ class QuestionTest extends TestCase
 
         $this->delete("/api/v2/questions/{$targetQuestion->id}")
             ->assertOk()
-            ->assertJson(fn (AssertableJson $json) => $json
+            ->assertJson(fn(AssertableJson $json) => $json
                 ->where('message', __('message.resource_deleted', ['resource' => 'Question']))
                 ->where('data.questionId', $targetQuestion->id)
             );
@@ -495,6 +495,127 @@ class QuestionTest extends TestCase
         Sanctum::actingAs($this->proctor, ['proctor']);
 
         $this->delete('/api/v2/questions/fictionalquestionid')
+            ->assertNotFound()
+            ->assertJsonPath('message', __('message.not_found', ['resource' => 'Question']));
+    }
+
+    public function testSetAnswerSuccess(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetQuestion = $this->questions->random();
+
+        $payload = [
+            'optionId' => $targetQuestion->options->random()->id,
+        ];
+
+        $this->post("/api/v2/questions/{$targetQuestion->id}/set-answer", $payload)
+            ->assertOk()
+            ->assertJsonPath('message', __('message.answer_set_success'));
+
+        $this->assertDatabaseHas('options', [
+            'id' => $payload['optionId'],
+            'is_answer' => true,
+        ]);
+    }
+
+    public function testSetAnswerBadRequest(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetQuestion = $this->questions->random();
+
+        $this->post("/api/v2/questions/{$targetQuestion->id}/set-answer", [])
+            ->assertBadRequest()
+            ->assertJson(fn(AssertableJson $json) => $json
+                ->where('message', __('message.bad_request'))
+                ->whereType('errors', 'array')
+                ->has('errors', 1)
+            );
+    }
+
+    public function testSetAnswerOutsideOfQuestionShouldBadRequest(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetQuestion = $this->questions->random();
+        $targetOption = $this->questions->filter(fn(Question $question, int $key) => $question !== $targetQuestion)
+            ->random()
+            ->options->random();
+
+        $payload = [
+            'optionId' => $targetOption->id,
+        ];
+
+        $this->post("/api/v2/questions/{$targetQuestion->id}/set-answer", $payload)
+            ->assertBadRequest()
+            ->assertJson(fn(AssertableJson $json) => $json
+                ->where('message', __('message.bad_request'))
+                ->whereType('errors', 'array')
+                ->has('errors', 1)
+                ->where('errors.optionId.0', __('validation.in_question', [
+                    'optionId' => $payload['optionId'],
+                    'questionId' => $targetQuestion->id,
+                ]))
+            );
+    }
+
+
+    public function testSetAnswerUnauthenticated(): void
+    {
+        $targetQuestion = $this->questions->random();
+
+        $payload = [
+            'optionId' => $targetQuestion->options->random()->id,
+        ];
+
+        $this->post("/api/v2/questions/{$targetQuestion->id}/set-answer", $payload)
+            ->assertUnauthorized()
+            ->assertJsonPath('message', __('message.unauthorized'));
+    }
+
+    public function testSetAnswerByNonProctorShouldForbidden(): void
+    {
+        Sanctum::actingAs($this->participant, ['participant']);
+
+        $targetQuestion = $this->questions->random();
+
+        $payload = [
+            'optionId' => $targetQuestion->options->random()->id,
+        ];
+
+        $this->post("/api/v2/questions/{$targetQuestion->id}/set-answer", $payload)
+            ->assertForbidden()
+            ->assertJsonPath('message', __('message.forbidden'));
+    }
+
+    public function testSetAnswerByNonAuthorShouldForbidden(): void
+    {
+        $user = User::factory()->proctor()->create();
+        Sanctum::actingAs($user, ['proctor']);
+
+        $targetQuestion = $this->questions->random();
+
+        $payload = [
+            'optionId' => $targetQuestion->options->random()->id,
+        ];
+
+        $this->post("/api/v2/questions/{$targetQuestion->id}/set-answer", $payload)
+            ->assertForbidden()
+            ->assertJsonPath('message', __('message.forbidden'));
+    }
+
+    public function testSetAnswerNotFound(): void
+    {
+        Sanctum::actingAs($this->proctor, ['proctor']);
+
+        $targetQuestion = $this->questions->random();
+
+        $payload = [
+            'optionId' => $targetQuestion->options->random()->id,
+        ];
+
+        $this->post('/api/v2/questions/fictionalquestionid/set-answer', $payload)
             ->assertNotFound()
             ->assertJsonPath('message', __('message.not_found', ['resource' => 'Question']));
     }

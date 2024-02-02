@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\QuizController;
 use App\Http\Controllers\Api\QuizParticipantController;
 use App\Http\Controllers\Api\SearchParticipantController;
+use App\Http\Controllers\Api\SetAnswerQuestionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,6 +31,7 @@ Route::prefix('/v2')->group(function () {
             Route::apiResource('quizzes', QuizController::class)->only(['store', 'update', 'destroy']);
             Route::apiResource('quizzes.participants', QuizParticipantController::class)->only(['index', 'store', 'destroy']);
             Route::apiResource('quizzes.questions', QuestionController::class)->shallow()->only(['store', 'update', 'destroy']);
+            Route::post('/questions/{question}/set-answer', SetAnswerQuestionController::class)->name('questions.set-answer');
         });
 
         Route::apiResource('quizzes', QuizController::class)->except(['store', 'update', 'destroy']);

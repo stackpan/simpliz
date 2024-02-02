@@ -20,4 +20,8 @@ interface QuestionRepository
     public function update(Question $question, array $data): Question;
 
     public function delete(Question $question): string;
+
+    public function setAnswer(Question $question, string $optionId): bool;
+
+    public function checkOptionExistenceById(Question $question, string $optionId): bool;
 }

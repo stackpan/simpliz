@@ -19,4 +19,5 @@ return [
     'success_detaching' => 'Successfully removed :resourceA from :resourceB.',
     'already_registered' => ':resourceA with id: :resourceAId is already registered to :resourceB with id: :resourceBId.',
     'registered_resources' => ':resourceA with id: :resourceAId registered in :resourceB with id: :resourceBId.',
+    'answer_set_success' => 'Answer set successfully.',
 ];

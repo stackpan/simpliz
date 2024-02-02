@@ -21,4 +21,8 @@ interface QuestionService
     public function update(Question $question, QuestionDto $data): Question;
 
     public function delete(Question $question): string;
+
+    public function setAnswer(Question $question, string $optionId): bool;
+
+    public function checkOptionExistence(Question $question, string $optionId): bool;
 }

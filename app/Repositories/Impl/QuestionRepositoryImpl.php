@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Impl;
 
+use App\Models\Option;
 use App\Models\Question;
 use App\Models\Quiz;
 use App\Repositories\QuestionRepository;
@@ -34,5 +35,17 @@ class QuestionRepositoryImpl implements QuestionRepository
     {
         $question->delete();
         return $question->id;
+    }
+
+    public function setAnswer(Question $question, string $optionId): bool
+    {
+        $question->options()->update(['is_answer' => false]);
+        Option::whereId($optionId)->update(['is_answer' => true]);
+        return true;
+    }
+
+    public function checkOptionExistenceById(Question $question, string $optionId): bool
+    {
+        return $question->options()->whereId($optionId)->exists();
     }
 }

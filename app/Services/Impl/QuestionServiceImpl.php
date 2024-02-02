@@ -47,4 +47,14 @@ class QuestionServiceImpl implements QuestionService
     {
         return $this->questionRepository->delete($question);
     }
+
+    public function setAnswer(Question $question, string $optionId): bool
+    {
+        return $this->questionRepository->setAnswer($question, $optionId);
+    }
+
+    public function checkOptionExistence(Question $question, string $optionId): bool
+    {
+        return $this->questionRepository->checkOptionExistenceById($question, $optionId);
+    }
 }
