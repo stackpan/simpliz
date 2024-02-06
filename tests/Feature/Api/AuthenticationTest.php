@@ -39,7 +39,10 @@ class AuthenticationTest extends TestCase
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
                 ->where('message', __('message.login_success'))
-                ->has('data.token')
+                ->has('data', fn (AssertableJson $json) => $json
+                    ->hasAll(['token', 'expiresAt', 'scopes'])
+                    ->whereType('scopes', 'array')
+                )
             );
     }
 

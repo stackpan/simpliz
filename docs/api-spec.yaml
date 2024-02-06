@@ -47,6 +47,12 @@ paths:
                     properties:
                       token:
                         type: string
+                      expiresAt:
+                        type: string
+                      scopes:
+                        type: array
+                        items:
+                          type: string
         400:
           $ref: '#/components/responses/400BadRequest'
         401:
@@ -110,8 +116,18 @@ paths:
                     type: array
                     items:
                       oneOf:
-                        - $ref: '#/components/schemas/Quiz'
-                        - $ref: '#/components/schemas/ParticipantQuiz'
+                        - allOf:
+                            - $ref: '#/components/schemas/Quiz'
+                            - type: object
+                              properties:
+                                questionsCount:
+                                  type: number
+                        - allOf:
+                            - $ref: '#/components/schemas/ParticipantQuiz'
+                            - type: object
+                              properties:
+                                questionsCount:
+                                  type: number
                   links:
                     $ref: '#/components/schemas/PaginationLinks'
                   meta:

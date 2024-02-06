@@ -3,6 +3,7 @@
 namespace App\Services\Impl;
 
 use App\Data\LoginDto;
+use App\Data\TokenDto;
 use App\Exceptions\WrongCredentialsException;
 use App\Models\Participant;
 use App\Models\Proctor;
@@ -19,7 +20,7 @@ class AuthenticationServiceImpl implements AuthenticationService
     }
 
 
-    public function authenticate(LoginDto $loginDto): string
+    public function authenticate(LoginDto $loginDto): TokenDto
     {
         if (!auth()->attempt((array) $loginDto)) {
             throw new WrongCredentialsException();
@@ -38,7 +39,13 @@ class AuthenticationServiceImpl implements AuthenticationService
                 break;
         }
 
-        return $this->tokenRepository->generate($authenticatable, 'authentication', [$scope]);
+        $newAccessToken = $this->tokenRepository->generate($authenticatable, 'authentication', [$scope]);
+
+        return new TokenDto(
+            $newAccessToken->plainTextToken,
+            $newAccessToken->accessToken->expires_at,
+            $newAccessToken->accessToken->abilities,
+        );
     }
 
     public function logout(Authenticatable $authenticatable): void

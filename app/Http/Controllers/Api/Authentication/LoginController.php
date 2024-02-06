@@ -21,12 +21,14 @@ class LoginController extends Controller
         $validated = $request->validated();
 
         $credentials = new LoginDto($validated['username'], $validated['password']);
-        $token = $this->authenticationService->authenticate($credentials);
+        $accessToken = $this->authenticationService->authenticate($credentials);
 
         return response()->json([
             'message' => __('message.login_success'),
             'data' => [
-                'token' => $token,
+                'token' => $accessToken->token,
+                'expiresAt' => $accessToken->expiresAt,
+                'scopes' => $accessToken->scopes,
             ]
         ]);
     }

@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ProctorSeeder::class,
             ParticipantSeeder::class,
+            QuizSeeder::class,
         ]);
     }
 }
