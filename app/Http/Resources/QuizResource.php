@@ -30,6 +30,7 @@ class QuizResource extends JsonResource
             'updatedAt'=> $this->updated_at,
             'attemptCount' => $this->whenPivotLoaded('participant_quiz', fn () => $this->pivot->attempt_count),
             'highestScore' => $this->whenPivotLoaded('participant_quiz', fn () => $this->highest_score),
+            'questionsCount' => $this->whenHas('questions_count'),
         ];
     }
 }

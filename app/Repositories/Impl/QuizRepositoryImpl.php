@@ -14,7 +14,7 @@ class QuizRepositoryImpl implements QuizRepository
 
     public function getPaginatedByProctor(Proctor $proctor, ?string $search, ?int $page = 1, ?int $limit = 10): LengthAwarePaginator
     {
-        $query = $proctor->quizzes();
+        $query = $proctor->quizzes()->withCount('questions');
         if ($search) $query->whereFullText(['name'], $search);
 
         return $query->paginate($limit, page: $page);
@@ -22,7 +22,7 @@ class QuizRepositoryImpl implements QuizRepository
 
     public function getPaginatedByParticipant(Participant $participant, ?string $search, ?int $page = 1, ?int $limit = 10): LengthAwarePaginator
     {
-        $query = $participant->quizzes();
+        $query = $participant->quizzes()->withCount('questions');
         if ($search) $query->whereFullText(['name'], $search);
 
         return $query->paginate($limit, page: $page);
