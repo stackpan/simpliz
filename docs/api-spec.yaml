@@ -1033,7 +1033,7 @@ components:
                 type: string
                 example: 'Invalid request.'
               errors:
-                type: array
+                type: object
     401Unauthorized:
       description: 'Unauthorized.'
       content:
