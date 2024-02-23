@@ -101,5 +101,38 @@ class AuthenticationTest extends TestCase
         $this->assertDatabaseCount('personal_access_tokens', 1);
     }
 
+    public function testGetCurrentSuccess(): void
+    {
+        Sanctum::actingAs($this->user, ['proctor']);
 
+        $this->get('/api/v2/authentication/current')
+            ->assertOk()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.success'))
+                ->has('data', fn (AssertableJson $json) => $json
+                    ->hasAll([
+                        'id',
+                        'accountId',
+                        'name',
+                        'firstName',
+                        'lastName',
+                        'email',
+                        'updatedAt',
+                        'createdAt',
+                        'type',
+                    ])
+                    ->where('type', 'Proctor'),
+                )
+            );
+    }
+
+    public function testGetCurrentUnauthorized(): void
+    {
+        $this->get('/api/v2/authentication/current')
+            ->assertUnauthorized()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('message', __('message.unauthorized'))
+                ->etc()
+            );
+    }
 }

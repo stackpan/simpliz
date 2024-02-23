@@ -83,6 +83,32 @@ paths:
                     example: 'Successfully logged out.'
         401:
           $ref: '#/components/responses/401Unauthorized'
+  /authentication/current:
+    get:
+      tags:
+        - Authentication
+      description: 'Get current authenticated user'
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Success.'
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/User'
+                      - type: object
+                        properties:
+                          type:
+                            type: string
+                            example: 'Proctor'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
   /quizzes:
     get:
       tags:

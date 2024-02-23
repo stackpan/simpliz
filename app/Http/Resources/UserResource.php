@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Util\Strings;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -23,6 +24,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'updatedAt' => $this->updated_at,
             'createdAt' => $this->created_at,
+            'type' => Strings::shortenClassName($this->whenHas('accountable_type')),
         ];
     }
 }
