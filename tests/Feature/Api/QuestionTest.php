@@ -61,21 +61,13 @@ class QuestionTest extends TestCase
                         ->hasAll(['id', 'body', 'isAnswer', 'createdAt', 'updatedAt'])
                     )
                 )
-                ->has('links', fn(AssertableJson $json) => $json
-                    ->hasAll(['first', 'last', 'prev', 'next'])
-                )
-                ->has('meta', fn(AssertableJson $json) => $json
+                ->has('pagination', fn(AssertableJson $json) => $json
                     ->hasAll([
                         'currentPage',
-                        'from',
-                        'lastPage',
-                        'path',
                         'perPage',
-                        'to',
+                        'lastPage',
                         'total',
-                        'links',
                     ])
-                    ->whereType('links', 'array')
                 )
             );
     }
@@ -98,21 +90,13 @@ class QuestionTest extends TestCase
                         ->hasAll(['id', 'body', 'createdAt', 'updatedAt'])
                     )
                 )
-                ->has('links', fn(AssertableJson $json) => $json
-                    ->hasAll(['first', 'last', 'prev', 'next'])
-                )
-                ->has('meta', fn(AssertableJson $json) => $json
+                ->has('pagination', fn(AssertableJson $json) => $json
                     ->hasAll([
                         'currentPage',
-                        'from',
-                        'lastPage',
-                        'path',
                         'perPage',
-                        'to',
+                        'lastPage',
                         'total',
-                        'links',
                     ])
-                    ->whereType('links', 'array')
                 )
             );
     }
@@ -126,10 +110,11 @@ class QuestionTest extends TestCase
             ->assertJson(fn(AssertableJson $json) => $json
                 ->whereType('data', 'array')
                 ->has('data', 5)
-                ->has('meta', fn(AssertableJson $json) => $json
+                ->has('pagination', fn(AssertableJson $json) => $json
                     ->where('currentPage', 2)
                     ->where('lastPage', 6)
                     ->where('perPage', 5)
+                    ->where('total', 30)
                     ->etc()
                 )
                 ->etc()

@@ -154,10 +154,8 @@ paths:
                               properties:
                                 questionsCount:
                                   type: number
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMeta'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
         401:
           $ref: '#/components/responses/401Unauthorized'
         403:
@@ -311,10 +309,8 @@ paths:
                       oneOf:
                         - $ref: '#/components/schemas/QuestionDetails'
                         - $ref: '#/components/schemas/SafeQuestionDetails'
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMeta'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
         401:
           $ref: '#/components/responses/401Unauthorized'
         403:
@@ -387,10 +383,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/User'
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMeta'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
         401:
           $ref: '#/components/responses/401Unauthorized'
         403:
@@ -984,10 +978,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Result'
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMeta'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
         401:
           $ref: '#/components/responses/401Unauthorized'
         403:
@@ -1417,51 +1409,25 @@ components:
           type: string
         password:
           type: string
-    PaginationLinks:
-      type: object
-      properties:
-        first:
-          type: string
-          example: 'http://example.com/api/resources?page=1'
-        last:
-          type: string
-          example: 'http://example.com/api/resources?page=5'
-        prev:
-          type: string
-          example: 'http://example.com/api/resources?page=2'
-        next:
-          type: string
-          example: 'http://example.com/api/resources?page=4'
-    PaginationMeta:
+    Pagination:
       type: object
       properties:
         currentPage:
           type: integer
           format: int32
           example: 3
-        from:
-          type: integer
-          format: int32
-          example: 1
-        lastPage:
-          type: integer
-          format: int32
-          example: 1
-        path:
-          type: string
-          example: 'http://example.com/api/resources'
         perPage:
           type: integer
           format: int32
           example: 15
-        to:
+        lastPage:
           type: integer
           format: int32
           example: 10
         total:
           type: integer
           format: int32
-          example: 10
+          example: 150
     QuizSession:
       type: object
       properties:

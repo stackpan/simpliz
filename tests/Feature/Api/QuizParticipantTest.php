@@ -70,21 +70,13 @@ class QuizParticipantTest extends TestCase
                         'createdAt',
                     ])
                 )
-                ->has('links', fn(AssertableJson $json) => $json
-                    ->hasAll(['first', 'last', 'prev', 'next'])
-                )
-                ->has('meta', fn(AssertableJson $json) => $json
+                ->has('pagination', fn(AssertableJson $json) => $json
                     ->hasAll([
                         'currentPage',
-                        'from',
-                        'lastPage',
-                        'path',
                         'perPage',
-                        'to',
+                        'lastPage',
                         'total',
-                        'links',
                     ])
-                    ->whereType('links', 'array')
                 )
             );
     }
@@ -99,9 +91,10 @@ class QuizParticipantTest extends TestCase
                 ->where('message', __('message.success'))
                 ->whereType('data', 'array')
                 ->has('data', 5)
-                ->where('meta.currentPage', 2)
-                ->where('meta.perPage', 5)
-                ->where('meta.lastPage', 6)
+                ->where('pagination.currentPage', 2)
+                ->where('pagination.perPage', 5)
+                ->where('pagination.lastPage', 6)
+                ->where('pagination.total', 30)
                 ->etc()
             );
     }
@@ -116,10 +109,10 @@ class QuizParticipantTest extends TestCase
                 ->where('message', __('message.success'))
                 ->whereType('data', 'array')
                 ->has('data', 10)
-                ->where('meta.currentPage', 1)
-                ->where('meta.perPage', 10)
-                ->where('meta.lastPage', 2)
-                ->where('meta.total', 15)
+                ->where('pagination.currentPage', 1)
+                ->where('pagination.perPage', 10)
+                ->where('pagination.lastPage', 2)
+                ->where('pagination.total', 15)
                 ->etc()
             );
     }

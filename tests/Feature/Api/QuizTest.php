@@ -82,22 +82,14 @@ class QuizTest extends TestCase
                         ->hasAll(['proctorId', 'name'])
                     )
                 )
-                ->has('links', fn (AssertableJson $json) => $json
-                    ->hasAll(['first', 'last', 'prev', 'next'])
-                )
-                ->has('meta', fn (AssertableJson $json) => $json
+                ->has('pagination', fn (AssertableJson $json) => $json
                     ->hasAll([
                         'currentPage',
-                        'from',
-                        'lastPage',
-                        'path',
                         'perPage',
-                        'to',
+                        'lastPage',
                         'total',
-                        'links',
                     ])
-                    ->whereType('links', 'array')
-                )
+                ),
             );
     }
 
@@ -131,22 +123,14 @@ class QuizTest extends TestCase
                         ->hasAll(['proctorId', 'name'])
                     )
                 )
-                ->has('links', fn (AssertableJson $json) => $json
-                    ->hasAll(['first', 'last', 'prev', 'next'])
-                )
-                ->has('meta', fn (AssertableJson $json) => $json
+                ->has('pagination', fn (AssertableJson $json) => $json
                     ->hasAll([
                         'currentPage',
-                        'from',
-                        'lastPage',
-                        'path',
                         'perPage',
-                        'to',
+                        'lastPage',
                         'total',
-                        'links',
                     ])
-                    ->whereType('links', 'array')
-                )
+                ),
             );
     }
 
@@ -178,24 +162,17 @@ class QuizTest extends TestCase
                         ->hasAll(['proctorId', 'name'])
                     )
                 )
-                ->has('links', fn (AssertableJson $json) => $json
-                    ->hasAll(['first', 'last', 'prev', 'next'])
-                )
-                ->has('meta', fn (AssertableJson $json) => $json
+                ->has('pagination', fn (AssertableJson $json) => $json
                     ->hasAll([
                         'currentPage',
-                        'from',
-                        'lastPage',
-                        'path',
                         'perPage',
-                        'to',
+                        'lastPage',
                         'total',
-                        'links',
                     ])
                     ->where('currentPage', 2)
                     ->where('perPage', 5)
                     ->where('lastPage', 6)
-                    ->whereType('links', 'array')
+                    ->where('total', 30)
                 )
             );
     }
@@ -228,25 +205,17 @@ class QuizTest extends TestCase
                         ->hasAll(['proctorId', 'name'])
                     )
                 )
-                ->has('links', fn (AssertableJson $json) => $json
-                    ->hasAll(['first', 'last', 'prev', 'next'])
-                )
-                ->has('meta', fn (AssertableJson $json) => $json
+                ->has('pagination', fn (AssertableJson $json) => $json
                     ->hasAll([
                         'currentPage',
-                        'from',
-                        'lastPage',
-                        'path',
                         'perPage',
-                        'to',
+                        'lastPage',
                         'total',
-                        'links',
                     ])
                     ->where('currentPage', 1)
                     ->where('perPage', 10)
                     ->where('lastPage', 2)
                     ->where('total', 15)
-                    ->whereType('links', 'array')
                 )
             );
     }
