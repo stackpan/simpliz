@@ -1,0 +1,12 @@
+.git
+.gitattributes
+.gitignore
+
+.editorconfig
+.idea
+.vscode
+
+.phpstorm.meta.php
+.phpunit.result.cache
+
+tests
