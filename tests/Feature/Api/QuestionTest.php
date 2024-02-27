@@ -55,6 +55,10 @@ class QuestionTest extends TestCase
                 ->has('data', 10)
                 ->has('data.0', fn(AssertableJson $json) => $json
                     ->hasAll(['id', 'body', 'createdAt', 'updatedAt', 'options'])
+                    ->whereType('id', 'string')
+                    ->whereType('body', 'string')
+                    ->whereType('createdAt', 'string')
+                    ->whereType('updatedAt', 'string')
                     ->whereType('options', 'array')
                     ->has('options', 4)
                     ->has('options.0', fn(AssertableJson $json) => $json
@@ -84,6 +88,10 @@ class QuestionTest extends TestCase
                 ->has('data', 10)
                 ->has('data.0', fn(AssertableJson $json) => $json
                     ->hasAll(['id', 'body', 'createdAt', 'updatedAt', 'options'])
+                    ->whereType('id', 'string')
+                    ->whereType('body', 'string')
+                    ->whereType('createdAt', 'string')
+                    ->whereType('updatedAt', 'string')
                     ->whereType('options', 'array')
                     ->has('options', 4)
                     ->has('options.0', fn(AssertableJson $json) => $json
