@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('duration');
             $table->unsignedSmallInteger('max_attempts')->nullable();
             $table->unsignedSmallInteger('color');
-            $table->enum('status', ['draft', 'published', 'open', 'closed'])->default('draft');
+            $table->enum('status', ['draft', 'open', 'closed'])->default('draft');
             $table->foreignUuid('created_by')->nullable()
                 ->references('id')->on('proctors')
                 ->nullOnDelete();
