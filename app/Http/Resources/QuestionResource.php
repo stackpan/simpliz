@@ -17,8 +17,8 @@ class QuestionResource extends JsonResource
         return [
             'id' => $this->id,
             'body' => $this->body,
-            'createdAt' => $this->createdAt,
-            'updatedAt' => $this->updatedAt,
+            'createdAt' => $this->created_at,
+            'updatedAt' => $this->updated_at,
             'options' => OptionResource::collection($this->whenLoaded('options')),
         ];
     }
